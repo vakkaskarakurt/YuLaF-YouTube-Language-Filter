@@ -1,27 +1,20 @@
 {
   "manifest_version": 3,
-  "name": "YouTube English Content Filter",
+  "name": "YouTube English Filter",
   "version": "1.0",
-  "description": "Shows only English content on YouTube",
-  "permissions": [
-    "storage",
-    "activeTab"
-  ],
-  "host_permissions": [
-    "https://www.youtube.com/*",
-    "https://youtube.com/*"
-  ],
+  "description": "Filter YouTube search results to show only English videos",
+  "permissions": ["activeTab"],
   "content_scripts": [
     {
-      "matches": ["https://www.youtube.com/*", "https://youtube.com/*"],
-      "js": ["content.js"],
-      "run_at": "document_idle"
+      "matches": ["*://www.youtube.com/*"],
+      "js": ["libs/franc-min.js", "content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_end"
     }
   ],
-  "background": {
-    "service_worker": "background.js"
-  },
-  "action": {
-    "default_popup": "popup.html"
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
   }
 }

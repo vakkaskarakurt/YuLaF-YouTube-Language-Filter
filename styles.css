@@ -1,0 +1,6 @@
+[data-yef-hidden] {
+  display: none !important;
+}
+ytd-video-renderer[data-yef-processed="true"] {
+  /* Optional highlight */
+}
