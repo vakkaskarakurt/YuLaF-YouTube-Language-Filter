@@ -1,13 +1,13 @@
 {
     "manifest_version": 3,
     "name": "YouTube English Only",
-    "version": "1.0",
-    "description": "Shows only English videos on YouTube",
+    "version": "4.0",
+    "description": "Shows only English videos using local AI language detection",
     "permissions": ["activeTab"],
     "host_permissions": ["*://*.youtube.com/*"],
     "content_scripts": [{
         "matches": ["*://*.youtube.com/*"],
-        "js": ["content.js"],
+        "js": ["eld.M60.min.js", "content.js"],
         "run_at": "document_idle"
     }]
 }

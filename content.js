@@ -1,7 +1,23 @@
-console.log('🚀 YouTube English Filter - FINAL FAST VERSION');
+console.log('🚀 YouTube English Filter - LOCAL AI VERSION');
 
 let processedVideos = new Set();
 let isProcessing = false;
+
+// ELD library yüklendikten sonra başlat
+function initLanguageDetector() {
+    if (typeof eld !== 'undefined') {
+        console.log('✅ ELD Language Detector ready');
+        console.log('📊 ELD Info:', eld.info());
+        
+        // Sadece İngilizce ve Türkçe odaklı subset (opsiyonel)
+        // eld.dynamicLangSubset(['en', 'tr', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'ko', 'zh']);
+        
+        return true;
+    } else {
+        console.error('❌ ELD Library not loaded');
+        return false;
+    }
+}
 
 function extractVideoId(url) {
     const match = url.match(/[?&]v=([^&]+)/);
@@ -20,11 +36,11 @@ function findVideoTitle(videoLink) {
         'a#video-title-link',
         '.ytd-video-renderer #video-title',
         'span#video-title',
-        'h3 span[role="text"]',  // İzlenmiş videolar için
-        'h3 yt-formatted-string',  // Alternatif format
-        '.ytd-rich-item-renderer h3 a',  // Rich item renderer
-        '#video-title-link yt-formatted-string',  // İç yt-formatted-string
-        'a[aria-label]'  // Aria-label'dan başlık çekme
+        'h3 span[role="text"]',
+        'h3 yt-formatted-string',
+        '.ytd-rich-item-renderer h3 a',
+        '#video-title-link yt-formatted-string',
+        'a[aria-label]'
     ];
     
     for (const selector of titleSelectors) {
@@ -32,7 +48,6 @@ function findVideoTitle(videoLink) {
         if (titleElement) {
             let title = titleElement.textContent?.trim();
             
-            // Eğer başlık bulunamadıysa aria-label'ı dene
             if (!title || title.length <= 5) {
                 title = titleElement.getAttribute('aria-label')?.trim();
             }
@@ -43,7 +58,6 @@ function findVideoTitle(videoLink) {
         }
     }
     
-    // Son çare: Link'in kendisindeki aria-label
     const linkTitle = videoLink.getAttribute('aria-label');
     if (linkTitle && linkTitle.length > 5) {
         return linkTitle.trim();
@@ -52,13 +66,25 @@ function findVideoTitle(videoLink) {
     return null;
 }
 
+// ELD ile dil tespiti
 function isEnglish(title) {
     if (!title || title.length < 3) return true;
+    if (typeof eld === 'undefined') return true;
     
-    const englishPattern = /^[a-zA-Z0-9\s\.,!?'"()\-:;&@#$%\|\[\]{}\/\\*+=_~`]+$/;
-    const hasNonEnglishChars = /[çğıöşü]|[àáâãäåæ]|[èéêë]|[ìíîï]|[ñ]|[òóôõö]|[ùúûü]|[ý]|[а-я]|[α-ω]|[一-龯]|[가-힣]/i.test(title);
-    
-    return englishPattern.test(title) && !hasNonEnglishChars;
+    try {
+        const result = eld.detect(title);
+        const detectedLang = result.language;
+        const isReliable = result.isReliable();
+        
+        console.log(`🎯 "${title}" -> ${detectedLang} (reliable: ${isReliable})`);
+        
+        // Sadece İngilizce olanları göster
+        return detectedLang === 'en' || detectedLang === '' || !isReliable;
+        
+    } catch (error) {
+        console.error('❌ ELD detection error:', error);
+        return true; // Hata durumunda göster
+    }
 }
 
 function hideVideo(link) {
@@ -71,7 +97,7 @@ function hideVideo(link) {
 }
 
 function checkVideos() {
-    if (isProcessing) return;
+    if (isProcessing || typeof eld === 'undefined') return;
     isProcessing = true;
     
     const videoLinks = document.querySelectorAll('a[href*="/watch?v="], a[href*="/shorts/"]');
@@ -92,7 +118,6 @@ function checkVideos() {
             processedVideos.add(videoId);
             
             const title = findVideoTitle(link);
-            console.log(`🔍 Video: "${title}" - English: ${title ? isEnglish(title) : 'No title'}`);
             if (title && !isEnglish(title)) {
                 if (hideVideo(link)) hidden++;
             }
@@ -106,22 +131,29 @@ function checkVideos() {
     isProcessing = false;
 }
 
-// Hızlı ve sürekli tarama
-const observer = new MutationObserver(() => {
-    setTimeout(checkVideos, 100); // Çok hızlı
-});
+// Başlatma - ELD yüklendikten sonra
+setTimeout(() => {
+    if (initLanguageDetector()) {
+        console.log('🎯 Local AI Language Detection ready');
+        
+        // Observer
+        const observer = new MutationObserver(() => {
+            setTimeout(checkVideos, 100);
+        });
 
-observer.observe(document.body, { 
-    childList: true, 
-    subtree: true 
-});
+        observer.observe(document.body, { 
+            childList: true, 
+            subtree: true 
+        });
 
-// İlk çalıştırma
-setTimeout(checkVideos, 1000);
+        // İlk çalıştırma
+        setTimeout(checkVideos, 1000);
 
-// Scroll'da da çalıştır
-window.addEventListener('scroll', () => {
-    setTimeout(checkVideos, 200);
-});
+        // Scroll eventi
+        window.addEventListener('scroll', () => {
+            setTimeout(checkVideos, 200);
+        });
 
-console.log('✨ Fast English Filter loaded!');
+        console.log('✨ Local AI Language Filter loaded!');
+    }
+}, 500); // ELD'nin yüklenmesi için kısa bekleme
