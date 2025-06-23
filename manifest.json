@@ -1,13 +1,21 @@
 {
     "manifest_version": 3,
     "name": "YouTube English Only",
-    "version": "4.0",
+    "version": "4.1",
     "description": "Shows only English videos using local AI language detection",
     "permissions": ["activeTab"],
     "host_permissions": ["*://*.youtube.com/*"],
     "content_scripts": [{
         "matches": ["*://*.youtube.com/*"],
-        "js": ["eld.M60.min.js", "content.js"],
+        "js": [
+            "eld.M60.min.js",
+            "config.js",
+            "language-detector.js", 
+            "video-extractor.js",
+            "video-filter.js",
+            "observer.js",
+            "main.js"
+        ],
         "run_at": "document_idle"
     }]
 }
