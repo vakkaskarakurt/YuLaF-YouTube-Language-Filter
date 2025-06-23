@@ -9,26 +9,46 @@ function extractVideoId(url) {
 }
 
 function findVideoTitle(videoLink) {
-    const container = videoLink.closest('ytd-rich-item-renderer, ytd-video-renderer, ytd-grid-video-renderer');
+    const container = videoLink.closest('ytd-rich-item-renderer, ytd-video-renderer, ytd-grid-video-renderer, ytd-reel-item-renderer, ytd-shorts, ytd-compact-video-renderer');
     if (!container) return null;
     
     const titleSelectors = [
         'h3 a[href*="/watch"]',
+        'h3 a[href*="/shorts"]',
         '#video-title',
         'yt-formatted-string#video-title',
         'a#video-title-link',
-        '.ytd-video-renderer #video-title'
+        '.ytd-video-renderer #video-title',
+        'span#video-title',
+        'h3 span[role="text"]',  // İzlenmiş videolar için
+        'h3 yt-formatted-string',  // Alternatif format
+        '.ytd-rich-item-renderer h3 a',  // Rich item renderer
+        '#video-title-link yt-formatted-string',  // İç yt-formatted-string
+        'a[aria-label]'  // Aria-label'dan başlık çekme
     ];
     
     for (const selector of titleSelectors) {
         const titleElement = container.querySelector(selector);
         if (titleElement) {
-            const title = titleElement.textContent?.trim();
+            let title = titleElement.textContent?.trim();
+            
+            // Eğer başlık bulunamadıysa aria-label'ı dene
+            if (!title || title.length <= 5) {
+                title = titleElement.getAttribute('aria-label')?.trim();
+            }
+            
             if (title && title.length > 5) {
                 return title;
             }
         }
     }
+    
+    // Son çare: Link'in kendisindeki aria-label
+    const linkTitle = videoLink.getAttribute('aria-label');
+    if (linkTitle && linkTitle.length > 5) {
+        return linkTitle.trim();
+    }
+    
     return null;
 }
 
@@ -42,7 +62,7 @@ function isEnglish(title) {
 }
 
 function hideVideo(link) {
-    const container = link.closest('ytd-rich-item-renderer, ytd-video-renderer, ytd-grid-video-renderer');
+    const container = link.closest('ytd-rich-item-renderer, ytd-video-renderer, ytd-grid-video-renderer, ytd-reel-item-renderer, ytd-shorts, ytd-compact-video-renderer');
     if (container) {
         container.style.display = 'none';
         return true;
@@ -54,15 +74,25 @@ function checkVideos() {
     if (isProcessing) return;
     isProcessing = true;
     
-    const videoLinks = document.querySelectorAll('a[href*="/watch?v="]');
+    const videoLinks = document.querySelectorAll('a[href*="/watch?v="], a[href*="/shorts/"]');
     let hidden = 0;
     
     for (const link of videoLinks) {
-        const videoId = extractVideoId(link.href);
+        let videoId;
+        
+        if (link.href.includes('/watch?v=')) {
+            videoId = extractVideoId(link.href);
+        }
+        else if (link.href.includes('/shorts/')) {
+            const match = link.href.match(/\/shorts\/([^?&\n]+)/);
+            videoId = match ? match[1] : null;
+        }
+        
         if (videoId && !processedVideos.has(videoId)) {
             processedVideos.add(videoId);
             
             const title = findVideoTitle(link);
+            console.log(`🔍 Video: "${title}" - English: ${title ? isEnglish(title) : 'No title'}`);
             if (title && !isEnglish(title)) {
                 if (hideVideo(link)) hidden++;
             }
