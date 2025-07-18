@@ -1,21 +1,29 @@
 {
-    "manifest_version": 3,
-    "name": "YouTube English Only",
-    "version": "4.1",
-    "description": "Shows only English videos using local AI language detection",
-    "permissions": ["activeTab"],
-    "host_permissions": ["*://*.youtube.com/*"],
-    "content_scripts": [{
-        "matches": ["*://*.youtube.com/*"],
-        "js": [
-            "eld.M60.min.js",
-            "config.js",
-            "language-detector.js", 
-            "video-extractor.js",
-            "video-filter.js",
-            "observer.js",
-            "main.js"
-        ],
-        "run_at": "document_idle"
-    }]
+  "manifest_version": 3,
+  "name": "YouTube English Filter",
+  "version": "0.2.0",
+  "description": "Filter YouTube videos to show only English content",
+  "permissions": ["storage", "activeTab"],
+  "host_permissions": ["https://www.youtube.com/*"],
+  "content_scripts": [{
+    "matches": ["https://www.youtube.com/*"],
+    "js": [
+      "libs/eld.XS60.min.js",
+      "src/utils/dom-utils.js",
+      "src/core/cache-manager.js",
+      "src/core/language-detector.js",
+      "src/core/video-processor.js",
+      "src/core/settings-manager.js",
+      "src/core/debug-console.js",
+      "src/content-script.js"
+    ],
+    "run_at": "document_end"
+  }],
+  "action": {
+    "default_popup": "src/popup/popup.html"
+  },
+  "web_accessible_resources": [{
+    "resources": ["libs/eld.XS60.min.js"],
+    "matches": ["https://www.youtube.com/*"]
+  }]
 }
