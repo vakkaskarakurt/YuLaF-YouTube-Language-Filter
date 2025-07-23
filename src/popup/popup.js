@@ -43,6 +43,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
+// Guide sekmesini yeni tabda açan buton
+const openGuideBtn = document.getElementById('openGuide');
+if (openGuideBtn) {
+  openGuideBtn.addEventListener('click', () => {
+    chrome.tabs.create({ url: chrome.runtime.getURL('guide/guide.html') });
+  });
+}
+
 // 🔕 Silent notification (hata vermez)
 function notifyActiveTabSilently(enabled) {
   // Promise kullanmaz, async değil - hata vermez

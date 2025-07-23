@@ -1,68 +1,103 @@
 class SettingsManager {
   constructor() {
     this.isEnabled = true;
-    this.callbacks = [];
-
-    // Storage change listener ekle (popup ile sync için)
-    this.setupStorageListener();
+    this.onSettingsChangeCallback = null;
   }
 
   async loadSettings() {
-    const result = await chrome.storage.sync.get(["filterEnabled"]);
-    this.isEnabled = result.filterEnabled !== false;
-    return this.isEnabled;
+    try {
+      const result = await chrome.storage.sync.get(['filterEnabled']);
+      this.isEnabled = result.filterEnabled !== false;
+      console.log(`⚙️ Settings loaded: filter ${this.isEnabled ? 'enabled' : 'disabled'}`);
+    } catch (error) {
+      console.error('❌ Error loading settings:', error);
+      this.isEnabled = true;
+    }
   }
 
-  async saveSettings(settings) {
-    await chrome.storage.sync.set(settings);
-    this.isEnabled = settings.filterEnabled !== false;
-    this.notifyCallbacks();
+  async saveSettings() {
+    try {
+      await chrome.storage.sync.set({
+        filterEnabled: this.isEnabled
+      });
+      console.log(`💾 Settings saved: filter ${this.isEnabled ? 'enabled' : 'disabled'}`);
+    } catch (error) {
+      console.error('❌ Error saving settings:', error);
+    }
   }
 
   onSettingsChange(callback) {
-    this.callbacks.push(callback);
-  }
-
-  notifyCallbacks() {
-    this.callbacks.forEach((callback) => callback(this.isEnabled));
-  }
-
-  // 🔄 Storage değişikliklerini dinle (popup'tan gelen değişiklikler için)
-  setupStorageListener() {
-    chrome.storage.onChanged.addListener((changes, namespace) => {
-      if (namespace === "sync" && changes.filterEnabled) {
-        const newValue = changes.filterEnabled.newValue;
-        if (newValue !== this.isEnabled) {
-          console.log(`📢 Settings changed via popup: ${newValue}`);
-          this.isEnabled = newValue !== false;
-          this.notifyCallbacks();
-        }
-      }
-    });
+    this.onSettingsChangeCallback = callback;
   }
 
   setupMessageListener() {
     chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-      console.log("📨 Message received:", message);
-
-      try {
-        if (message.action === "toggleFilter") {
-          console.log(`🔄 Manual toggle: ${message.enabled}`);
-          this.isEnabled = message.enabled;
-          this.notifyCallbacks();
-          sendResponse({ success: true, state: message.enabled });
-        } else if (message.action === "getStatus") {
-          sendResponse({
-            success: true,
-            enabled: this.isEnabled,
-          });
+      if (message.action === 'toggleFilter') {
+        this.isEnabled = message.enabled;
+        if (this.onSettingsChangeCallback) {
+          this.onSettingsChangeCallback(this.isEnabled);
         }
-      } catch (error) {
-        console.error("Message handling error:", error);
-        sendResponse({ success: false, error: error.message });
+        
+        try {
+          chrome.runtime.sendMessage({
+            action: 'filterToggled',
+            enabled: this.isEnabled
+          });
+        } catch (error) {
+          // Silent error - popup might not be open
+        }
       }
-
-      return true; // Keep message channel open
+      
+      // 🆕 Natural işlemler için mesaj handler
+      if (message.action === 'performNaturalActions') {
+        this.handleNaturalActions(sendResponse);
+        return true; // Async response için
+      }
+      
+      if (message.action === 'videoFiltered') {
+        try {
+          chrome.runtime.sendMessage({
+            action: 'videoListUpdated'
+          });
+        } catch (error) {
+          // Silent error - popup might not be open
+        }
+      }
     });
+  }
+
+  // 🆕 Natural işlemleri yönet
+  async handleNaturalActions(sendResponse) {
+    try {
+      // VideoProcessor'den natural işlemleri çağır
+      if (window.youtubeFilter && window.youtubeFilter.videoProcessor) {
+        const result = await window.youtubeFilter.videoProcessor.performNaturalActions();
+        sendResponse({
+          success: true,
+          processed: result.processed,
+          errors: result.errors
+        });
+      } else {
+        sendResponse({
+          success: false,
+          error: 'VideoProcessor not available'
+        });
+      }
+    } catch (error) {
+      console.error('❌ Natural actions error:', error);
+      sendResponse({
+        success: false,
+        error: error.message
+      });
+    }
+  }
+
+  async toggleFilter() {
+    this.isEnabled = !this.isEnabled;
+    await this.saveSettings();
+    
+    if (this.onSettingsChangeCallback) {
+      this.onSettingsChangeCallback(this.isEnabled);
+    }
   }
 }
