@@ -13,7 +13,14 @@
   "content_scripts": [
     {
       "matches": ["*://*.youtube.com/*"],
-      "js": ["content.js"],
+      "js": [
+        "src/utils/config.js",
+        "src/services/language-service.js",
+        "src/services/dom-service.js",
+        "src/services/title-service.js",
+        "src/services/filter-service.js",
+        "src/content.js"
+      ],
       "css": ["styles.css"],
       "run_at": "document_idle"
     }
