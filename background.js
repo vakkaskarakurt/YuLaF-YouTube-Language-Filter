@@ -6,7 +6,8 @@ chrome.runtime.onInstalled.addListener(() => {
     strictMode: true,
     hideComments: true,
     hideVideos: true,   
-    hideChannels: true
+    hideChannels: true,
+    useOriginalTitles: true
   });
 
   // Initialize statistics

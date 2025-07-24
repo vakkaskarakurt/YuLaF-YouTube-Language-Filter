@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const hideVideos = document.getElementById('hideVideos');
   const hideComments = document.getElementById('hideComments');
   const hideChannels = document.getElementById('hideChannels');
+  const useOriginalTitles = document.getElementById('useOriginalTitles');
   const resetStats = document.getElementById('resetStats');
 
   // Load current status and settings
@@ -23,6 +24,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       hideVideos.checked = response.settings.hideVideos;
       hideComments.checked = response.settings.hideComments;
       hideChannels.checked = response.settings.hideChannels;
+      useOriginalTitles.checked = response.settings.useOriginalTitles;
       
       updateSettingsVisibility(response.enabled);
     } catch (error) {
@@ -49,13 +51,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   // Settings change handlers
-  [strictMode, hideVideos, hideComments, hideChannels].forEach(checkbox => {
+  [strictMode, hideVideos, hideComments, hideChannels, useOriginalTitles].forEach(checkbox => {
     checkbox.addEventListener('change', async () => {
       const settings = {
         strictMode: strictMode.checked,
         hideVideos: hideVideos.checked,
         hideComments: hideComments.checked,
-        hideChannels: hideChannels.checked
+        hideChannels: hideChannels.checked,
+        useOriginalTitles: useOriginalTitles.checked
       };
 
       try {
