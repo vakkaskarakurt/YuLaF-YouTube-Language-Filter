@@ -9,68 +9,128 @@ document.addEventListener('DOMContentLoaded', async () => {
   const useOriginalTitles = document.getElementById('useOriginalTitles');
   const resetStats = document.getElementById('resetStats');
 
-  // Load current status and settings
+  // Aktif tab'ı al
   const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
   const tab = tabs[0];
 
-  if (tab.url.includes('youtube.com')) {
-    // Storage'dan direkt oku
-    const stored = await chrome.storage.sync.get([
-      'enabled', 'strictMode', 'hideComments', 'hideVideos', 'hideChannels', 'useOriginalTitles'
-    ]);
-    
-    const enabled = stored.enabled !== false;
-    enableFilter.checked = enabled;
-    updateStatusText(enabled);
-    
-    strictMode.checked = stored.strictMode !== false;
-    hideVideos.checked = stored.hideVideos !== false;
-    hideComments.checked = stored.hideComments !== false;
-    hideChannels.checked = stored.hideChannels !== false;
-    useOriginalTitles.checked = stored.useOriginalTitles !== false;
-    
-    updateSettingsVisibility(enabled);
-    
-    // Backup olarak content script'ten de dene
-    try {
-      const response = await chrome.tabs.sendMessage(tab.id, { action: 'getStatus' });
-      if (response) {
-        enableFilter.checked = response.enabled;
-        updateStatusText(response.enabled);
-        updateSettingsVisibility(response.enabled);
-      }
-    } catch (error) {
-      console.log('Content script not ready, using storage values:', error);
-    }
-  } else {
+  if (!tab.url.includes('youtube.com')) {
     document.body.innerHTML = '<div style="padding: 20px; text-align: center;">Please visit YouTube to use this extension.</div>';
     return;
   }
 
-  loadStatistics();
+  // SAĞLAM STATE YÖNETİMİ
+  let currentState = {
+    enabled: true,
+    strictMode: true,
+    hideVideos: true,
+    hideComments: true,
+    hideChannels: true,
+    useOriginalTitles: true
+  };
 
-  // Event listeners
-  enableFilter.addEventListener('change', async () => {
-    const newEnabled = enableFilter.checked;
-    
-    // Storage'ı güncelle
-    await chrome.storage.sync.set({ enabled: newEnabled });
-    
-    // Content script'e mesaj gönder
+  // Storage'dan gerçek state'i al
+  async function loadCurrentState() {
     try {
-      await chrome.tabs.sendMessage(tab.id, { action: 'toggle' });
+      // Storage'dan al
+      const stored = await chrome.storage.sync.get([
+        'enabled', 'strictMode', 'hideComments', 'hideVideos', 'hideChannels', 'useOriginalTitles'
+      ]);
+      
+      // Default değerlerle birleştir
+      currentState = {
+        enabled: stored.enabled !== false,
+        strictMode: stored.strictMode !== false,
+        hideVideos: stored.hideVideos !== false,
+        hideComments: stored.hideComments !== false,
+        hideChannels: stored.hideChannels !== false,
+        useOriginalTitles: stored.useOriginalTitles !== false
+      };
+
+      // Content script'ten de kontrol et
+      try {
+        const response = await chrome.tabs.sendMessage(tab.id, { action: 'getStatus' });
+        if (response && typeof response.enabled === 'boolean') {
+          // Content script'teki state ile senkronize et
+          currentState.enabled = response.enabled;
+          if (response.settings) {
+            Object.assign(currentState, response.settings);
+          }
+        }
+      } catch (error) {
+        console.log('Content script not ready, using storage values');
+      }
+
+      return currentState;
     } catch (error) {
-      console.log('Content script message failed:', error);
+      console.error('Error loading state:', error);
+      return currentState;
     }
+  }
+
+  // UI'yi state'e göre güncelle
+  function updateUI(state) {
+    enableFilter.checked = state.enabled;
+    strictMode.checked = state.strictMode;
+    hideVideos.checked = state.hideVideos;
+    hideComments.checked = state.hideComments;
+    hideChannels.checked = state.hideChannels;
+    useOriginalTitles.checked = state.useOriginalTitles;
     
+    updateStatusText(state.enabled);
+    updateSettingsVisibility(state.enabled);
+  }
+
+  // State'i güvenli şekilde storage'a kaydet
+  async function saveState(newState) {
+    try {
+      // Önce storage'ı güncelle
+      await chrome.storage.sync.set(newState);
+      
+      // Sonra content script'e bildir
+      try {
+        await chrome.tabs.sendMessage(tab.id, { 
+          action: 'updateState', 
+          state: newState 
+        });
+      } catch (error) {
+        console.log('Content script update failed:', error);
+      }
+      
+      // Local state'i güncelle
+      Object.assign(currentState, newState);
+      
+      return true;
+    } catch (error) {
+      console.error('Error saving state:', error);
+      return false;
+    }
+  }
+
+  // Ana toggle handler - tek source of truth
+  enableFilter.addEventListener('change', async (e) => {
+    // UI'yi anında güncelle (responsive feeling)
+    const newEnabled = e.target.checked;
     updateStatusText(newEnabled);
     updateSettingsVisibility(newEnabled);
+    
+    // State'i kaydet
+    const success = await saveState({ enabled: newEnabled });
+    
+    if (!success) {
+      // Hata durumunda UI'yi geri çevir
+      e.target.checked = !newEnabled;
+      updateStatusText(!newEnabled);
+      updateSettingsVisibility(!newEnabled);
+      alert('Settings could not be saved. Please try again.');
+    }
   });
 
-  // Settings change handlers
-  [strictMode, hideVideos, hideComments, hideChannels, useOriginalTitles].forEach(checkbox => {
-    checkbox.addEventListener('change', async () => {
-      const settings = {
+  // Settings değişiklik handler'ları - debounced
+  let settingsTimeout;
+  function handleSettingChange() {
+    clearTimeout(settingsTimeout);
+    settingsTimeout = setTimeout(async () => {
+      const newSettings = {
         strictMode: strictMode.checked,
         hideVideos: hideVideos.checked,
         hideComments: hideComments.checked,
@@ -78,26 +138,47 @@ document.addEventListener('DOMContentLoaded', async () => {
         useOriginalTitles: useOriginalTitles.checked
       };
 
-      // Storage'ı güncelle
-      await chrome.storage.sync.set(settings);
+      await saveState(newSettings);
+    }, 300); // 300ms debounce
+  }
 
-      // Content script'e mesaj gönder
-      try {
-        await chrome.tabs.sendMessage(tab.id, { 
-          action: 'updateSettings', 
-          settings: settings 
-        });
-      } catch (error) {
-        console.log('Content script settings update failed:', error);
+  // Tüm setting checkbox'larına event listener ekle
+  [strictMode, hideVideos, hideComments, hideChannels, useOriginalTitles].forEach(checkbox => {
+    checkbox.addEventListener('change', handleSettingChange);
+  });
+
+  // Reset stats
+  resetStats.addEventListener('click', async () => {
+    try {
+      await chrome.storage.local.set({ filterStats: { videos: 0, comments: 0, channels: 0 } });
+      loadStatistics();
+    } catch (error) {
+      console.error('Error resetting stats:', error);
+    }
+  });
+
+  // Storage değişikliklerini dinle (diğer tab'lardan)
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === 'sync') {
+      // State değişikliğini algıla
+      let stateChanged = false;
+      const newState = { ...currentState };
+      
+      for (const key in changes) {
+        if (key in currentState && changes[key].newValue !== currentState[key]) {
+          newState[key] = changes[key].newValue;
+          stateChanged = true;
+        }
       }
-    });
+      
+      if (stateChanged) {
+        currentState = newState;
+        updateUI(currentState);
+      }
+    }
   });
 
-  resetStats.addEventListener('click', () => {
-    chrome.storage.local.set({ filterStats: { videos: 0, comments: 0, channels: 0 } });
-    loadStatistics();
-  });
-
+  // Utility functions
   function updateStatusText(enabled) {
     statusText.textContent = enabled ? 'Filter Enabled' : 'Filter Disabled';
     statusText.style.color = enabled ? '#1a73e8' : '#666';
@@ -115,5 +196,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       document.getElementById('commentsHidden').textContent = stats.comments || 0;
       document.getElementById('channelsHidden').textContent = stats.channels || 0;
     });
+  }
+
+  // İlk yükleme
+  try {
+    await loadCurrentState();
+    updateUI(currentState);
+    loadStatistics();
+  } catch (error) {
+    console.error('Error during initialization:', error);
+    // Fallback - default değerlerle UI'yi güncelle
+    updateUI(currentState);
   }
 });

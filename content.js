@@ -13,73 +13,146 @@ class YouTubeEnglishFilter {
    this.popstateHandler = null;
    this.originalPushState = null;
    this.originalReplaceState = null;
+   this.originalFetch = null;
    this.init();
  }
 
- async init() {
-   const stored = await chrome.storage.sync.get([
-     'enabled', 'strictMode', 'hideComments', 'hideVideos', 'hideChannels', 'useOriginalTitles'
-   ]);
-   
-   this.enabled = stored.enabled !== false;
-   this.settings.strictMode = stored.strictMode !== false;
-   this.settings.hideComments = stored.hideComments !== false;
-   this.settings.hideVideos = stored.hideVideos !== false;
-   this.settings.hideChannels = stored.hideChannels !== false;
-   this.settings.useOriginalTitles = stored.useOriginalTitles !== false;
-   
-   // Storage değişikliklerini dinle
-   chrome.storage.onChanged.addListener((changes, area) => {
-     if (area === 'sync' && changes.enabled) {
-       this.enabled = changes.enabled.newValue;
-       if (this.enabled) {
-         this.startFiltering();
-       } else {
-         this.stopFiltering();
-       }
-     }
-   });
-   
-   if (this.enabled) {
-     this.startFiltering();
-   }
- }
+  // Content script'in init fonksiyonunu güncelle
+  async init() {
+    try {
+      const stored = await chrome.storage.sync.get([
+        'enabled', 'strictMode', 'hideComments', 'hideVideos', 'hideChannels', 'useOriginalTitles'
+      ]);
+      
+      this.enabled = stored.enabled !== false;
+      this.settings.strictMode = stored.strictMode !== false;
+      this.settings.hideComments = stored.hideComments !== false;
+      this.settings.hideVideos = stored.hideVideos !== false;
+      this.settings.hideChannels = stored.hideChannels !== false;
+      this.settings.useOriginalTitles = stored.useOriginalTitles !== false;
+      
+      // Storage değişikliklerini dinle
+      chrome.storage.onChanged.addListener((changes, area) => {
+        if (area === 'sync') {
+          let shouldRestart = false;
+          
+          // Enabled durumu değişti mi?
+          if (changes.enabled && changes.enabled.newValue !== this.enabled) {
+            this.enabled = changes.enabled.newValue;
+            shouldRestart = true;
+          }
+          
+          // Settings değişti mi?
+          for (const key in changes) {
+            if (key in this.settings && changes[key].newValue !== this.settings[key]) {
+              this.settings[key] = changes[key].newValue;
+              shouldRestart = true;
+            }
+          }
+          
+          // Gerekirse filtering'i yeniden başlat
+          if (shouldRestart) {
+            if (this.enabled) {
+              this.startFiltering();
+            } else {
+              this.stopFiltering();
+            }
+          }
+        }
+      });
+      
+      if (this.enabled) {
+        this.startFiltering();
+      }
+    } catch (error) {
+      console.error('Error initializing filter:', error);
+    }
+  }
 
  // YouTube'un çeviri özelliğini devre dışı bırak ve orijinal başlıkları geri yükle
  restoreOriginalTitles() {
    if (!this.settings.useOriginalTitles) return;
 
    try {
-     // Ana video sayfasındaysa
+     // 1. Çeviri sistemini devre dışı bırak
+     this.disableTranslationSystem();
+     
+     // 2. Ana video sayfasındaysa
      if (window.location.href.includes('/watch?')) {
        this.restoreCurrentVideoTitle();
      }
      
-     // Tüm video elementlerini güncelle
+     // 3. Tüm video elementlerini güncelle
      this.restoreVideoListTitles();
+     
+     // 4. YouTube'un çeviri API'lerini engelle
+     this.blockTranslationRequests();
    } catch (error) {
      console.warn('Error restoring original titles:', error);
    }
  }
 
+ // Çeviri sistemini devre dışı bırak
+ disableTranslationSystem() {
+   try {
+     // YouTube'un çeviri ayarlarını manipüle et
+     if (window.yt && window.yt.config_) {
+       // Çeviri özelliğini kapat
+       if (window.yt.config_.EXPERIMENT_FLAGS) {
+         window.yt.config_.EXPERIMENT_FLAGS.enable_video_title_translation = false;
+         window.yt.config_.EXPERIMENT_FLAGS.enable_auto_translate = false;
+       }
+     }
+
+     // localStorage'dan çeviri ayarlarını temizle
+     try {
+       localStorage.removeItem('yt-player-translation-prefs');
+       localStorage.removeItem('yt-translate');
+     } catch (e) {}
+
+   } catch (error) {
+     console.warn('Error disabling translation system:', error);
+   }
+ }
+
+ // Network isteklerini engelle
+ blockTranslationRequests() {
+   if (this.originalFetch) return; // Zaten engellendi
+   
+   // Translation API isteklerini engelle
+   this.originalFetch = window.fetch;
+   window.fetch = (...args) => {
+     const url = args[0];
+     if (typeof url === 'string' && (
+       url.includes('translate') || 
+       url.includes('/youtubei/v1/player') ||
+       url.includes('get_video_metadata')
+     )) {
+       // Translation ile ilgili istekleri engelle
+       if (url.includes('translate')) {
+         console.log('Blocked translation request:', url);
+         return Promise.reject(new Error('Translation blocked'));
+       }
+     }
+     return this.originalFetch.apply(window, args);
+   };
+ }
+
  restoreCurrentVideoTitle() {
    try {
-     if (window.ytInitialData && window.ytInitialPlayerResponse) {
-       const originalTitle = window.ytInitialPlayerResponse.videoDetails?.title;
-       const originalDescription = window.ytInitialPlayerResponse.videoDetails?.shortDescription;
-       
-       if (originalTitle && window.ytInitialData.contents?.twoColumnWatchNextResults?.results?.results?.contents) {
-         const contents = window.ytInitialData.contents.twoColumnWatchNextResults.results.results.contents;
-         
-         // Başlığı geri yükle
-         if (contents[0]?.videoPrimaryInfoRenderer?.title) {
-           contents[0].videoPrimaryInfoRenderer.title.simpleText = originalTitle;
-         }
-         
-         // Açıklamayı geri yükle
-         if (originalDescription && contents[1]?.videoSecondaryInfoRenderer?.description) {
-           contents[1].videoSecondaryInfoRenderer.description.simpleText = originalDescription;
-         }
+     // Farklı yöntemlerle orijinal başlığı bul
+     const methods = [
+       () => this.getTitleFromMetadata(),
+       () => this.getTitleFromPlayerAPI(),
+       () => this.getTitleFromDOM(),
+       () => this.getTitleFromCanonical()
+     ];
+
+     for (const method of methods) {
+       const result = method();
+       if (result && result.title) {
+         this.applyOriginalTitle(result.title, result.description);
+         break;
        }
      }
    } catch (error) {
@@ -87,10 +160,143 @@ class YouTubeEnglishFilter {
    }
  }
 
+ // Metadata'dan başlığı al
+ getTitleFromMetadata() {
+   try {
+     // Meta tag'lerden orijinal başlığı al
+     const ogTitle = document.querySelector('meta[property="og:title"]');
+     const twitterTitle = document.querySelector('meta[name="twitter:title"]');
+     const metaTitle = document.querySelector('title');
+     
+     let title = null;
+     if (ogTitle) title = ogTitle.getAttribute('content');
+     else if (twitterTitle) title = twitterTitle.getAttribute('content');
+     else if (metaTitle) title = metaTitle.textContent;
+     
+     if (title && title.includes(' - YouTube')) {
+       title = title.replace(' - YouTube', '');
+     }
+     
+     if (title) {
+       return { title: title };
+     }
+   } catch (error) {
+     console.warn('Error getting title from metadata:', error);
+   }
+   return null;
+ }
+
+ // Player API'den başlığı al
+ getTitleFromPlayerAPI() {
+   try {
+     if (window.ytInitialPlayerResponse?.videoDetails?.title) {
+       return {
+         title: window.ytInitialPlayerResponse.videoDetails.title,
+         description: window.ytInitialPlayerResponse.videoDetails.shortDescription
+       };
+     }
+   } catch (error) {
+     console.warn('Error getting title from player API:', error);
+   }
+   return null;
+ }
+
+ // DOM'dan başlığı al
+ getTitleFromDOM() {
+   try {
+     // H1 tag'inden orijinal başlığı bul
+     const titleSelectors = [
+       'h1.ytd-watch-metadata yt-formatted-string',
+       'h1.title.ytd-video-primary-info-renderer',
+       '.ytd-video-primary-info-renderer h1',
+       'yt-formatted-string.ytd-video-primary-info-renderer'
+     ];
+
+     for (const selector of titleSelectors) {
+       const h1Title = document.querySelector(selector);
+       if (h1Title && h1Title.textContent) {
+         return { title: h1Title.textContent.trim() };
+       }
+     }
+   } catch (error) {
+     console.warn('Error getting title from DOM:', error);
+   }
+   return null;
+ }
+
+ // Canonical URL'den başlığı al
+ getTitleFromCanonical() {
+   try {
+     const canonical = document.querySelector('link[rel="canonical"]');
+     if (canonical) {
+       const href = canonical.getAttribute('href');
+       const videoId = new URLSearchParams(href.split('?')[1])?.get('v');
+       if (videoId) {
+         // Video ID'si ile başlığı al (şimdilik basit DOM'dan al)
+         const currentTitle = document.querySelector('title')?.textContent;
+         if (currentTitle) {
+           return { title: currentTitle.replace(' - YouTube', '') };
+         }
+       }
+     }
+   } catch (error) {
+     console.warn('Error getting title from canonical:', error);
+   }
+   return null;
+ }
+
+ // Başlığı uygula
+ applyOriginalTitle(title, description) {
+   try {
+     console.log('Applying original title:', title);
+     
+     // Sayfa başlığını güncelle
+     const titleSelectors = [
+       'h1.ytd-watch-metadata yt-formatted-string',
+       'h1.title.ytd-video-primary-info-renderer',
+       '.ytd-video-primary-info-renderer h1',
+       'yt-formatted-string.ytd-video-primary-info-renderer',
+       'ytd-video-primary-info-renderer h1 yt-formatted-string'
+     ];
+
+     for (const selector of titleSelectors) {
+       const element = document.querySelector(selector);
+       if (element && element.textContent !== title) {
+         element.textContent = title;
+         element.setAttribute('title', title);
+         console.log('Title restored in DOM:', title);
+         break;
+       }
+     }
+
+     // Meta tag'leri güncelle
+     const ogTitle = document.querySelector('meta[property="og:title"]');
+     if (ogTitle) ogTitle.setAttribute('content', title);
+     
+     const twitterTitle = document.querySelector('meta[name="twitter:title"]');
+     if (twitterTitle) twitterTitle.setAttribute('content', title);
+     
+     const pageTitle = document.querySelector('title');
+     if (pageTitle) pageTitle.textContent = title + ' - YouTube';
+
+   } catch (error) {
+     console.warn('Error applying original title:', error);
+   }
+ }
+
  restoreVideoListTitles() {
    // Video listelerindeki çevrilmiş başlıkları tespit et ve geri yükle
-   document.querySelectorAll('ytd-video-renderer, ytd-compact-video-renderer, ytd-grid-video-renderer').forEach(videoElement => {
-     this.restoreVideoElementTitle(videoElement);
+   const videoSelectors = [
+     'ytd-video-renderer',
+     'ytd-compact-video-renderer', 
+     'ytd-grid-video-renderer',
+     'ytd-rich-item-renderer'
+   ];
+
+   videoSelectors.forEach(selector => {
+     document.querySelectorAll(selector).forEach(videoElement => {
+       this.restoreVideoElementTitle(videoElement);
+     });
    });
  }
 
@@ -99,20 +305,35 @@ class YouTubeEnglishFilter {
      const titleElement = videoElement.querySelector('#video-title, h3 a, .ytd-video-meta-block #video-title');
      if (!titleElement) return;
 
-     // Video ID'sini al
-     const linkElement = videoElement.querySelector('a[href*="/watch?v="]');
-     if (!linkElement) return;
+     // Orijinal başlığı farklı kaynaklardan al
+     let originalTitle = null;
 
-     const href = linkElement.getAttribute('href');
-     const videoId = new URLSearchParams(href.split('?')[1])?.get('v');
-     
-     if (videoId && titleElement.hasAttribute('title')) {
-       // Eğer title attribute'u varsa, bu genellikle orijinal başlıktır
-       const originalTitle = titleElement.getAttribute('title');
-       if (originalTitle && originalTitle !== titleElement.textContent.trim()) {
-         titleElement.textContent = originalTitle;
+     // 1. Title attribute'undan
+     if (titleElement.hasAttribute('title') && titleElement.title !== titleElement.textContent.trim()) {
+       originalTitle = titleElement.title;
+     }
+
+     // 2. Aria-label'dan
+     if (!originalTitle && titleElement.hasAttribute('aria-label')) {
+       originalTitle = titleElement.getAttribute('aria-label');
+     }
+
+     // 3. Data attribute'lardan
+     if (!originalTitle) {
+       const dataTitle = titleElement.getAttribute('data-original-title') || 
+                        titleElement.getAttribute('data-title');
+       if (dataTitle) {
+         originalTitle = dataTitle;
        }
      }
+
+     // Başlığı güncelle
+     if (originalTitle && originalTitle !== titleElement.textContent.trim()) {
+       titleElement.textContent = originalTitle;
+       titleElement.setAttribute('title', originalTitle);
+       console.log('List title restored:', originalTitle);
+     }
+
    } catch (error) {
      console.warn('Error restoring video element title:', error);
    }
@@ -124,7 +345,11 @@ class YouTubeEnglishFilter {
    // Önce mevcut observer'ları temizle
    this.stopFiltering();
    
-   this.restoreOriginalTitles();
+   // Orijinal başlıkları geri yükle - daha erken timing
+   setTimeout(() => {
+     this.restoreOriginalTitles();
+   }, 0);
+   
    this.filterContent();
    
    // ANINDA İŞLEME - Debounce yok
@@ -155,13 +380,13 @@ class YouTubeEnglishFilter {
    this.urlObserver = new MutationObserver(() => {
      const currentUrl = location.href;
      if (currentUrl !== lastUrl) {
-       console.log('��� URL changed:', lastUrl, '->', currentUrl);
+       console.log('🔄 URL changed:', lastUrl, '->', currentUrl);
        lastUrl = currentUrl;
        
        // URL değişiminde kısa bir gecikme - sayfa yüklenmesi için
        setTimeout(() => {
          if (this.enabled && location.href === currentUrl) {
-           console.log('��� Processing after URL change');
+           console.log('🔄 Processing after URL change');
            this.restoreOriginalTitles();
            this.filterContent();
          }
@@ -214,6 +439,16 @@ class YouTubeEnglishFilter {
 
  // Yeni fonksiyon - Node'u anında işle
  processNewNode(node) {
+   // Önce orijinal başlıkları geri yükle
+   if (this.settings.useOriginalTitles) {
+     if (node.matches && (
+       node.matches('ytd-video-renderer, ytd-compact-video-renderer, ytd-grid-video-renderer, ytd-rich-item-renderer') ||
+       node.querySelector('ytd-video-renderer, ytd-compact-video-renderer, ytd-grid-video-renderer, ytd-rich-item-renderer')
+     )) {
+       setTimeout(() => this.restoreVideoElementTitle(node), 100);
+     }
+   }
+
    // Video selectors
    const videoSelectors = [
      'ytd-video-renderer',
@@ -302,6 +537,12 @@ class YouTubeEnglishFilter {
      history.replaceState = this.originalReplaceState;
    }
    
+   // Fetch API'yi geri yükle
+   if (this.originalFetch) {
+     window.fetch = this.originalFetch;
+     this.originalFetch = null;
+   }
+   
    // Popstate listener'ı kaldır
    if (this.popstateHandler) {
      window.removeEventListener('popstate', this.popstateHandler);
@@ -313,6 +554,9 @@ class YouTubeEnglishFilter {
 
  filterContent() {
    if (!this.enabled) return;
+
+   // Önce orijinal başlıkları geri yükle
+   setTimeout(() => this.restoreOriginalTitles(), 0);
 
    // Gelişmiş selector sistemi - tek kombine selector ile daha performanslı
    const combinedVideoSelector = [
@@ -547,21 +791,57 @@ class YouTubeEnglishFilter {
 // Initialize
 const filter = new YouTubeEnglishFilter();
 
-// Message listener
+// Message listener'ı güncelle
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
- switch (request.action) {
-   case 'toggle':
-     sendResponse({ enabled: filter.toggle() });
-     break;
-   case 'updateSettings':
-     filter.updateSettings(request.settings);
-     sendResponse({ success: true });
-     break;
-   case 'getStatus':
-     sendResponse({ 
-       enabled: filter.enabled,
-       settings: filter.settings
-     });
-     break;
- }
+try {
+  switch (request.action) {
+    case 'toggle':
+      sendResponse({ enabled: this.toggle() });
+      break;
+      
+    case 'updateState':
+      // State'i toplu güncelle
+      if (request.state) {
+        if (typeof request.state.enabled === 'boolean') {
+          this.enabled = request.state.enabled;
+        }
+        
+        Object.assign(this.settings, request.state);
+        
+        if (this.enabled) {
+          this.startFiltering();
+        } else {
+          this.stopFiltering();
+        }
+      }
+      sendResponse({ success: true, state: { enabled: this.enabled, settings: this.settings } });
+      break;
+      
+    case 'updateSettings':
+      Object.assign(this.settings, request.settings);
+      
+      if (this.enabled) {
+        this.showHiddenContent();
+        setTimeout(() => {
+          this.restoreOriginalTitles();
+          this.filterContent();
+        }, 100);
+      }
+      sendResponse({ success: true });
+      break;
+      
+    case 'getStatus':
+      sendResponse({ 
+        enabled: this.enabled,
+        settings: this.settings
+      });
+      break;
+      
+    default:
+      sendResponse({ error: 'Unknown action' });
+  }
+} catch (error) {
+  console.error('Message handler error:', error);
+  sendResponse({ error: error.message });
+}
 });
