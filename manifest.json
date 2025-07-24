@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube English Only Filter",
+  "version": "1.0.0",
+  "description": "Filter YouTube content to show only English videos, comments, and channels",
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "*://*.youtube.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["*://*.youtube.com/*"],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "YouTube English Only Filter"
+  }
+}

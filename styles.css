@@ -1,0 +1,11 @@
+/* Additional styles for hidden content indicators */
+[data-english-filter-hidden] {
+  display: none !important;
+}
+
+/* Optional: Add visual indicator for debugging */
+.english-filter-debug [data-english-filter-hidden] {
+  display: block !important;
+  opacity: 0.3;
+  border: 2px dashed red;
+}

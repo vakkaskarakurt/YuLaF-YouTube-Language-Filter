@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="icon">🇺🇸</div>
+      <h1>YouTube English Filter</h1>
+    </div>
+    
+    <div class="main-toggle">
+      <label class="switch">
+        <input type="checkbox" id="enableFilter">
+        <span class="slider"></span>
+      </label>
+      <span id="statusText">Filter Enabled</span>
+    </div>
+    
+    <div class="settings" id="settingsPanel">
+      <h3>Filter Options</h3>
+      
+      <div class="option">
+        <label>
+          <input type="checkbox" id="strictMode">
+          Strict Mode (More aggressive filtering)
+        </label>
+      </div>
+      
+      <div class="option">
+        <label>
+          <input type="checkbox" id="hideVideos">
+          Hide Non-English Videos
+        </label>
+      </div>
+      
+      <div class="option">
+        <label>
+          <input type="checkbox" id="hideComments">
+          Hide Non-English Comments
+        </label>
+      </div>
+      
+      <div class="option">
+        <label>
+          <input type="checkbox" id="hideChannels">
+          Hide Non-English Channels
+        </label>
+      </div>
+    </div>
+    
+    <div class="stats">
+      <h3>Statistics</h3>
+      <div class="stat-item">
+        <span>Videos Hidden:</span>
+        <span id="videosHidden">0</span>
+      </div>
+      <div class="stat-item">
+        <span>Comments Hidden:</span>
+        <span id="commentsHidden">0</span>
+      </div>
+      <div class="stat-item">
+        <span>Channels Hidden:</span>
+        <span id="channelsHidden">0</span>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <button id="resetStats">Reset Statistics</button>
+    </div>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>
