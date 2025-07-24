@@ -697,9 +697,10 @@ class YouTubeEnglishFilter {
   isEnglishText(text) {
     if (!text || text.length < 3) return Promise.resolve(true);
     
-    // Hızlı ASCII kontrolü
-    if (/[^\u0000-\u007F]/.test(text)) {
-      return Promise.resolve(false);
+    // Hızlı İngilizce Kontrolü
+  
+    if (/[^\x00-\x7F]/.test(text)) {
+       return Promise.resolve(false);
     }
     
     // Chrome dil tespiti
