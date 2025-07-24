@@ -8,6 +8,8 @@ class YouTubeEnglishFilter {
       hideChannels: true,
       useOriginalTitles: true
     };
+    this.observer = null; // Observer referansı
+    this.urlObserver = null; // URL observer referansı
     this.init();
   }
 
@@ -23,8 +25,19 @@ class YouTubeEnglishFilter {
     this.settings.hideChannels = stored.hideChannels !== false;
     this.settings.useOriginalTitles = stored.useOriginalTitles !== false;
     
+    // Storage değişikliklerini dinle
+    chrome.storage.onChanged.addListener((changes, area) => {
+      if (area === 'sync' && changes.enabled) {
+        this.enabled = changes.enabled.newValue;
+        if (this.enabled) {
+          this.startFiltering();
+        } else {
+          this.stopFiltering();
+        }
+      }
+    });
+    
     if (this.enabled) {
-      this.restoreOriginalTitles();
       this.startFiltering();
     }
   }
@@ -103,34 +116,64 @@ class YouTubeEnglishFilter {
   }
 
   startFiltering() {
-    // Önce orijinal başlıkları geri yükle
-    this.restoreOriginalTitles();
+    if (!this.enabled) return;
     
+    // Önce mevcut observer'ları temizle
+    this.stopFiltering();
+    
+    this.restoreOriginalTitles();
     this.filterContent();
     
-    // DOM değişikliklerini izle
-    new MutationObserver(mutations => {
+    // DOM observer'ı başlat
+    this.observer = new MutationObserver(mutations => {
+      if (!this.enabled) return;
+      
       if (mutations.some(m => m.addedNodes.length)) {
-        // Yeni içerik eklendiğinde önce orijinal başlıkları geri yükle
         setTimeout(() => {
-          this.restoreOriginalTitles();
-          this.filterContent();
+          if (this.enabled) {
+            this.restoreOriginalTitles();
+            this.filterContent();
+          }
         }, 100);
       }
-    }).observe(document.body, { childList: true, subtree: true });
+    });
+    
+    this.observer.observe(document.body, { childList: true, subtree: true });
 
-    // URL değişikliklerini doğru şekilde izle
+    // URL değişiklik observer'ı
     let lastUrl = location.href;
-    new MutationObserver(() => {
+    this.urlObserver = new MutationObserver(() => {
+      if (!this.enabled) return;
+      
       const url = location.href;
       if (url !== lastUrl) {
         lastUrl = url;
         setTimeout(() => {
-          this.restoreOriginalTitles();
-          this.filterContent();
+          if (this.enabled) {
+            this.restoreOriginalTitles();
+            this.filterContent();
+          }
         }, 500);
       }
-    }).observe(document, { subtree: true, childList: true });
+    });
+    
+    this.urlObserver.observe(document, { subtree: true, childList: true });
+  }
+
+  stopFiltering() {
+    // Observer'ları durdur
+    if (this.observer) {
+      this.observer.disconnect();
+      this.observer = null;
+    }
+    
+    if (this.urlObserver) {
+      this.urlObserver.disconnect();
+      this.urlObserver = null;
+    }
+    
+    // Gizlenmiş içerikleri göster
+    this.showHiddenContent();
   }
 
   filterContent() {
@@ -308,6 +351,8 @@ class YouTubeEnglishFilter {
   showHiddenContent() {
     document.querySelectorAll('[data-english-filter-hidden], [data-english-filter-temp-hidden]').forEach(el => {
       this.showElement(el);
+      // Kontrol flag'ini de temizle
+      el.removeAttribute('data-english-filter-checked');
     });
   }
 
@@ -316,10 +361,9 @@ class YouTubeEnglishFilter {
     chrome.storage.sync.set({ enabled: this.enabled });
     
     if (this.enabled) {
-      this.restoreOriginalTitles();
-      this.filterContent();
+      this.startFiltering();
     } else {
-      this.showHiddenContent();
+      this.stopFiltering();
     }
     return this.enabled;
   }

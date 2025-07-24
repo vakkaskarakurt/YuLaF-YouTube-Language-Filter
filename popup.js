@@ -14,40 +14,57 @@ document.addEventListener('DOMContentLoaded', async () => {
   const tab = tabs[0];
 
   if (tab.url.includes('youtube.com')) {
+    // Storage'dan direkt oku
+    const stored = await chrome.storage.sync.get([
+      'enabled', 'strictMode', 'hideComments', 'hideVideos', 'hideChannels', 'useOriginalTitles'
+    ]);
+    
+    const enabled = stored.enabled !== false;
+    enableFilter.checked = enabled;
+    updateStatusText(enabled);
+    
+    strictMode.checked = stored.strictMode !== false;
+    hideVideos.checked = stored.hideVideos !== false;
+    hideComments.checked = stored.hideComments !== false;
+    hideChannels.checked = stored.hideChannels !== false;
+    useOriginalTitles.checked = stored.useOriginalTitles !== false;
+    
+    updateSettingsVisibility(enabled);
+    
+    // Backup olarak content script'ten de dene
     try {
       const response = await chrome.tabs.sendMessage(tab.id, { action: 'getStatus' });
-      
-      enableFilter.checked = response.enabled;
-      updateStatusText(response.enabled);
-      
-      strictMode.checked = response.settings.strictMode;
-      hideVideos.checked = response.settings.hideVideos;
-      hideComments.checked = response.settings.hideComments;
-      hideChannels.checked = response.settings.hideChannels;
-      useOriginalTitles.checked = response.settings.useOriginalTitles;
-      
-      updateSettingsVisibility(response.enabled);
+      if (response) {
+        enableFilter.checked = response.enabled;
+        updateStatusText(response.enabled);
+        updateSettingsVisibility(response.enabled);
+      }
     } catch (error) {
-      console.log('Content script not ready:', error);
+      console.log('Content script not ready, using storage values:', error);
     }
   } else {
-    // Not on YouTube
     document.body.innerHTML = '<div style="padding: 20px; text-align: center;">Please visit YouTube to use this extension.</div>';
     return;
   }
 
-  // Load and display statistics
   loadStatistics();
 
   // Event listeners
   enableFilter.addEventListener('change', async () => {
+    const newEnabled = enableFilter.checked;
+    
+    // Storage'ı güncelle
+    await chrome.storage.sync.set({ enabled: newEnabled });
+    
+    // Content script'e mesaj gönder
     try {
-      const response = await chrome.tabs.sendMessage(tab.id, { action: 'toggle' });
-      updateStatusText(response.enabled);
-      updateSettingsVisibility(response.enabled);
+      await chrome.tabs.sendMessage(tab.id, { action: 'toggle' });
     } catch (error) {
-      console.error('Error toggling filter:', error);
+      console.log('Content script message failed:', error);
     }
+    
+    updateStatusText(newEnabled);
+    updateSettingsVisibility(newEnabled);
   });
 
   // Settings change handlers
@@ -61,13 +78,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         useOriginalTitles: useOriginalTitles.checked
       };
 
+      // Storage'ı güncelle
+      await chrome.storage.sync.set(settings);
+
+      // Content script'e mesaj gönder
       try {
         await chrome.tabs.sendMessage(tab.id, { 
           action: 'updateSettings', 
           settings: settings 
         });
       } catch (error) {
-        console.error('Error updating settings:', error);
+        console.log('Content script settings update failed:', error);
       }
     });
   });
