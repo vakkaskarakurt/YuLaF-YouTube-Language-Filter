@@ -4,14 +4,13 @@ chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.sync.set({
     enabled: true,
     strictMode: true,
-    hideComments: true,
     hideVideos: true,   
     hideChannels: true
   });
 
   // Initialize statistics
   chrome.storage.local.set({
-    filterStats: { videos: 0, comments: 0, channels: 0 }
+    filterStats: { videos: 0, channels: 0 }
   });
 });
 

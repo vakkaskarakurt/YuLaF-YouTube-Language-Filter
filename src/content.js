@@ -3,7 +3,6 @@ class YouTubeEnglishFilter {
     this.enabled = true;
     this.settings = { 
       strictMode: true, 
-      hideComments: true, 
       hideVideos: true, 
       hideChannels: true
     };
@@ -19,12 +18,11 @@ class YouTubeEnglishFilter {
     try {
       // Ayarları yükle
       const stored = await chrome.storage.sync.get([
-        'enabled', 'strictMode', 'hideComments', 'hideVideos', 'hideChannels'
+        'enabled', 'strictMode', 'hideVideos', 'hideChannels'
       ]);
       
       this.enabled = stored.enabled !== false;
       this.settings.strictMode = stored.strictMode !== false;
-      this.settings.hideComments = stored.hideComments !== false;
       this.settings.hideVideos = stored.hideVideos !== false;
       this.settings.hideChannels = stored.hideChannels !== false;
       

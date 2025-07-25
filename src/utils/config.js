@@ -15,10 +15,6 @@ window.YT_FILTER_CONFIG = {
       'yt-lockup-view-model',
       'ytd-rich-section-renderer'
     ],
-    comment: [
-      'ytd-comment-thread-renderer',
-      'ytd-comment-renderer'
-    ],
     channel: [
       'ytd-channel-renderer',
       'ytd-channel-name'

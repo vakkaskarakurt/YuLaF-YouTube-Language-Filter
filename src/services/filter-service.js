@@ -1,5 +1,5 @@
 window.FilterService = {
-  stats: { videos: 0, comments: 0, channels: 0 },
+  stats: { videos: 0, channels: 0 },
 
   async filterContent(settings) {
     if (!settings) return;
@@ -8,10 +8,6 @@ window.FilterService = {
 
     if (settings.hideVideos) {
       filterPromises.push(this.filterElementType('video'));
-    }
-    
-    if (settings.hideComments) {
-      filterPromises.push(this.filterElementType('comment'));
     }
     
     if (settings.hideChannels) {
@@ -66,12 +62,6 @@ window.FilterService = {
       this.processElement(node, 'video');
     }
 
-    // Comment elementiyse
-    const commentSelectors = window.YT_FILTER_CONFIG.selectors.comment;
-    if (settings.hideComments && commentSelectors.some(selector => node.matches(selector))) {
-      this.processElement(node, 'comment');
-    }
-
     // Channel elementiyse
     const channelSelectors = window.YT_FILTER_CONFIG.selectors.channel;
     if (settings.hideChannels && channelSelectors.some(selector => node.matches(selector))) {
@@ -90,11 +80,6 @@ window.FilterService = {
         });
       }
       
-      if (settings.hideComments) {
-        const innerComments = node.querySelectorAll(commentSelectors.join(','));
-        innerComments.forEach(comment => this.processElement(comment, 'comment'));
-      }
-      
       if (settings.hideChannels) {
         const innerChannels = node.querySelectorAll(channelSelectors.join(','));
         innerChannels.forEach(channel => this.processElement(channel, 'channel'));
@@ -106,13 +91,13 @@ window.FilterService = {
     this.stats[type + 's'] = (this.stats[type + 's'] || 0) + 1;
     
     chrome.storage.local.get(['filterStats'], result => {
-      const stats = result.filterStats || { videos: 0, comments: 0, channels: 0 };
+      const stats = result.filterStats || { videos: 0, channels: 0 };
       stats[type + 's'] = (stats[type + 's'] || 0) + 1;
       chrome.storage.local.set({ filterStats: stats });
     });
   },
 
   resetStats() {
-    this.stats = { videos: 0, comments: 0, channels: 0 };
+    this.stats = { videos: 0, channels: 0 };
   }
 };

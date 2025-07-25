@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   const settingsPanel = document.getElementById('settingsPanel');
   const strictMode = document.getElementById('strictMode');
   const hideVideos = document.getElementById('hideVideos');
-  const hideComments = document.getElementById('hideComments');
   const hideChannels = document.getElementById('hideChannels');
   const resetStats = document.getElementById('resetStats');
 
@@ -22,7 +21,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     enabled: true,
     strictMode: true,
     hideVideos: true,
-    hideComments: true,
     hideChannels: true
   };
 
@@ -31,7 +29,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
       // Storage'dan al
       const stored = await chrome.storage.sync.get([
-        'enabled', 'strictMode', 'hideComments', 'hideVideos', 'hideChannels'
+        'enabled', 'strictMode', 'hideVideos', 'hideChannels'
       ]);
       
       // Default değerlerle birleştir
@@ -39,7 +37,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         enabled: stored.enabled !== false,
         strictMode: stored.strictMode !== false,
         hideVideos: stored.hideVideos !== false,
-        hideComments: stored.hideComments !== false,
         hideChannels: stored.hideChannels !== false
       };
 
@@ -69,7 +66,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     enableFilter.checked = state.enabled;
     strictMode.checked = state.strictMode;
     hideVideos.checked = state.hideVideos;
-    hideComments.checked = state.hideComments;
     hideChannels.checked = state.hideChannels;
     
     updateStatusText(state.enabled);
@@ -129,7 +125,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       const newSettings = {
         strictMode: strictMode.checked,
         hideVideos: hideVideos.checked,
-        hideComments: hideComments.checked,
         hideChannels: hideChannels.checked
       };
 
@@ -138,14 +133,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // Tüm setting checkbox'larına event listener ekle
-  [strictMode, hideVideos, hideComments, hideChannels].forEach(checkbox => {
+  [strictMode, hideVideos, hideChannels].forEach(checkbox => {
     checkbox.addEventListener('change', handleSettingChange);
   });
 
   // Reset stats
   resetStats.addEventListener('click', async () => {
     try {
-      await chrome.storage.local.set({ filterStats: { videos: 0, comments: 0, channels: 0 } });
+      await chrome.storage.local.set({ filterStats: { videos: 0, channels: 0 } });
       loadStatistics();
     } catch (error) {
       console.error('Error resetting stats:', error);
@@ -185,10 +180,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   function loadStatistics() {
     chrome.storage.local.get(['filterStats'], (result) => {
-      const stats = result.filterStats || { videos: 0, comments: 0, channels: 0 };
+      const stats = result.filterStats || { videos: 0, channels: 0 };
       
       document.getElementById('videosHidden').textContent = stats.videos || 0;
-      document.getElementById('commentsHidden').textContent = stats.comments || 0;
       document.getElementById('channelsHidden').textContent = stats.channels || 0;
     });
   }
