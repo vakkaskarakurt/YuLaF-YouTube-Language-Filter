@@ -24,6 +24,9 @@ window.LanguageService = {
         
         chrome.i18n.detectLanguage(text, result => {
           clearTimeout(timeoutId);
+
+          // console.log(text);
+          // console.log('Language detection result:', result);
           
           // SONUÇ YOKSA İNGİLİZCE KABUL ETME
           if (!result?.languages?.length) {
