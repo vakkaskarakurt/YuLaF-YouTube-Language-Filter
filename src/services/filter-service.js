@@ -4,11 +4,6 @@ window.FilterService = {
   async filterContent(settings) {
     if (!settings) return;
 
-    // Önce orijinal başlıkları geri yükle
-    if (settings.useOriginalTitles) {
-      setTimeout(() => window.TitleService.restoreOriginalTitles(), 0);
-    }
-
     const filterPromises = [];
 
     if (settings.hideVideos) {
@@ -38,11 +33,6 @@ window.FilterService = {
 
     // Element'i anında gizle
     window.DOMService.hideElement(element, type);
-
-    // Önce orijinal içeriği geri yükle
-    if (type === 'video' && window.TitleService) {
-      window.TitleService.restoreVideoElementTitle(element);
-    }
 
     const text = window.DOMService.extractText(element, type);
     

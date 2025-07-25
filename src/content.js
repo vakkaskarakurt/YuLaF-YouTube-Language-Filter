@@ -5,8 +5,7 @@ class YouTubeEnglishFilter {
       strictMode: true, 
       hideComments: true, 
       hideVideos: true, 
-      hideChannels: true,
-      useOriginalTitles: true
+      hideChannels: true
     };
     this.observer = null;
     this.urlObserver = null;
@@ -18,14 +17,9 @@ class YouTubeEnglishFilter {
 
   async init() {
     try {
-      // Servisleri başlat
-      if (window.TitleService) {
-        window.TitleService.init();
-      }
-
       // Ayarları yükle
       const stored = await chrome.storage.sync.get([
-        'enabled', 'strictMode', 'hideComments', 'hideVideos', 'hideChannels', 'useOriginalTitles'
+        'enabled', 'strictMode', 'hideComments', 'hideVideos', 'hideChannels'
       ]);
       
       this.enabled = stored.enabled !== false;
@@ -33,7 +27,6 @@ class YouTubeEnglishFilter {
       this.settings.hideComments = stored.hideComments !== false;
       this.settings.hideVideos = stored.hideVideos !== false;
       this.settings.hideChannels = stored.hideChannels !== false;
-      this.settings.useOriginalTitles = stored.useOriginalTitles !== false;
       
       // Storage değişikliklerini dinle
       chrome.storage.onChanged.addListener((changes, area) => {
@@ -75,13 +68,6 @@ class YouTubeEnglishFilter {
     
     this.stopFiltering();
     
-    // Orijinal başlıkları geri yükle
-    setTimeout(() => {
-      if (window.TitleService && this.settings.useOriginalTitles) {
-        window.TitleService.restoreOriginalTitles();
-      }
-    }, 0);
-    
     // İlk filtreleme
     window.FilterService.filterContent(this.settings);
     
@@ -116,9 +102,6 @@ class YouTubeEnglishFilter {
         
         setTimeout(() => {
           if (this.enabled && location.href === currentUrl) {
-            if (window.TitleService && this.settings.useOriginalTitles) {
-              window.TitleService.restoreOriginalTitles();
-            }
             window.FilterService.filterContent(this.settings);
           }
         }, window.YT_FILTER_CONFIG.timing.urlChangeDelay);
@@ -138,9 +121,6 @@ class YouTubeEnglishFilter {
       this.originalPushState.apply(history, args);
       setTimeout(() => {
         if (this.enabled) {
-          if (window.TitleService && this.settings.useOriginalTitles) {
-            window.TitleService.restoreOriginalTitles();
-          }
           window.FilterService.filterContent(this.settings);
         }
       }, window.YT_FILTER_CONFIG.timing.filterDelay);
@@ -150,9 +130,6 @@ class YouTubeEnglishFilter {
       this.originalReplaceState.apply(history, args);
       setTimeout(() => {
         if (this.enabled) {
-          if (window.TitleService && this.settings.useOriginalTitles) {
-            window.TitleService.restoreOriginalTitles();
-          }
           window.FilterService.filterContent(this.settings);
         }
       }, window.YT_FILTER_CONFIG.timing.filterDelay);
@@ -162,9 +139,6 @@ class YouTubeEnglishFilter {
     this.popstateHandler = () => {
       setTimeout(() => {
         if (this.enabled) {
-          if (window.TitleService && this.settings.useOriginalTitles) {
-            window.TitleService.restoreOriginalTitles();
-          }
           window.FilterService.filterContent(this.settings);
         }
       }, window.YT_FILTER_CONFIG.timing.filterDelay);
@@ -193,10 +167,6 @@ class YouTubeEnglishFilter {
     
     if (this.popstateHandler) {
       window.removeEventListener('popstate', this.popstateHandler);
-    }
-
-    if (window.TitleService) {
-      window.TitleService.cleanup();
     }
     
     window.DOMService.showAllHiddenContent();

@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   const hideVideos = document.getElementById('hideVideos');
   const hideComments = document.getElementById('hideComments');
   const hideChannels = document.getElementById('hideChannels');
-  const useOriginalTitles = document.getElementById('useOriginalTitles');
   const resetStats = document.getElementById('resetStats');
 
   // Aktif tab'ı al
@@ -24,8 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     strictMode: true,
     hideVideos: true,
     hideComments: true,
-    hideChannels: true,
-    useOriginalTitles: true
+    hideChannels: true
   };
 
   // Storage'dan gerçek state'i al
@@ -33,7 +31,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
       // Storage'dan al
       const stored = await chrome.storage.sync.get([
-        'enabled', 'strictMode', 'hideComments', 'hideVideos', 'hideChannels', 'useOriginalTitles'
+        'enabled', 'strictMode', 'hideComments', 'hideVideos', 'hideChannels'
       ]);
       
       // Default değerlerle birleştir
@@ -42,8 +40,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         strictMode: stored.strictMode !== false,
         hideVideos: stored.hideVideos !== false,
         hideComments: stored.hideComments !== false,
-        hideChannels: stored.hideChannels !== false,
-        useOriginalTitles: stored.useOriginalTitles !== false
+        hideChannels: stored.hideChannels !== false
       };
 
       // Content script'ten de kontrol et
@@ -74,7 +71,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     hideVideos.checked = state.hideVideos;
     hideComments.checked = state.hideComments;
     hideChannels.checked = state.hideChannels;
-    useOriginalTitles.checked = state.useOriginalTitles;
     
     updateStatusText(state.enabled);
     updateSettingsVisibility(state.enabled);
@@ -134,8 +130,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         strictMode: strictMode.checked,
         hideVideos: hideVideos.checked,
         hideComments: hideComments.checked,
-        hideChannels: hideChannels.checked,
-        useOriginalTitles: useOriginalTitles.checked
+        hideChannels: hideChannels.checked
       };
 
       await saveState(newSettings);
@@ -143,7 +138,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // Tüm setting checkbox'larına event listener ekle
-  [strictMode, hideVideos, hideComments, hideChannels, useOriginalTitles].forEach(checkbox => {
+  [strictMode, hideVideos, hideComments, hideChannels].forEach(checkbox => {
     checkbox.addEventListener('change', handleSettingChange);
   });
 

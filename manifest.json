@@ -17,7 +17,6 @@
         "src/utils/config.js",
         "src/services/language-service.js",
         "src/services/dom-service.js",
-        "src/services/title-service.js",
         "src/services/filter-service.js",
         "src/content.js"
       ],
