@@ -20,7 +20,8 @@ window.YT_FILTER_CONFIG = {
       'ytd-comment-renderer'
     ],
     channel: [
-      'ytd-channel-renderer'
+      'ytd-channel-renderer',
+      'ytd-channel-name'
     ],
     title: [
       '#video-title',
