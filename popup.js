@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const tab = tabs[0];
 
   if (!tab.url.includes('youtube.com')) {
-    document.body.innerHTML = '<div style="padding: 20px; text-align: center;">Please visit YouTube to use this extension.</div>';
+    document.body.innerHTML = '<div style="padding: 20px; text-align: center; color: #fff; background: #0f0f0f;">Please visit YouTube to use this extension.</div>';
     return;
   }
 
@@ -176,7 +176,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Utility functions
   function updateStatusText(enabled) {
     statusText.textContent = enabled ? 'Filter Enabled' : 'Filter Disabled';
-    statusText.style.color = enabled ? '#1a73e8' : '#666';
+    statusText.style.color = enabled ? '#ff0000' : '#aaa';
   }
 
   function updateSettingsVisibility(enabled) {
