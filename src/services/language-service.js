@@ -4,15 +4,27 @@ window.LanguageService = {
       return Promise.resolve(true);
     }
     
-    // Hızlı İngilizce Kontrolü - ASCII olmayan karakterler varsa false
+    // ASCII olmayan karakterler varsa false
     if (/[^\x00-\x7F]/.test(text)) {
       return Promise.resolve(false);
     }
     
-    // Chrome dil tespiti
-    return new Promise(resolve => {
-      try {
+    // Chrome API kullanmaya çalış, hata olursa fallback
+    try {
+      // Chrome objesi bile yoksa
+      if (typeof chrome === 'undefined' || !chrome.i18n) {
+        return Promise.resolve(true);
+      }
+      
+      return await new Promise((resolve, reject) => {
+        // 1 saniye timeout
+        const timeoutId = setTimeout(() => {
+          reject(new Error('Timeout'));
+        }, 1000);
+        
         chrome.i18n.detectLanguage(text, result => {
+          clearTimeout(timeoutId);
+          
           if (!result?.languages?.length) {
             resolve(true);
             return;
@@ -27,10 +39,10 @@ window.LanguageService = {
             resolve(isEnglish);
           }
         });
-      } catch (error) {
-        console.warn('Language detection failed:', error);
-        resolve(true);
-      }
-    });
+      });
+    } catch (error) {
+      // Herhangi bir hata olursa güvenli tarafta kal
+      return Promise.resolve(true);
+    }
   }
 };
