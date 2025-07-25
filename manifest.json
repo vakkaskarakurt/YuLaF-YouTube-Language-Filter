@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "YouTube English Only Filter",
+  "name": "YouTube Language Filter",
   "version": "1.0.0",
   "description": "Filter YouTube content to show only English videos, comments, and channels",
   "permissions": [
@@ -29,6 +29,6 @@
   },
   "action": {
     "default_popup": "popup.html",
-    "default_title": "YouTube English Only Filter"
+    "default_title": "YouTube Language Filter"
   }
 }
