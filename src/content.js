@@ -5,7 +5,7 @@ class YouTubeLanguageFilter {
       strictMode: true, 
       hideVideos: true, 
       hideChannels: true,
-      selectedLanguage: 'en'
+      selectedLanguages: ['en']
     };
     this.observer = null;
     this.urlObserver = null;
@@ -19,17 +19,26 @@ class YouTubeLanguageFilter {
   async init() {
     try {
       const stored = await chrome.storage.sync.get([
-        'enabled', 'strictMode', 'hideVideos', 'hideChannels', 'selectedLanguage'
+        'enabled', 'strictMode', 'hideVideos', 'hideChannels', 'selectedLanguages', 'selectedLanguage'
       ]);
       
       this.enabled = stored.enabled !== false;
       this.settings.strictMode = stored.strictMode !== false;
       this.settings.hideVideos = stored.hideVideos !== false;
       this.settings.hideChannels = stored.hideChannels !== false;
-      this.settings.selectedLanguage = stored.selectedLanguage || 'en';
       
-      // Dili ayarla
-      window.LanguageService.setLanguage(this.settings.selectedLanguage);
+      // Eski tek dil formatından yeni çoklu dil formatına geçiş
+      let selectedLanguages = stored.selectedLanguages;
+      if (!selectedLanguages && stored.selectedLanguage) {
+        selectedLanguages = [stored.selectedLanguage];
+        // Eski formatı güncelle
+        chrome.storage.sync.set({ selectedLanguages: selectedLanguages });
+        chrome.storage.sync.remove(['selectedLanguage']);
+      }
+      this.settings.selectedLanguages = selectedLanguages || ['en'];
+      
+      // Dilleri ayarla
+      window.LanguageService.setLanguages(this.settings.selectedLanguages);
       
       chrome.storage.onChanged.addListener((changes, area) => {
         if (area === 'sync') {
@@ -54,22 +63,21 @@ class YouTubeLanguageFilter {
       shouldRestart = true;
     }
     
-    if (changes.selectedLanguage && changes.selectedLanguage.newValue !== this.settings.selectedLanguage) {
-      this.settings.selectedLanguage = changes.selectedLanguage.newValue;
-      window.LanguageService.setLanguage(this.settings.selectedLanguage);
+    if (changes.selectedLanguages && JSON.stringify(changes.selectedLanguages.newValue) !== JSON.stringify(this.settings.selectedLanguages)) {
+      this.settings.selectedLanguages = changes.selectedLanguages.newValue || ['en'];
+      window.LanguageService.setLanguages(this.settings.selectedLanguages);
       languageChanged = true;
       shouldRestart = true;
     }
     
     for (const key in changes) {
-      if (key in this.settings && key !== 'selectedLanguage' && changes[key].newValue !== this.settings[key]) {
+      if (key in this.settings && key !== 'selectedLanguages' && changes[key].newValue !== this.settings[key]) {
         this.settings[key] = changes[key].newValue;
         shouldRestart = true;
       }
     }
     
     if (shouldRestart) {
-      // Dil değişikliğinde anında restart yap
       this.restartFiltering(languageChanged);
     }
   }
@@ -250,10 +258,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             shouldRestart = true;
           }
           
-          // Dil değiştiyse
-          if (request.state.selectedLanguage && request.state.selectedLanguage !== filter.settings.selectedLanguage) {
-            filter.settings.selectedLanguage = request.state.selectedLanguage;
-            window.LanguageService.setLanguage(request.state.selectedLanguage);
+          // Diller değiştiyse
+          if (request.state.selectedLanguages && JSON.stringify(request.state.selectedLanguages) !== JSON.stringify(filter.settings.selectedLanguages)) {
+            filter.settings.selectedLanguages = request.state.selectedLanguages;
+            window.LanguageService.setLanguages(request.state.selectedLanguages);
             languageChanged = true;
             shouldRestart = true;
           }

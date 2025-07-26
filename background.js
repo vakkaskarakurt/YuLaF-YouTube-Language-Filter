@@ -4,7 +4,7 @@ chrome.runtime.onInstalled.addListener(() => {
     strictMode: true,
     hideVideos: true,   
     hideChannels: true,
-    selectedLanguage: 'en'
+    selectedLanguages: ['en']
   });
 
   chrome.storage.local.set({

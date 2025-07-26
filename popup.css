@@ -124,14 +124,14 @@ input:checked + .slider:before {
   border-color: #5f5f5f;
 }
 
-.language-option input[type="radio"] {
+.language-option input[type="checkbox"] {
   width: 16px;
   height: 16px;
   margin-right: 10px;
   accent-color: #ff0000;
 }
 
-.language-option input[type="radio"]:checked + .language-label {
+.language-option input[type="checkbox"]:checked + .language-label {
   color: #ff0000;
   font-weight: 600;
 }

@@ -22,27 +22,34 @@ document.addEventListener('DOMContentLoaded', async () => {
     strictMode: true,
     hideVideos: true,
     hideChannels: true,
-    selectedLanguage: 'en'
+    selectedLanguages: ['en']
   };
 
-  // İlk yükleme durumu
   let isInitializing = true;
 
   async function loadCurrentState() {
     try {
       const stored = await chrome.storage.sync.get([
-        'enabled', 'strictMode', 'hideVideos', 'hideChannels', 'selectedLanguage'
+        'enabled', 'strictMode', 'hideVideos', 'hideChannels', 'selectedLanguages', 'selectedLanguage'
       ]);
+      
+      // Eski tek dil formatından yeni çoklu dil formatına geçiş
+      let selectedLanguages = stored.selectedLanguages;
+      if (!selectedLanguages && stored.selectedLanguage) {
+        selectedLanguages = [stored.selectedLanguage];
+        // Eski formatı güncelle
+        chrome.storage.sync.set({ selectedLanguages: selectedLanguages });
+        chrome.storage.sync.remove(['selectedLanguage']);
+      }
       
       currentState = {
         enabled: stored.enabled !== false,
         strictMode: stored.strictMode !== false,
         hideVideos: stored.hideVideos !== false,
         hideChannels: stored.hideChannels !== false,
-        selectedLanguage: stored.selectedLanguage || 'en'
+        selectedLanguages: selectedLanguages || ['en']
       };
 
-      // Content script'ten state al ama hata durumunda devam et
       try {
         const response = await chrome.tabs.sendMessage(tab.id, { action: 'getStatus' });
         if (response && typeof response.enabled === 'boolean') {
@@ -63,7 +70,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function updateUI(state) {
-    // Event listener'ları geçici olarak kaldır (sonsuz döngü önleme)
+    // Event listener'ları geçici olarak kaldır
     enableFilter.removeEventListener('change', handleEnableChange);
     langEn.removeEventListener('change', handleLanguageChange);
     langTr.removeEventListener('change', handleLanguageChange);
@@ -77,14 +84,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     hideVideos.checked = state.hideVideos;
     hideChannels.checked = state.hideChannels;
     
-    // Dil seçimini güncelle
-    if (state.selectedLanguage === 'en') {
-      langEn.checked = true;
-      langTr.checked = false;
-    } else if (state.selectedLanguage === 'tr') {
-      langTr.checked = true;
-      langEn.checked = false;
-    }
+    // Çoklu dil seçimini güncelle
+    langEn.checked = state.selectedLanguages.includes('en');
+    langTr.checked = state.selectedLanguages.includes('tr');
     
     updateStatusText(state.enabled);
     updateSettingsVisibility(state.enabled);
@@ -102,13 +104,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   async function saveState(updates, forceReload = false) {
     try {
-      // Önce local state'i güncelle
       Object.assign(currentState, updates);
-      
-      // Storage'a kaydet
       await chrome.storage.sync.set(updates);
       
-      // Content script'e gönder (başarısız olsa bile devam et)
       try {
         const fullState = { ...currentState };
         const response = await chrome.tabs.sendMessage(tab.id, { 
@@ -122,7 +120,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
       } catch (error) {
         console.log('Content script not available:', error.message);
-        // Content script yoksa sayfayı yenile
         if (forceReload && error.message.includes('Could not establish connection')) {
           chrome.tabs.reload(tab.id);
         }
@@ -135,7 +132,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  // Enable/Disable handler
   async function handleEnableChange(e) {
     if (isInitializing) return;
     
@@ -146,7 +142,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const success = await saveState({ enabled: newEnabled }, true);
     
     if (!success) {
-      // Hata durumunda geri al
       e.target.checked = !newEnabled;
       updateStatusText(!newEnabled);
       updateSettingsVisibility(!newEnabled);
@@ -154,51 +149,56 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  // Dil değişikliği handler
+  // Çoklu dil değişikliği handler
   async function handleLanguageChange(e) {
-    if (isInitializing || !e.target.checked) return;
+    if (isInitializing) return;
     
-    const newLanguage = e.target.value;
+    const language = e.target.value;
+    const isChecked = e.target.checked;
     
-    // Önce UI'yi güncelle
-    if (newLanguage === 'en') {
-      langEn.checked = true;
-      langTr.checked = false;
+    let newSelectedLanguages = [...currentState.selectedLanguages];
+    
+    if (isChecked) {
+      // Dil ekleme
+      if (!newSelectedLanguages.includes(language)) {
+        newSelectedLanguages.push(language);
+      }
     } else {
-      langTr.checked = true;
-      langEn.checked = false;
+      // Dil çıkarma - en az bir dil seçili kalmalı
+      if (newSelectedLanguages.length > 1) {
+        newSelectedLanguages = newSelectedLanguages.filter(lang => lang !== language);
+      } else {
+        // Son dil kaldırılmaya çalışılıyorsa, checkbox'ı geri işaretle
+        e.target.checked = true;
+        alert('En az bir dil seçili olmalıdır.');
+        return;
+      }
     }
     
-    // State'i anında kaydet
-    currentState.selectedLanguage = newLanguage;
+    currentState.selectedLanguages = newSelectedLanguages;
     
     try {
-      // Storage'a kaydet
-      await chrome.storage.sync.set({ selectedLanguage: newLanguage });
+      await chrome.storage.sync.set({ selectedLanguages: newSelectedLanguages });
       
-      // Content script'e anında gönder
       const response = await chrome.tabs.sendMessage(tab.id, { 
         action: 'updateState', 
         state: { 
           ...currentState,
-          selectedLanguage: newLanguage 
+          selectedLanguages: newSelectedLanguages 
         },
         forceReload: true
       });
       
       if (!response || response.error) {
         console.warn('Content script response error:', response?.error);
-        // Hata durumunda sayfayı yenile
         chrome.tabs.reload(tab.id);
       }
     } catch (error) {
-      console.log('Error updating language:', error);
-      // Content script yoksa sayfayı yenile
+      console.log('Error updating languages:', error);
       chrome.tabs.reload(tab.id);
     }
   }
 
-  // Diğer ayarlar için handler
   async function handleSettingChange(e) {
     if (isInitializing) return;
     
@@ -225,7 +225,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       await chrome.storage.local.set({ filterStats: { videos: 0, channels: 0 } });
       loadStatistics();
       
-      // Content script'e reset mesajı gönder
       try {
         await chrome.tabs.sendMessage(tab.id, { action: 'resetStats' });
       } catch (error) {
@@ -236,14 +235,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  // Storage değişikliklerini dinle (başka bir yerden değişirse)
+  // Storage değişikliklerini dinle
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area === 'sync' && !isInitializing) {
       let stateChanged = false;
       const newState = { ...currentState };
       
       for (const key in changes) {
-        if (key in currentState && changes[key].newValue !== currentState[key]) {
+        if (key in currentState && JSON.stringify(changes[key].newValue) !== JSON.stringify(currentState[key])) {
           newState[key] = changes[key].newValue;
           stateChanged = true;
         }
@@ -286,7 +285,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     updateUI(currentState);
     loadStatistics();
     
-    // İlk yükleme tamamlandı
     setTimeout(() => {
       isInitializing = false;
     }, 500);
