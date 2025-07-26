@@ -36,8 +36,13 @@ window.DOMService = {
   },
 
   showAllHiddenContent() {
+    // Gizli içeriği göster
     document.querySelectorAll('[data-language-filter-hidden]').forEach(el => {
       this.showElement(el);
+    });
+    
+    // Tüm checked attribute'ları temizle
+    document.querySelectorAll('[data-language-filter-checked]').forEach(el => {
       el.removeAttribute('data-language-filter-checked');
     });
   },

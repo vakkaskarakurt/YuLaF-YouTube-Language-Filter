@@ -160,7 +160,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     const newLanguage = e.target.value;
     
-    // Anında UI'yi güncelle
+    // Önce UI'yi güncelle
     if (newLanguage === 'en') {
       langEn.checked = true;
       langTr.checked = false;
@@ -169,8 +169,33 @@ document.addEventListener('DOMContentLoaded', async () => {
       langEn.checked = false;
     }
     
-    // State'i kaydet ve içeriği yeniden filtrele
-    await saveState({ selectedLanguage: newLanguage }, true);
+    // State'i anında kaydet
+    currentState.selectedLanguage = newLanguage;
+    
+    try {
+      // Storage'a kaydet
+      await chrome.storage.sync.set({ selectedLanguage: newLanguage });
+      
+      // Content script'e anında gönder
+      const response = await chrome.tabs.sendMessage(tab.id, { 
+        action: 'updateState', 
+        state: { 
+          ...currentState,
+          selectedLanguage: newLanguage 
+        },
+        forceReload: true
+      });
+      
+      if (!response || response.error) {
+        console.warn('Content script response error:', response?.error);
+        // Hata durumunda sayfayı yenile
+        chrome.tabs.reload(tab.id);
+      }
+    } catch (error) {
+      console.log('Error updating language:', error);
+      // Content script yoksa sayfayı yenile
+      chrome.tabs.reload(tab.id);
+    }
   }
 
   // Diğer ayarlar için handler

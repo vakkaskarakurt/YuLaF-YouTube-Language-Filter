@@ -69,6 +69,7 @@ class YouTubeLanguageFilter {
     }
     
     if (shouldRestart) {
+      // Dil değişikliğinde anında restart yap
       this.restartFiltering(languageChanged);
     }
   }
@@ -79,18 +80,24 @@ class YouTubeLanguageFilter {
       clearTimeout(this.filterTimeout);
     }
     
-    // Biraz bekle ve yeniden başlat
-    this.filterTimeout = setTimeout(() => {
-      if (this.enabled) {
-        if (clearAll) {
-          // Dil değişikliğinde tüm içeriği göster ve yeniden filtrele
-          window.DOMService.showAllHiddenContent();
-        }
-        this.startFiltering();
-      } else {
-        this.stopFiltering();
+    // Observer'ları anında temizle
+    this.cleanupObservers();
+    
+    if (this.enabled) {
+      if (clearAll) {
+        // Dil değişikliğinde tüm içeriği göster ve attribute'ları temizle
+        window.DOMService.showAllHiddenContent();
+        // Tüm checked attribute'ları da temizle
+        document.querySelectorAll('[data-language-filter-checked]').forEach(el => {
+          el.removeAttribute('data-language-filter-checked');
+        });
       }
-    }, 100);
+      
+      // Anında yeniden başlat (timeout'suz)
+      this.startFiltering();
+    } else {
+      this.stopFiltering();
+    }
   }
 
   startFiltering() {

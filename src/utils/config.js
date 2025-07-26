@@ -43,9 +43,9 @@ window.YT_FILTER_CONFIG = {
     minLength: 3
   },
   timing: {
-    titleRestore: 100,
-    filterDelay: 200,
-    urlChangeDelay: 300
+    titleRestore: 50,      // 100'den 50'ye düşürüldü
+    filterDelay: 100,      // 200'den 100'e düşürüldü
+    urlChangeDelay: 150    // 300'den 150'ye düşürüldü
   },
   languages: {
     en: {

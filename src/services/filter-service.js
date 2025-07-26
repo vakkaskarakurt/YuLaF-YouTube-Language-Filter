@@ -24,9 +24,18 @@ window.FilterService = {
   },
 
   async processElement(element, type) {
-    if (element.hasAttribute('data-language-filter-checked')) return;
+    // Eğer daha önce işlendiyse ve dil değişmemişse geç
+    const currentLang = window.LanguageService.currentLanguage;
+    const lastCheckedLang = element.getAttribute('data-language-filter-lang');
+    
+    if (element.hasAttribute('data-language-filter-checked') && lastCheckedLang === currentLang) {
+      return;
+    }
+    
     element.setAttribute('data-language-filter-checked', 'true');
+    element.setAttribute('data-language-filter-lang', currentLang);
 
+    // Önce gizle
     window.DOMService.hideElement(element, type);
 
     const text = window.DOMService.extractText(element, type);
