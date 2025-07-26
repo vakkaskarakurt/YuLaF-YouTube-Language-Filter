@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   const strictMode = document.getElementById('strictMode');
   const hideVideos = document.getElementById('hideVideos');
   const hideChannels = document.getElementById('hideChannels');
-  const resetStats = document.getElementById('resetStats');
   const langEn = document.getElementById('langEn');
   const langTr = document.getElementById('langTr');
 
@@ -212,22 +211,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   hideVideos.addEventListener('change', handleSettingChange);
   hideChannels.addEventListener('change', handleSettingChange);
 
-  // Reset stats
-  resetStats.addEventListener('click', async () => {
-    try {
-      await chrome.storage.local.set({ filterStats: { videos: 0, channels: 0 } });
-      loadStatistics();
-      
-      try {
-        await chrome.tabs.sendMessage(tab.id, { action: 'resetStats' });
-      } catch (error) {
-        console.log('Could not send reset stats to content script');
-      }
-    } catch (error) {
-      console.error('Error resetting stats:', error);
-    }
-  });
-
   // Storage değişikliklerini dinle
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area === 'sync' && !isInitializing) {
@@ -263,20 +246,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  function loadStatistics() {
-    chrome.storage.local.get(['filterStats'], (result) => {
-      const stats = result.filterStats || { videos: 0, channels: 0 };
-      
-      document.getElementById('videosHidden').textContent = stats.videos || 0;
-      document.getElementById('channelsHidden').textContent = stats.channels || 0;
-    });
-  }
-
   // İlk yükleme
   try {
     await loadCurrentState();
     updateUI(currentState);
-    loadStatistics();
     
     setTimeout(() => {
       isInitializing = false;

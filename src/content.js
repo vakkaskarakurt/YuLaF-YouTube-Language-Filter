@@ -293,11 +293,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         });
         break;
         
-      case 'resetStats':
-        window.FilterService.resetStats();
-        sendResponse({ success: true });
-        break;
-        
       default:
         sendResponse({ error: 'Unknown action' });
     }

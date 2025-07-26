@@ -1,6 +1,4 @@
 window.FilterService = {
-  stats: { videos: 0, channels: 0 },
-
   async filterContent(settings) {
     if (!settings) return;
 
@@ -44,8 +42,6 @@ window.FilterService = {
       const isTargetLanguage = await window.LanguageService.detectLanguage(text.trim());
       if (isTargetLanguage) {
         window.DOMService.showElement(element);
-      } else {
-        this.updateStats(type);
       }
     } else {
       window.DOMService.showElement(element);
@@ -86,19 +82,5 @@ window.FilterService = {
         innerChannels.forEach(channel => this.processElement(channel, 'channel'));
       }
     }
-  },
-
-  updateStats(type) {
-    this.stats[type + 's'] = (this.stats[type + 's'] || 0) + 1;
-    
-    chrome.storage.local.get(['filterStats'], result => {
-      const stats = result.filterStats || { videos: 0, channels: 0 };
-      stats[type + 's'] = (stats[type + 's'] || 0) + 1;
-      chrome.storage.local.set({ filterStats: stats });
-    });
-  },
-
-  resetStats() {
-    this.stats = { videos: 0, channels: 0 };
   }
 };
