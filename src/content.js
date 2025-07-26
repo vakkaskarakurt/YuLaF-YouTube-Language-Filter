@@ -5,7 +5,7 @@ class YouTubeLanguageFilter {
       strictMode: true, 
       hideVideos: true, 
       hideChannels: true,
-      selectedLanguages: ['en']
+      selectedLanguages: [] // Varsayılan boş array
     };
     this.observer = null;
     this.urlObserver = null;
@@ -35,7 +35,7 @@ class YouTubeLanguageFilter {
         chrome.storage.sync.set({ selectedLanguages: selectedLanguages });
         chrome.storage.sync.remove(['selectedLanguage']);
       }
-      this.settings.selectedLanguages = selectedLanguages || ['en'];
+      this.settings.selectedLanguages = selectedLanguages || []; // Varsayılan boş array
       
       // Dilleri ayarla
       window.LanguageService.setLanguages(this.settings.selectedLanguages);
@@ -64,7 +64,7 @@ class YouTubeLanguageFilter {
     }
     
     if (changes.selectedLanguages && JSON.stringify(changes.selectedLanguages.newValue) !== JSON.stringify(this.settings.selectedLanguages)) {
-      this.settings.selectedLanguages = changes.selectedLanguages.newValue || ['en'];
+      this.settings.selectedLanguages = changes.selectedLanguages.newValue || [];
       window.LanguageService.setLanguages(this.settings.selectedLanguages);
       languageChanged = true;
       shouldRestart = true;

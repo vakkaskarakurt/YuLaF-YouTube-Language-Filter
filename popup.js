@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  // Çoklu dil değişikliği handler
+  // Çoklu dil değişikliği handler - kısıtlama kaldırıldı
   async function handleLanguageChange(e) {
     if (isInitializing) return;
     
@@ -164,15 +164,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         newSelectedLanguages.push(language);
       }
     } else {
-      // Dil çıkarma - en az bir dil seçili kalmalı
-      if (newSelectedLanguages.length > 1) {
-        newSelectedLanguages = newSelectedLanguages.filter(lang => lang !== language);
-      } else {
-        // Son dil kaldırılmaya çalışılıyorsa, checkbox'ı geri işaretle
-        e.target.checked = true;
-        alert('En az bir dil seçili olmalıdır.');
-        return;
-      }
+      // Dil çıkarma - artık kısıtlama yok, tamamen boş olabilir
+      newSelectedLanguages = newSelectedLanguages.filter(lang => lang !== language);
     }
     
     currentState.selectedLanguages = newSelectedLanguages;

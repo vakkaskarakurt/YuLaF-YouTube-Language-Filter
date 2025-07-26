@@ -7,16 +7,17 @@ window.LanguageService = {
       window.LanguageDetectors && window.LanguageDetectors[code]
     );
     
-    // En az bir dil olmalı
-    if (this.selectedLanguages.length === 0) {
-      this.selectedLanguages = ['en'];
-    }
-    
-    return this.selectedLanguages.length > 0;
+    // Boş array da geçerli - hiçbir dil seçili değilse hiçbir içerik gösterilmez
+    return true;
   },
   
   async detectLanguage(text) {
     if (!text || text.length < window.YT_FILTER_CONFIG.detection.minLength) {
+      return false;
+    }
+    
+    // Hiç dil seçili değilse, hiçbir içerik gösterilmez
+    if (this.selectedLanguages.length === 0) {
       return false;
     }
     
