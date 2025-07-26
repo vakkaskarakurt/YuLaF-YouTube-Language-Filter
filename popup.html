@@ -18,6 +18,26 @@
       <span id="statusText">Filter Enabled</span>
     </div>
     
+    <div class="language-selector">
+      <h3>Filter Language</h3>
+      <div class="language-options">
+        <label class="language-option">
+          <input type="radio" name="language" value="en" id="langEn">
+          <span class="language-label">
+            <span class="flag">🇬🇧</span>
+            <span>English</span>
+          </span>
+        </label>
+        <label class="language-option">
+          <input type="radio" name="language" value="tr" id="langTr">
+          <span class="language-label">
+            <span class="flag">🇹🇷</span>
+            <span>Türkçe</span>
+          </span>
+        </label>
+      </div>
+    </div>
+    
     <div class="settings" id="settingsPanel">
       <h3>Filter Options</h3>
       
@@ -31,14 +51,14 @@
       <div class="option">
         <label>
           <input type="checkbox" id="hideVideos">
-          Hide Non-English Videos
+          Hide Non-Selected Language Videos
         </label>
       </div>
       
       <div class="option">
         <label>
           <input type="checkbox" id="hideChannels">
-          Hide Non-English Channels
+          Hide Non-Selected Language Channels
         </label>
       </div>
     </div>

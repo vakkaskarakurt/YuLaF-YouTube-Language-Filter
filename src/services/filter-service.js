@@ -24,25 +24,21 @@ window.FilterService = {
   },
 
   async processElement(element, type) {
-    if (element.hasAttribute('data-english-filter-checked')) return;
-    element.setAttribute('data-english-filter-checked', 'true');
+    if (element.hasAttribute('data-language-filter-checked')) return;
+    element.setAttribute('data-language-filter-checked', 'true');
 
-    // Element'i anında gizle
     window.DOMService.hideElement(element, type);
 
     const text = window.DOMService.extractText(element, type);
     
     if (text.trim()) {
-      const isEnglish = await window.LanguageService.detectLanguage(text.trim());
-      if (isEnglish) {
-        // İngilizce olanları göster
+      const isTargetLanguage = await window.LanguageService.detectLanguage(text.trim());
+      if (isTargetLanguage) {
         window.DOMService.showElement(element);
       } else {
-        // İngilizce olmayan için istatistik güncelle
         this.updateStats(type);
       }
     } else {
-      // Text bulunamazsa güvenli tarafta kal ve göster
       window.DOMService.showElement(element);
     }
   },
@@ -50,25 +46,21 @@ window.FilterService = {
   processNewNode(node, settings) {
     if (!node.matches || !settings) return;
 
-    // Ad kontrolü
     const isAd = node.matches('ytd-ad-slot-renderer, ytd-in-feed-ad-layout-renderer') ||
                  node.closest('ytd-ad-slot-renderer, ytd-in-feed-ad-layout-renderer');
     
     if (isAd) return;
 
-    // Video elementiyse
     const videoSelectors = window.YT_FILTER_CONFIG.selectors.video;
     if (settings.hideVideos && videoSelectors.some(selector => node.matches(selector))) {
       this.processElement(node, 'video');
     }
 
-    // Channel elementiyse
     const channelSelectors = window.YT_FILTER_CONFIG.selectors.channel;
     if (settings.hideChannels && channelSelectors.some(selector => node.matches(selector))) {
       this.processElement(node, 'channel');
     }
 
-    // İçindeki elementleri de kontrol et
     if (node.querySelectorAll) {
       if (settings.hideVideos) {
         const innerVideos = node.querySelectorAll(videoSelectors.join(','));

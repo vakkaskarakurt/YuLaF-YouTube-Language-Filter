@@ -46,5 +46,19 @@ window.YT_FILTER_CONFIG = {
     titleRestore: 100,
     filterDelay: 200,
     urlChangeDelay: 300
+  },
+  languages: {
+    en: {
+      code: 'en',
+      name: 'English',
+      icon: '🇬🇧',
+      enabled: true
+    },
+    tr: {
+      code: 'tr',
+      name: 'Türkçe',
+      icon: '🇹🇷',
+      enabled: true
+    }
   }
 };

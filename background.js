@@ -1,20 +1,17 @@
-// Background service worker
 chrome.runtime.onInstalled.addListener(() => {
-  // Set default settings
   chrome.storage.sync.set({
     enabled: true,
     strictMode: true,
     hideVideos: true,   
-    hideChannels: true
+    hideChannels: true,
+    selectedLanguage: 'en'
   });
 
-  // Initialize statistics
   chrome.storage.local.set({
     filterStats: { videos: 0, channels: 0 }
   });
 });
 
-// Update badge text based on filter status
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area === 'sync' && changes.enabled) {
     updateBadge(changes.enabled.newValue);
@@ -31,7 +28,6 @@ function updateBadge(enabled) {
   });
 }
 
-// Initialize badge on startup
 chrome.storage.sync.get(['enabled'], (result) => {
   updateBadge(result.enabled !== false);
 });

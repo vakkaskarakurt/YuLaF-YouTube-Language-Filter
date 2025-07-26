@@ -1,55 +1,39 @@
-class YouTubeEnglishFilter {
+class YouTubeLanguageFilter {
   constructor() {
     this.enabled = true;
     this.settings = { 
       strictMode: true, 
       hideVideos: true, 
-      hideChannels: true
+      hideChannels: true,
+      selectedLanguage: 'en'
     };
     this.observer = null;
     this.urlObserver = null;
     this.popstateHandler = null;
     this.originalPushState = null;
     this.originalReplaceState = null;
+    this.filterTimeout = null;
     this.init();
   }
 
   async init() {
     try {
-      // Ayarları yükle
       const stored = await chrome.storage.sync.get([
-        'enabled', 'strictMode', 'hideVideos', 'hideChannels'
+        'enabled', 'strictMode', 'hideVideos', 'hideChannels', 'selectedLanguage'
       ]);
       
       this.enabled = stored.enabled !== false;
       this.settings.strictMode = stored.strictMode !== false;
       this.settings.hideVideos = stored.hideVideos !== false;
       this.settings.hideChannels = stored.hideChannels !== false;
+      this.settings.selectedLanguage = stored.selectedLanguage || 'en';
       
-      // Storage değişikliklerini dinle
+      // Dili ayarla
+      window.LanguageService.setLanguage(this.settings.selectedLanguage);
+      
       chrome.storage.onChanged.addListener((changes, area) => {
         if (area === 'sync') {
-          let shouldRestart = false;
-          
-          if (changes.enabled && changes.enabled.newValue !== this.enabled) {
-            this.enabled = changes.enabled.newValue;
-            shouldRestart = true;
-          }
-          
-          for (const key in changes) {
-            if (key in this.settings && changes[key].newValue !== this.settings[key]) {
-              this.settings[key] = changes[key].newValue;
-              shouldRestart = true;
-            }
-          }
-          
-          if (shouldRestart) {
-            if (this.enabled) {
-              this.startFiltering();
-            } else {
-              this.stopFiltering();
-            }
-          }
+          this.handleStorageChanges(changes);
         }
       });
       
@@ -61,12 +45,61 @@ class YouTubeEnglishFilter {
     }
   }
 
+  handleStorageChanges(changes) {
+    let shouldRestart = false;
+    let languageChanged = false;
+    
+    if (changes.enabled && changes.enabled.newValue !== this.enabled) {
+      this.enabled = changes.enabled.newValue;
+      shouldRestart = true;
+    }
+    
+    if (changes.selectedLanguage && changes.selectedLanguage.newValue !== this.settings.selectedLanguage) {
+      this.settings.selectedLanguage = changes.selectedLanguage.newValue;
+      window.LanguageService.setLanguage(this.settings.selectedLanguage);
+      languageChanged = true;
+      shouldRestart = true;
+    }
+    
+    for (const key in changes) {
+      if (key in this.settings && key !== 'selectedLanguage' && changes[key].newValue !== this.settings[key]) {
+        this.settings[key] = changes[key].newValue;
+        shouldRestart = true;
+      }
+    }
+    
+    if (shouldRestart) {
+      this.restartFiltering(languageChanged);
+    }
+  }
+
+  restartFiltering(clearAll = false) {
+    // Mevcut timeout'u temizle
+    if (this.filterTimeout) {
+      clearTimeout(this.filterTimeout);
+    }
+    
+    // Biraz bekle ve yeniden başlat
+    this.filterTimeout = setTimeout(() => {
+      if (this.enabled) {
+        if (clearAll) {
+          // Dil değişikliğinde tüm içeriği göster ve yeniden filtrele
+          window.DOMService.showAllHiddenContent();
+        }
+        this.startFiltering();
+      } else {
+        this.stopFiltering();
+      }
+    }, 100);
+  }
+
   startFiltering() {
     if (!this.enabled) return;
     
-    this.stopFiltering();
+    // Observer'ları temizle
+    this.cleanupObservers();
     
-    // İlk filtreleme
+    // Anında filtreleme yap
     window.FilterService.filterContent(this.settings);
     
     // Mutation Observer
@@ -111,29 +144,30 @@ class YouTubeEnglishFilter {
       childList: true 
     });
     
-    // History API değişikliklerini yakala
+    // History API
     this.originalPushState = history.pushState;
     this.originalReplaceState = history.replaceState;
     
-    history.pushState = (...args) => {
-      this.originalPushState.apply(history, args);
+    const self = this;
+    history.pushState = function(...args) {
+      self.originalPushState.apply(history, args);
       setTimeout(() => {
-        if (this.enabled) {
-          window.FilterService.filterContent(this.settings);
+        if (self.enabled) {
+          window.FilterService.filterContent(self.settings);
         }
       }, window.YT_FILTER_CONFIG.timing.filterDelay);
     };
     
-    history.replaceState = (...args) => {
-      this.originalReplaceState.apply(history, args);
+    history.replaceState = function(...args) {
+      self.originalReplaceState.apply(history, args);
       setTimeout(() => {
-        if (this.enabled) {
-          window.FilterService.filterContent(this.settings);
+        if (self.enabled) {
+          window.FilterService.filterContent(self.settings);
         }
       }, window.YT_FILTER_CONFIG.timing.filterDelay);
     };
     
-    // Popstate eventi
+    // Popstate
     this.popstateHandler = () => {
       setTimeout(() => {
         if (this.enabled) {
@@ -144,7 +178,7 @@ class YouTubeEnglishFilter {
     window.addEventListener('popstate', this.popstateHandler);
   }
 
-  stopFiltering() {
+  cleanupObservers() {
     if (this.observer) {
       this.observer.disconnect();
       this.observer = null;
@@ -155,16 +189,21 @@ class YouTubeEnglishFilter {
       this.urlObserver = null;
     }
     
+    if (this.popstateHandler) {
+      window.removeEventListener('popstate', this.popstateHandler);
+      this.popstateHandler = null;
+    }
+  }
+
+  stopFiltering() {
+    this.cleanupObservers();
+    
     if (this.originalPushState) {
       history.pushState = this.originalPushState;
     }
     
     if (this.originalReplaceState) {
       history.replaceState = this.originalReplaceState;
-    }
-    
-    if (this.popstateHandler) {
-      window.removeEventListener('popstate', this.popstateHandler);
     }
     
     window.DOMService.showAllHiddenContent();
@@ -183,10 +222,9 @@ class YouTubeEnglishFilter {
   }
 }
 
-// Initialize
-const filter = new YouTubeEnglishFilter();
+const filter = new YouTubeLanguageFilter();
 
-// Message listener
+// Message handler
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   try {
     switch (request.action) {
@@ -196,16 +234,35 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         
       case 'updateState':
         if (request.state) {
-          if (typeof request.state.enabled === 'boolean') {
+          let shouldRestart = false;
+          let languageChanged = false;
+          
+          // Enabled durumu değiştiyse
+          if (typeof request.state.enabled === 'boolean' && request.state.enabled !== filter.enabled) {
             filter.enabled = request.state.enabled;
+            shouldRestart = true;
           }
           
-          Object.assign(filter.settings, request.state);
+          // Dil değiştiyse
+          if (request.state.selectedLanguage && request.state.selectedLanguage !== filter.settings.selectedLanguage) {
+            filter.settings.selectedLanguage = request.state.selectedLanguage;
+            window.LanguageService.setLanguage(request.state.selectedLanguage);
+            languageChanged = true;
+            shouldRestart = true;
+          }
           
-          if (filter.enabled) {
-            filter.startFiltering();
-          } else {
-            filter.stopFiltering();
+          // Diğer ayarlar
+          const settingsKeys = ['strictMode', 'hideVideos', 'hideChannels'];
+          settingsKeys.forEach(key => {
+            if (key in request.state && request.state[key] !== filter.settings[key]) {
+              filter.settings[key] = request.state[key];
+              shouldRestart = true;
+            }
+          });
+          
+          // Gerekirse yeniden başlat
+          if (shouldRestart || request.forceReload) {
+            filter.restartFiltering(languageChanged);
           }
         }
         sendResponse({ 
@@ -221,6 +278,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         });
         break;
         
+      case 'resetStats':
+        window.FilterService.resetStats();
+        sendResponse({ success: true });
+        break;
+        
       default:
         sendResponse({ error: 'Unknown action' });
     }
@@ -228,4 +290,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     console.error('Message handler error:', error);
     sendResponse({ error: error.message });
   }
+  
+  // Return true to indicate async response
+  return true;
 });

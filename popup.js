@@ -6,8 +6,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   const hideVideos = document.getElementById('hideVideos');
   const hideChannels = document.getElementById('hideChannels');
   const resetStats = document.getElementById('resetStats');
+  const langEn = document.getElementById('langEn');
+  const langTr = document.getElementById('langTr');
 
-  // Aktif tab'ı al
   const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
   const tab = tabs[0];
 
@@ -16,35 +17,35 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
-  // SAĞLAM STATE YÖNETİMİ
   let currentState = {
     enabled: true,
     strictMode: true,
     hideVideos: true,
-    hideChannels: true
+    hideChannels: true,
+    selectedLanguage: 'en'
   };
 
-  // Storage'dan gerçek state'i al
+  // İlk yükleme durumu
+  let isInitializing = true;
+
   async function loadCurrentState() {
     try {
-      // Storage'dan al
       const stored = await chrome.storage.sync.get([
-        'enabled', 'strictMode', 'hideVideos', 'hideChannels'
+        'enabled', 'strictMode', 'hideVideos', 'hideChannels', 'selectedLanguage'
       ]);
       
-      // Default değerlerle birleştir
       currentState = {
         enabled: stored.enabled !== false,
         strictMode: stored.strictMode !== false,
         hideVideos: stored.hideVideos !== false,
-        hideChannels: stored.hideChannels !== false
+        hideChannels: stored.hideChannels !== false,
+        selectedLanguage: stored.selectedLanguage || 'en'
       };
 
-      // Content script'ten de kontrol et
+      // Content script'ten state al ama hata durumunda devam et
       try {
         const response = await chrome.tabs.sendMessage(tab.id, { action: 'getStatus' });
         if (response && typeof response.enabled === 'boolean') {
-          // Content script'teki state ile senkronize et
           currentState.enabled = response.enabled;
           if (response.settings) {
             Object.assign(currentState, response.settings);
@@ -61,35 +62,71 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  // UI'yi state'e göre güncelle
   function updateUI(state) {
+    // Event listener'ları geçici olarak kaldır (sonsuz döngü önleme)
+    enableFilter.removeEventListener('change', handleEnableChange);
+    langEn.removeEventListener('change', handleLanguageChange);
+    langTr.removeEventListener('change', handleLanguageChange);
+    strictMode.removeEventListener('change', handleSettingChange);
+    hideVideos.removeEventListener('change', handleSettingChange);
+    hideChannels.removeEventListener('change', handleSettingChange);
+    
+    // UI güncelle
     enableFilter.checked = state.enabled;
     strictMode.checked = state.strictMode;
     hideVideos.checked = state.hideVideos;
     hideChannels.checked = state.hideChannels;
     
+    // Dil seçimini güncelle
+    if (state.selectedLanguage === 'en') {
+      langEn.checked = true;
+      langTr.checked = false;
+    } else if (state.selectedLanguage === 'tr') {
+      langTr.checked = true;
+      langEn.checked = false;
+    }
+    
     updateStatusText(state.enabled);
     updateSettingsVisibility(state.enabled);
+    
+    // Event listener'ları geri ekle
+    setTimeout(() => {
+      enableFilter.addEventListener('change', handleEnableChange);
+      langEn.addEventListener('change', handleLanguageChange);
+      langTr.addEventListener('change', handleLanguageChange);
+      strictMode.addEventListener('change', handleSettingChange);
+      hideVideos.addEventListener('change', handleSettingChange);
+      hideChannels.addEventListener('change', handleSettingChange);
+    }, 100);
   }
 
-  // State'i güvenli şekilde storage'a kaydet
-  async function saveState(newState) {
+  async function saveState(updates, forceReload = false) {
     try {
-      // Önce storage'ı güncelle
-      await chrome.storage.sync.set(newState);
+      // Önce local state'i güncelle
+      Object.assign(currentState, updates);
       
-      // Sonra content script'e bildir
+      // Storage'a kaydet
+      await chrome.storage.sync.set(updates);
+      
+      // Content script'e gönder (başarısız olsa bile devam et)
       try {
-        await chrome.tabs.sendMessage(tab.id, { 
+        const fullState = { ...currentState };
+        const response = await chrome.tabs.sendMessage(tab.id, { 
           action: 'updateState', 
-          state: newState 
+          state: fullState,
+          forceReload: forceReload
         });
+        
+        if (!response || response.error) {
+          console.warn('Content script response error:', response?.error);
+        }
       } catch (error) {
-        console.log('Content script update failed:', error);
+        console.log('Content script not available:', error.message);
+        // Content script yoksa sayfayı yenile
+        if (forceReload && error.message.includes('Could not establish connection')) {
+          chrome.tabs.reload(tab.id);
+        }
       }
-      
-      // Local state'i güncelle
-      Object.assign(currentState, newState);
       
       return true;
     } catch (error) {
@@ -98,59 +135,85 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  // Ana toggle handler - tek source of truth
-  enableFilter.addEventListener('change', async (e) => {
-    // UI'yi anında güncelle (responsive feeling)
+  // Enable/Disable handler
+  async function handleEnableChange(e) {
+    if (isInitializing) return;
+    
     const newEnabled = e.target.checked;
     updateStatusText(newEnabled);
     updateSettingsVisibility(newEnabled);
     
-    // State'i kaydet
-    const success = await saveState({ enabled: newEnabled });
+    const success = await saveState({ enabled: newEnabled }, true);
     
     if (!success) {
-      // Hata durumunda UI'yi geri çevir
+      // Hata durumunda geri al
       e.target.checked = !newEnabled;
       updateStatusText(!newEnabled);
       updateSettingsVisibility(!newEnabled);
       alert('Settings could not be saved. Please try again.');
     }
-  });
-
-  // Settings değişiklik handler'ları - debounced
-  let settingsTimeout;
-  function handleSettingChange() {
-    clearTimeout(settingsTimeout);
-    settingsTimeout = setTimeout(async () => {
-      const newSettings = {
-        strictMode: strictMode.checked,
-        hideVideos: hideVideos.checked,
-        hideChannels: hideChannels.checked
-      };
-
-      await saveState(newSettings);
-    }, 300); // 300ms debounce
   }
 
-  // Tüm setting checkbox'larına event listener ekle
-  [strictMode, hideVideos, hideChannels].forEach(checkbox => {
-    checkbox.addEventListener('change', handleSettingChange);
-  });
+  // Dil değişikliği handler
+  async function handleLanguageChange(e) {
+    if (isInitializing || !e.target.checked) return;
+    
+    const newLanguage = e.target.value;
+    
+    // Anında UI'yi güncelle
+    if (newLanguage === 'en') {
+      langEn.checked = true;
+      langTr.checked = false;
+    } else {
+      langTr.checked = true;
+      langEn.checked = false;
+    }
+    
+    // State'i kaydet ve içeriği yeniden filtrele
+    await saveState({ selectedLanguage: newLanguage }, true);
+  }
+
+  // Diğer ayarlar için handler
+  async function handleSettingChange(e) {
+    if (isInitializing) return;
+    
+    const newSettings = {
+      strictMode: strictMode.checked,
+      hideVideos: hideVideos.checked,
+      hideChannels: hideChannels.checked
+    };
+
+    await saveState(newSettings, true);
+  }
+
+  // Event listener'ları ekle
+  enableFilter.addEventListener('change', handleEnableChange);
+  langEn.addEventListener('change', handleLanguageChange);
+  langTr.addEventListener('change', handleLanguageChange);
+  strictMode.addEventListener('change', handleSettingChange);
+  hideVideos.addEventListener('change', handleSettingChange);
+  hideChannels.addEventListener('change', handleSettingChange);
 
   // Reset stats
   resetStats.addEventListener('click', async () => {
     try {
       await chrome.storage.local.set({ filterStats: { videos: 0, channels: 0 } });
       loadStatistics();
+      
+      // Content script'e reset mesajı gönder
+      try {
+        await chrome.tabs.sendMessage(tab.id, { action: 'resetStats' });
+      } catch (error) {
+        console.log('Could not send reset stats to content script');
+      }
     } catch (error) {
       console.error('Error resetting stats:', error);
     }
   });
 
-  // Storage değişikliklerini dinle (diğer tab'lardan)
+  // Storage değişikliklerini dinle (başka bir yerden değişirse)
   chrome.storage.onChanged.addListener((changes, area) => {
-    if (area === 'sync') {
-      // State değişikliğini algıla
+    if (area === 'sync' && !isInitializing) {
       let stateChanged = false;
       const newState = { ...currentState };
       
@@ -168,14 +231,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  // Utility functions
   function updateStatusText(enabled) {
     statusText.textContent = enabled ? 'Filter Enabled' : 'Filter Disabled';
     statusText.style.color = enabled ? '#ff0000' : '#aaa';
   }
 
   function updateSettingsVisibility(enabled) {
-    settingsPanel.classList.toggle('disabled', !enabled);
+    if (enabled) {
+      settingsPanel.classList.remove('disabled');
+      document.querySelector('.language-selector').classList.remove('disabled');
+    } else {
+      settingsPanel.classList.add('disabled');
+      document.querySelector('.language-selector').classList.add('disabled');
+    }
   }
 
   function loadStatistics() {
@@ -192,9 +260,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadCurrentState();
     updateUI(currentState);
     loadStatistics();
+    
+    // İlk yükleme tamamlandı
+    setTimeout(() => {
+      isInitializing = false;
+    }, 500);
   } catch (error) {
     console.error('Error during initialization:', error);
-    // Fallback - default değerlerle UI'yi güncelle
     updateUI(currentState);
+    isInitializing = false;
   }
 });
