@@ -23,7 +23,8 @@ def create_extension_zip():
     excluded = {
         '.git', '.gitignore', 'PRIVACY.md', 'README.md', 
         'package.json', 'node_modules', '.vscode', 
-        '__pycache__', '.DS_Store', 'create_store_zip.py'
+        '__pycache__', '.DS_Store', 'create_store_zip.py',
+        'YuLaF_big.png'
     }
     
     # Manifest'ten version al
