@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "YuLaF - YouTube Language Filter",
-  "version": "1.0.2",
-  "description": "Filter YouTube content by language",
+  "version": "1.0.3",
+  "description": "Filter YouTube content by language - supports 50+ languages",
 
   "icons": {
     "16": "icons/icon16.png",
@@ -24,8 +24,7 @@
       "matches": ["*://*.youtube.com/*"],
       "js": [
         "src/utils/config.js",
-        "src/languages/en/detector.js",
-        "src/languages/tr/detector.js",
+        "src/services/language-detector.js",
         "src/services/language-service.js",
         "src/services/dom-service.js",
         "src/services/filter-service.js",

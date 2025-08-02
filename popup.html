@@ -19,22 +19,15 @@
     </div>
     
     <div class="language-selector">
-      <h3>Filter Languages</h3>
-      <div class="language-options">
-        <label class="language-option">
-          <input type="checkbox" name="language" value="en" id="langEn">
-          <span class="language-label">
-            <span class="flag">🇬🇧</span>
-            <span>English</span>
-          </span>
-        </label>
-        <label class="language-option">
-          <input type="checkbox" name="language" value="tr" id="langTr">
-          <span class="language-label">
-            <span class="flag">🇹🇷</span>
-            <span>Türkçe</span>
-          </span>
-        </label>
+      <h3>Select Languages to Show</h3>
+      <div class="search-container">
+        <input type="text" id="languageSearch" placeholder="Search languages...">
+      </div>
+      <div class="language-options" id="languageOptions">
+        <!-- Languages will be populated dynamically -->
+      </div>
+      <div class="selected-count">
+        <span id="selectedCount">0</span> languages selected
       </div>
     </div>
     

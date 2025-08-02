@@ -1,13 +1,12 @@
 window.LanguageService = {
-  selectedLanguages: ['en'],
+  selectedLanguages: [],
   
   setLanguages(langCodes) {
-    // Array'i filtrele ve sadece mevcut dedektörleri tut
+    // Sadece config'de tanımlı olan dilleri kabul et
     this.selectedLanguages = langCodes.filter(code => 
-      window.LanguageDetectors && window.LanguageDetectors[code]
+      window.YT_FILTER_CONFIG.languages[code]
     );
     
-    // Boş array da geçerli - hiçbir dil seçili değilse hiçbir içerik gösterilmez
     return true;
   },
   
@@ -21,21 +20,12 @@ window.LanguageService = {
       return false;
     }
     
-    // Seçili dillerden herhangi biri ile eşleşme var mı kontrol et
-    for (const langCode of this.selectedLanguages) {
-      const detector = window.LanguageDetectors[langCode];
-      if (detector) {
-        try {
-          const isMatch = await detector.detect(text);
-          if (isMatch) {
-            return true; // Herhangi bir dil eşleşirse true döndür
-          }
-        } catch (error) {
-          console.error(`Language detection error for ${langCode}:`, error);
-        }
-      }
+    try {
+      // Universal detector ile kontrol et
+      return await window.LanguageDetector.detect(text, this.selectedLanguages);
+    } catch (error) {
+      console.error('Language detection error:', error);
+      return false;
     }
-    
-    return false; // Hiçbir dil eşleşmezse false
   }
 };

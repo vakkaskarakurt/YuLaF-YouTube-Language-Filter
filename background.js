@@ -20,11 +20,11 @@ function updateBadge(enabled) {
   });
   
   chrome.action.setBadgeBackgroundColor({
-    color: enabled ? '#ff0000' : '#666'  // Kırmızı/Gri
+    color: enabled ? '#ff0000' : '#666'
   });
   
   chrome.action.setBadgeTextColor({
-    color: '#FFFFFF'  // Beyaz yazı
+    color: '#FFFFFF'
   });
 }
 
