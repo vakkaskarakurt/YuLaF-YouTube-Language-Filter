@@ -24,11 +24,6 @@ window.LanguageDetectors.tr = {
           const topLang = result.languages[0];
           const isTurkish = topLang.language === 'tr';
           
-          // Türkçe karakterler varsa ve API da Türkçe diyorsa
-          if (hasTurkishChars && isTurkish) {
-            return true;
-          }
-          
           // API güvenilir ve Türkçe diyorsa
           if (isTurkish && (result.isReliable || topLang.percentage > 70)) {
             return true;
@@ -39,20 +34,26 @@ window.LanguageDetectors.tr = {
       console.log('Chrome API error, using fallback');
     }
     
-    // Fallback: Türkçe kelime kontrolü
-    const commonTurkishWords = /\b(ve|bir|bu|da|ne|için|ile|var|mı|mi|mu|mü|çok|daha|gibi|kadar|olan|ama|şey|ben|sen|biz|siz|onlar|değil|ki|ya|ise|hem|sonra|şu|her|bazı|hiç|böyle|şöyle|nasıl|neden|niçin|kim|kimin|nerede|hangi|bütün|tüm|başka|yeni|eski|büyük|küçük|uzun|kısa|iyi|kötü|güzel|çirkin)\b/i;
+    // ⭐ KATILIAŞTIRILMIŞ FALLBACK KONTROL
+    const commonTurkishWords = /\b(ve|bir|bu|da|ne|için|ile|var|mı|mi|mu|mü|çok|daha|gibi|kadar|olan|ama|şey|ben|sen|biz|siz|onlar|değil|ki|ya|ise|hem|sonra|şu|her|bazı|hiç|böyle|şöyle|nasıl|neden|niçin|kim|kimin|nerede|hangi|bütün|tüm|başka|yeni|eski|büyük|küçük|uzun|kısa|iyi|kötü|güzel|çirkin|olan|oldu|olur|olsun|olan|yapıyor|yapmak|gelmek|gidiyor|aldım|verdi|getir)\b/ig;
     
-    // Türkçe ekleri
-    const turkishSuffixes = /(lar|ler|dan|den|tan|ten|ın|in|un|ün|nın|nin|nun|nün|ım|im|um|üm|sın|sin|sun|sün|ız|iz|uz|üz|sınız|siniz|sunuz|sünüz|yor|iyor|uyor|üyor|ecek|acak|mış|miş|muş|müş|dı|di|du|dü|tı|ti|tu|tü)$/i;
+    const turkishSuffixes = /(lar|ler|dan|den|tan|ten|ın|in|un|ün|nın|nin|nun|nün|ım|im|um|üm|sın|sin|sun|sün|ız|iz|uz|üz|sınız|siniz|sunuz|sünüz|yor|iyor|uyor|üyor|ecek|acak|mış|miş|muş|müş|dı|di|du|dü|tı|ti|tu|tü)(\s|$)/ig;
     
+    // Kelime sayıları
+    const wordMatches = text.match(commonTurkishWords) || [];
+    const suffixMatches = text.match(turkishSuffixes) || [];
+    const totalWords = text.split(/\s+/).length;
+    
+    // ⭐ SIKI KURALLAR
     if (hasTurkishChars) {
-      return true;
+      // Türkçe karakter var ama yeteri kadar Türkçe kelime/ek var mı?
+      const turkishWordRatio = (wordMatches.length + suffixMatches.length) / totalWords;
+      
+      // En az %40'ı Türkçe olmalı VE en az 2 Türkçe kelime/ek olmalı
+      return turkishWordRatio >= 0.4 && (wordMatches.length + suffixMatches.length) >= 2;
     }
     
-    const wordMatches = text.match(commonTurkishWords);
-    const suffixMatches = text.match(turkishSuffixes);
-    
-    return (wordMatches && wordMatches.length >= 2) || 
-           (suffixMatches && suffixMatches.length >= 1);
+    // Türkçe karakter yoksa, çok güçlü Türkçe kelime varlığı gerekli
+    return wordMatches.length >= 3 && suffixMatches.length >= 1;
   }
 };
