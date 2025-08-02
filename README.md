@@ -4,15 +4,10 @@
 
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/ejfoldoabjeidjdddhomeaojicaemdpm?style=for-the-badge&logo=googlechrome&logoColor=white)](https://chromewebstore.google.com/detail/yulaf-youtube-language-fi/ejfoldoabjeidjdddhomeaojicaemdpm)
 [![Chrome Web Store Users](https://img.shields.io/chrome-web-store/users/ejfoldoabjeidjdddhomeaojicaemdpm?style=for-the-badge&color=success)](https://chromewebstore.google.com/detail/yulaf-youtube-language-fi/ejfoldoabjeidjdddhomeaojicaemdpm)
-[![GitHub](https://img.shields.io/github/license/vakkaskarakurt/YuLaF-YouTube-Language-Filter?style=for-the-badge)](LICENSE)
+[![Chrome Web Store Rating](https://img.shields.io/chrome-web-store/rating/ejfoldoabjeidjdddhomeaojicaemdpm?style=for-the-badge&color=yellow)](https://chromewebstore.google.com/detail/yulaf-youtube-language-fi/ejfoldoabjeidjdddhomeaojicaemdpm)
+[![Chrome Web Store Last Updated](https://img.shields.io/chrome-web-store/last-updated/ejfoldoabjeidjdddhomeaojicaemdpm?style=for-the-badge&color=green)](https://chromewebstore.google.com/detail/yulaf-youtube-language-fi/ejfoldoabjeidjdddhomeaojicaemdpm)
+[![YuLaF](https://img.shields.io/badge/YuLaF-Language%20Filter-brightgreen?style=for-the-badge&logo=youtube&logoColor=white)](https://chromewebstore.google.com/detail/yulaf-youtube-language-fi/ejfoldoabjeidjdddhomeaojicaemdpm)
 
-
-## 🔗 Links
-
-- **[Chrome Web Store](https://chromewebstore.google.com/detail/yulaf-youtube-language-fi/ejfoldoabjeidjdddhomeaojicaemdpm)** - Install the extension
-- **[GitHub Repository](https://github.com/vakkaskarakurt/YuLaF-YouTube-Language-Filter)** - Source code
-- **[Issues](https://github.com/vakkaskarakurt/YuLaF-YouTube-Language-Filter/issues)** - Report bugs or request features
-- **[Privacy Policy](PRIVACY.md)** - Our privacy commitment
 
 ## 👥 Team
 
@@ -21,6 +16,14 @@
 
 **Emrah Fidan** - Developer  
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/emrah-fidann)
+
+## 🔗 Links
+
+- **[Chrome Web Store](https://chromewebstore.google.com/detail/yulaf-youtube-language-fi/ejfoldoabjeidjdddhomeaojicaemdpm)** - Install the extension
+- **[GitHub Repository](https://github.com/vakkaskarakurt/YuLaF-YouTube-Language-Filter)** - Source code
+- **[Issues](https://github.com/vakkaskarakurt/YuLaF-YouTube-Language-Filter/issues)** - Report bugs or request features
+- **[Privacy Policy](PRIVACY.md)** - Our privacy commitment
+
 
 ## 🚀 Simple Idea
 
@@ -36,7 +39,7 @@ Perfect for polyglots, language learners, and anyone wanting to customize their 
 - **🔒 Privacy-First** - All processing done locally, no data collected or transmitted
 - **⚡ One-Click Toggle** - Easy on/off control with visual status indicator
 - **🎨 Clean Interface** - Modern, intuitive popup design
-- **🆓 Completely Free** - Open source and always free to use
+- **🆓 Completely Free** - Free to use 
 
 ## 📱 Installation
 
@@ -100,7 +103,7 @@ YuLaF is built with privacy as a core principle:
 - **No Data Collection** - We don't collect any personal information
 - **Local Processing** - All language detection happens on your device
 - **No External Services** - No data sent to external servers
-- **Open Source** - Complete transparency in our code
+- **Complete Transparency** - Privacy-focused development"
 
 Read our full [Privacy Policy](PRIVACY.md) for details.
 
@@ -123,7 +126,7 @@ Read our full [Privacy Policy](PRIVACY.md) for details.
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is proprietary software. All rights reserved - see the [LICENSE](LICENSE) file for details.
 
 ## ⭐ Support
 
