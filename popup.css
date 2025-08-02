@@ -1,11 +1,24 @@
+:root {
+  --primary: #ff0000;
+  --primary-hover: #e60000;
+  --secondary: #ff4444;
+  --bg-primary: #0f0f0f;
+  --bg-secondary: #1a1a1a;
+  --bg-tertiary: #2d2d2d;
+  --text-primary: #ffffff;
+  --text-secondary: #b3b3b3;
+  --border: #404040;
+  --border-hover: #606060;
+}
+
 body {
   width: 380px;
   min-height: 400px;
   margin: 0;
   padding: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: #0f0f0f;
-  color: #fff;
+  background: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 .container {
@@ -15,17 +28,30 @@ body {
 .header {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 14px;
   margin-bottom: 20px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid #3f3f3f;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+.header-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  box-shadow: 0 3px 12px rgba(255, 0, 0, 0.25);
+  transition: transform 0.2s ease;
+}
+
+.header-icon:hover {
+  transform: scale(1.05);
 }
 
 .header h1 {
   margin: 0;
   font-size: 18px;
   font-weight: 600;
-  color: #fff;
+  color: var(--text-primary);
+  flex: 1;
 }
 
 .main-toggle {
@@ -55,7 +81,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #3f3f3f;
+  background-color: var(--bg-tertiary);
   border-radius: 24px;
   transition: 0.3s;
 }
@@ -67,13 +93,13 @@ body {
   width: 18px;
   left: 3px;
   bottom: 3px;
-  background-color: #fff;
+  background-color: var(--text-primary);
   border-radius: 50%;
   transition: 0.3s;
 }
 
 input:checked + .slider {
-  background-color: #ff0000;
+  background-color: var(--primary);
 }
 
 input:checked + .slider:before {
@@ -82,22 +108,22 @@ input:checked + .slider:before {
 
 #statusText {
   font-weight: 500;
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .language-selector {
   margin-bottom: 20px;
   padding: 15px;
-  background: #272727;
+  background: var(--bg-secondary);
   border-radius: 8px;
-  border: 1px solid #3f3f3f;
+  border: 1px solid var(--border);
 }
 
 .language-selector h3 {
   margin: 0 0 12px 0;
   font-size: 14px;
   font-weight: 600;
-  color: #aaa;
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -109,21 +135,21 @@ input:checked + .slider:before {
 .search-container input {
   width: 100%;
   padding: 8px 12px;
-  background: #1f1f1f;
-  border: 1px solid #3f3f3f;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
   border-radius: 6px;
-  color: #fff;
+  color: var(--text-primary);
   font-size: 14px;
   box-sizing: border-box;
 }
 
 .search-container input:focus {
   outline: none;
-  border-color: #ff0000;
+  border-color: var(--primary);
 }
 
 .search-container input::placeholder {
-  color: #aaa;
+  color: var(--text-secondary);
 }
 
 .language-options {
@@ -140,44 +166,44 @@ input:checked + .slider:before {
 }
 
 .language-options::-webkit-scrollbar-track {
-  background: #1f1f1f;
+  background: var(--bg-tertiary);
   border-radius: 3px;
 }
 
 .language-options::-webkit-scrollbar-thumb {
-  background: #3f3f3f;
+  background: var(--border);
   border-radius: 3px;
 }
 
 .language-options::-webkit-scrollbar-thumb:hover {
-  background: #5f5f5f;
+  background: var(--border-hover);
 }
 
 .language-option {
   display: flex;
   align-items: center;
   padding: 8px 10px;
-  background: #1f1f1f;
-  border: 1px solid #3f3f3f;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.3s;
 }
 
 .language-option:hover {
-  background: #2a2a2a;
-  border-color: #5f5f5f;
+  background: var(--bg-secondary);
+  border-color: var(--border-hover);
 }
 
 .language-option input[type="checkbox"] {
   width: 16px;
   height: 16px;
   margin-right: 10px;
-  accent-color: #ff0000;
+  accent-color: var(--primary);
 }
 
 .language-option input[type="checkbox"]:checked + .language-label {
-  color: #ff0000;
+  color: var(--primary);
 }
 
 .language-label {
@@ -204,21 +230,21 @@ input:checked + .slider:before {
 
 .language-native {
   font-size: 12px;
-  color: #aaa;
+  color: var(--text-secondary);
   font-style: italic;
 }
 
 .selected-count {
   text-align: center;
   font-size: 12px;
-  color: #aaa;
+  color: var(--text-secondary);
   padding: 8px;
-  background: #1f1f1f;
+  background: var(--bg-tertiary);
   border-radius: 6px;
 }
 
 .selected-count span {
-  color: #ff0000;
+  color: var(--primary);
   font-weight: 600;
 }
 
