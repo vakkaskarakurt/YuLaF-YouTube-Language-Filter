@@ -1,6 +1,6 @@
 # Privacy Policy - YuLaF Extension
 
-**Last updated: [Bugünün tarihi]**
+**Last updated: 30.06.2025** 
 
 ## Overview
 YuLaF (YouTube Language Filter) is a browser extension that filters YouTube content based on user's selected languages. This privacy policy explains how we handle your data.
@@ -48,7 +48,7 @@ Any changes to this privacy policy will be posted on this page with an updated r
 
 ## Contact
 For questions about this privacy policy, please contact us through GitHub issues:
-[Your GitHub Repository URL]/issues
+https://github.com/vakkaskarakurt/YuLaF-YouTube-Language-Filter/issues
 
 ---
 *This extension respects your privacy and operates with full transparency.*
