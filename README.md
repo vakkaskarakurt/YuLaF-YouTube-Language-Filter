@@ -6,6 +6,14 @@
 [![Chrome Web Store Users](https://img.shields.io/chrome-web-store/users/ejfoldoabjeidjdddhomeaojicaemdpm?style=for-the-badge&color=success)](https://chromewebstore.google.com/detail/yulaf-youtube-language-fi/ejfoldoabjeidjdddhomeaojicaemdpm)
 [![GitHub](https://img.shields.io/github/license/vakkaskarakurt/YuLaF-YouTube-Language-Filter?style=for-the-badge)](LICENSE)
 
+
+## 🔗 Links
+
+- **[Chrome Web Store](https://chromewebstore.google.com/detail/yulaf-youtube-language-fi/ejfoldoabjeidjdddhomeaojicaemdpm)** - Install the extension
+- **[GitHub Repository](https://github.com/vakkaskarakurt/YuLaF-YouTube-Language-Filter)** - Source code
+- **[Issues](https://github.com/vakkaskarakurt/YuLaF-YouTube-Language-Filter/issues)** - Report bugs or request features
+- **[Privacy Policy](PRIVACY.md)** - Our privacy commitment
+
 ## 🚀 Simple Idea
 
 Learning a new language but YouTube keeps showing content in your native language? **YuLaF** filters your feed to show only content in your target language(s), giving you maximum exposure to the languages you're learning.
@@ -115,13 +123,6 @@ Read our full [Privacy Policy](PRIVACY.md) for details.
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🔗 Links
-
-- **[Chrome Web Store](https://chromewebstore.google.com/detail/yulaf-youtube-language-fi/ejfoldoabjeidjdddhomeaojicaemdpm)** - Install the extension
-- **[GitHub Repository](https://github.com/vakkaskarakurt/YuLaF-YouTube-Language-Filter)** - Source code
-- **[Issues](https://github.com/vakkaskarakurt/YuLaF-YouTube-Language-Filter/issues)** - Report bugs or request features
-- **[Privacy Policy](PRIVACY.md)** - Our privacy commitment
 
 ## ⭐ Support
 
