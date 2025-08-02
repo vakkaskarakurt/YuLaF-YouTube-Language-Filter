@@ -1,10 +1,6 @@
 document.addEventListener('DOMContentLoaded', async () => {
   const enableFilter = document.getElementById('enableFilter');
   const statusText = document.getElementById('statusText');
-  const settingsPanel = document.getElementById('settingsPanel');
-  const strictMode = document.getElementById('strictMode');
-  const hideVideos = document.getElementById('hideVideos');
-  const hideChannels = document.getElementById('hideChannels');
   const languageSearch = document.getElementById('languageSearch');
   const languageOptions = document.getElementById('languageOptions');
   const selectedCount = document.getElementById('selectedCount');
@@ -19,9 +15,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   let currentState = {
     enabled: true,
-    strictMode: true,
-    hideVideos: true,
-    hideChannels: true,
+    strictMode: true,       // Varsayılan olarak true, UI'da gösterilmeyecek
+    hideVideos: true,       // Varsayılan olarak true, UI'da gösterilmeyecek
+    hideChannels: true,     // Varsayılan olarak true, UI'da gösterilmeyecek
     selectedLanguages: ['en'] // Default English
   };
 
@@ -121,9 +117,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       
       currentState = {
         enabled: stored.enabled !== false,
-        strictMode: stored.strictMode !== false,
-        hideVideos: stored.hideVideos !== false,
-        hideChannels: stored.hideChannels !== false,
+        strictMode: stored.strictMode !== false,        // Varsayılan true
+        hideVideos: stored.hideVideos !== false,        // Varsayılan true
+        hideChannels: stored.hideChannels !== false,    // Varsayılan true
         selectedLanguages: stored.selectedLanguages || ['en']
       };
 
@@ -152,12 +148,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // UI güncelle
     enableFilter.checked = state.enabled;
-    strictMode.checked = state.strictMode;
-    hideVideos.checked = state.hideVideos;
-    hideChannels.checked = state.hideChannels;
     
     updateStatusText(state.enabled);
-    updateSettingsVisibility(state.enabled);
+    updateLanguageSelectorVisibility(state.enabled);
     renderLanguages();
     
     // Event listener'ları geri ekle
@@ -199,14 +192,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     const newEnabled = e.target.checked;
     updateStatusText(newEnabled);
-    updateSettingsVisibility(newEnabled);
+    updateLanguageSelectorVisibility(newEnabled);
     
     const success = await saveState({ enabled: newEnabled }, true);
     
     if (!success) {
       e.target.checked = !newEnabled;
       updateStatusText(!newEnabled);
-      updateSettingsVisibility(!newEnabled);
+      updateLanguageSelectorVisibility(!newEnabled);
       alert('Settings could not be saved. Please try again.');
     }
   }
@@ -252,35 +245,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  async function handleSettingChange(e) {
-    if (isInitializing) return;
-    
-    const newSettings = {
-      strictMode: strictMode.checked,
-      hideVideos: hideVideos.checked,
-      hideChannels: hideChannels.checked
-    };
-
-    await saveState(newSettings, true);
-  }
-
   function handleSearchInput(e) {
     renderLanguages(e.target.value);
   }
 
   function addEventListeners() {
     enableFilter.addEventListener('change', handleEnableChange);
-    strictMode.addEventListener('change', handleSettingChange);
-    hideVideos.addEventListener('change', handleSettingChange);
-    hideChannels.addEventListener('change', handleSettingChange);
     languageSearch.addEventListener('input', handleSearchInput);
   }
 
   function removeEventListeners() {
     enableFilter.removeEventListener('change', handleEnableChange);
-    strictMode.removeEventListener('change', handleSettingChange);
-    hideVideos.removeEventListener('change', handleSettingChange);
-    hideChannels.removeEventListener('change', handleSettingChange);
     languageSearch.removeEventListener('input', handleSearchInput);
   }
 
@@ -309,12 +284,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     statusText.style.color = enabled ? '#ff0000' : '#aaa';
   }
 
-  function updateSettingsVisibility(enabled) {
+  function updateLanguageSelectorVisibility(enabled) {
     if (enabled) {
-      settingsPanel.classList.remove('disabled');
       document.querySelector('.language-selector').classList.remove('disabled');
     } else {
-      settingsPanel.classList.add('disabled');
       document.querySelector('.language-selector').classList.add('disabled');
     }
   }
