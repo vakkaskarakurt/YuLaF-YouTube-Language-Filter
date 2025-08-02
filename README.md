@@ -4,9 +4,9 @@
 
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/ejfoldoabjeidjdddhomeaojicaemdpm?style=for-the-badge&logo=googlechrome&logoColor=white)](https://chromewebstore.google.com/detail/yulaf-youtube-language-fi/ejfoldoabjeidjdddhomeaojicaemdpm)
 [![Chrome Web Store Users](https://img.shields.io/chrome-web-store/users/ejfoldoabjeidjdddhomeaojicaemdpm?style=for-the-badge&color=success)](https://chromewebstore.google.com/detail/yulaf-youtube-language-fi/ejfoldoabjeidjdddhomeaojicaemdpm)
-[![Chrome Web Store Rating](https://img.shields.io/chrome-web-store/rating/ejfoldoabjeidjdddhomeaojicaemdpm?style=for-the-badge&color=yellow)](https://chromewebstore.google.com/detail/yulaf-youtube-language-fi/ejfoldoabjeidjdddhomeaojicaemdpm)
-[![Chrome Web Store Last Updated](https://img.shields.io/chrome-web-store/last-updated/ejfoldoabjeidjdddhomeaojicaemdpm?style=for-the-badge&color=green)](https://chromewebstore.google.com/detail/yulaf-youtube-language-fi/ejfoldoabjeidjdddhomeaojicaemdpm)
-[![YuLaF](https://img.shields.io/badge/YuLaF-Language%20Filter-brightgreen?style=for-the-badge&logo=youtube&logoColor=white)](https://chromewebstore.google.com/detail/yulaf-youtube-language-fi/ejfoldoabjeidjdddhomeaojicaemdpm)
+[![Chrome Web Store Rating](https://img.shields.io/chrome-web-store/rating/ejfoldoabjeidjdddhomeaojicaemdpm?style=for-the-badge&color=orange)](https://chromewebstore.google.com/detail/yulaf-youtube-language-fi/ejfoldoabjeidjdddhomeaojicaemdpm)
+[![Chrome Web Store Last Updated](https://img.shields.io/chrome-web-store/last-updated/ejfoldoabjeidjdddhomeaojicaemdpm?style=for-the-badge&color=purple)](https://chromewebstore.google.com/detail/yulaf-youtube-language-fi/ejfoldoabjeidjdddhomeaojicaemdpm)
+[![YuLaF](https://img.shields.io/badge/YuLaF-Language%20Filter-red?style=for-the-badge&logo=youtube&logoColor=red)](https://chromewebstore.google.com/detail/yulaf-youtube-language-fi/ejfoldoabjeidjdddhomeaojicaemdpm)
 
 
 ## 👥 Team
