@@ -14,6 +14,14 @@
 - **[Issues](https://github.com/vakkaskarakurt/YuLaF-YouTube-Language-Filter/issues)** - Report bugs or request features
 - **[Privacy Policy](PRIVACY.md)** - Our privacy commitment
 
+## 👥 Team
+
+**Vakkas Karakurt** - Developer  
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/vakkaskarakurt)
+
+**Emrah Fidan** - Developer  
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/emrah-fidann)
+
 ## 🚀 Simple Idea
 
 Learning a new language but YouTube keeps showing content in your native language? **YuLaF** filters your feed to show only content in your target language(s), giving you maximum exposure to the languages you're learning.
@@ -112,13 +120,6 @@ Read our full [Privacy Policy](PRIVACY.md) for details.
 - ❌ **Firefox** - Not supported (Manifest V3 differences)
 - ❌ **Safari** - Not supported
 
-## 👥 Team
-
-**Vakkas Karakurt** - Developer  
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/vakkaskarakurt)
-
-**Emrah Fidan** - Developer  
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/emrah-fidann)
 
 ## 📄 License
 
