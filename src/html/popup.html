@@ -20,7 +20,19 @@
     </div>
     
     <div class="language-selector">
-      <h3>Select Languages to Show</h3>
+      <div class="selector-header">
+        <h3>Select Languages to Show</h3>
+        <div class="sort-container">
+          <button class="sort-button" id="sortButton">
+            <span class="sort-icon">⇅</span>
+            <span class="sort-text">Sort by</span>
+          </button>
+          <div class="sort-dropdown" id="sortDropdown">
+            <div class="sort-option" data-sort="name">Name</div>
+            <div class="sort-option" data-sort="popularity">Popularity</div>
+          </div>
+        </div>
+      </div>
       <div class="search-container">
         <input type="text" id="languageSearch" placeholder="Search languages...">
       </div>

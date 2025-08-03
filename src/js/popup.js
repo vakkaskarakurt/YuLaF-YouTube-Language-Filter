@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const languageSearch = document.getElementById('languageSearch');
   const languageOptions = document.getElementById('languageOptions');
   const selectedCount = document.getElementById('selectedCount');
+  const sortButton = document.getElementById('sortButton');
+  const sortDropdown = document.getElementById('sortDropdown');
 
   const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
   const tab = tabs[0];
@@ -108,7 +110,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           </button>
           
           <button id="feedbackBtn" style="
-            background-color: #ff0000;
+            background-color: #4CAF50;
             color: white;
             border: none;
             padding: 10px 16px;
@@ -209,13 +211,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
         
         feedbackBtn.addEventListener('mouseover', () => {
-          feedbackBtn.style.background = '#ff2222';
+          feedbackBtn.style.background = '#66BB6A';
           feedbackBtn.style.transform = 'translateY(-1px)';
-          feedbackBtn.style.boxShadow = '0 4px 12px rgba(255, 0, 0, 0.3)';
+          feedbackBtn.style.boxShadow = '0 4px 12px rgba(76, 175, 80, 0.3)';
         });
         
         feedbackBtn.addEventListener('mouseout', () => {
-          feedbackBtn.style.background = '#ff0000';
+          feedbackBtn.style.background = '#4CAF50';
           feedbackBtn.style.transform = 'translateY(0)';
           feedbackBtn.style.boxShadow = 'none';
         });
@@ -254,14 +256,19 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   let isInitializing = true;
   let languages = {};
+  let currentSortBy = 'popularity'; // Default sort by popularity
 
   // Languages'ı config'den yükle
   async function loadLanguages() {
     try {
+      console.log('Loading languages from content script...');
       const response = await chrome.tabs.sendMessage(tab.id, { action: 'getLanguages' });
+      console.log('Content script response:', response);
       if (response && response.languages) {
         languages = response.languages;
+        console.log('Languages loaded from content script:', Object.keys(languages).length);
       } else {
+        console.log('Using fallback language list');
         // Fallback - directly from config if content script not ready
         languages = {
           en: { code: 'en', name: 'English', nativeName: 'English', icon: '🇬🇧', enabled: false },
@@ -270,6 +277,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           hi: { code: 'hi', name: 'Hindi', nativeName: 'हिन्दी', icon: '🇮🇳', enabled: false },
           ar: { code: 'ar', name: 'Arabic', nativeName: 'العربية', icon: '🇸🇦', enabled: false },
           pt: { code: 'pt', name: 'Portuguese', nativeName: 'Português', icon: '🇵🇹', enabled: false },
+          bn: { code: 'bn', name: 'Bengali', nativeName: 'বাংলা', icon: '🇧🇩', enabled: false },
           ru: { code: 'ru', name: 'Russian', nativeName: 'Русский', icon: '🇷🇺', enabled: false },
           ja: { code: 'ja', name: 'Japanese', nativeName: '日本語', icon: '🇯🇵', enabled: false },
           fr: { code: 'fr', name: 'French', nativeName: 'Français', icon: '🇫🇷', enabled: false },
@@ -277,12 +285,58 @@ document.addEventListener('DOMContentLoaded', async () => {
           ko: { code: 'ko', name: 'Korean', nativeName: '한국어', icon: '🇰🇷', enabled: false },
           it: { code: 'it', name: 'Italian', nativeName: 'Italiano', icon: '🇮🇹', enabled: false },
           tr: { code: 'tr', name: 'Turkish', nativeName: 'Türkçe', icon: '🇹🇷', enabled: false },
+          vi: { code: 'vi', name: 'Vietnamese', nativeName: 'Tiếng Việt', icon: '🇻🇳', enabled: false },
+          th: { code: 'th', name: 'Thai', nativeName: 'ไทย', icon: '🇹🇭', enabled: false },
+          pl: { code: 'pl', name: 'Polish', nativeName: 'Polski', icon: '🇵🇱', enabled: false },
           nl: { code: 'nl', name: 'Dutch', nativeName: 'Nederlands', icon: '🇳🇱', enabled: false },
-          pl: { code: 'pl', name: 'Polish', nativeName: 'Polski', icon: '🇵🇱', enabled: false }
+          sv: { code: 'sv', name: 'Swedish', nativeName: 'Svenska', icon: '🇸🇪', enabled: false },
+          da: { code: 'da', name: 'Danish', nativeName: 'Dansk', icon: '🇩🇰', enabled: false },
+          no: { code: 'no', name: 'Norwegian', nativeName: 'Norsk', icon: '🇳🇴', enabled: false },
+          fi: { code: 'fi', name: 'Finnish', nativeName: 'Suomi', icon: '🇫🇮', enabled: false },
+          cs: { code: 'cs', name: 'Czech', nativeName: 'Čeština', icon: '🇨🇿', enabled: false },
+          hu: { code: 'hu', name: 'Hungarian', nativeName: 'Magyar', icon: '🇭🇺', enabled: false },
+          ro: { code: 'ro', name: 'Romanian', nativeName: 'Română', icon: '🇷🇴', enabled: false },
+          bg: { code: 'bg', name: 'Bulgarian', nativeName: 'Български', icon: '🇧🇬', enabled: false },
+          hr: { code: 'hr', name: 'Croatian', nativeName: 'Hrvatski', icon: '🇭🇷', enabled: false },
+          sk: { code: 'sk', name: 'Slovak', nativeName: 'Slovenčina', icon: '🇸🇰', enabled: false },
+          sl: { code: 'sl', name: 'Slovenian', nativeName: 'Slovenščina', icon: '🇸🇮', enabled: false },
+          et: { code: 'et', name: 'Estonian', nativeName: 'Eesti', icon: '🇪🇪', enabled: false },
+          lv: { code: 'lv', name: 'Latvian', nativeName: 'Latviešu', icon: '🇱🇻', enabled: false },
+          lt: { code: 'lt', name: 'Lithuanian', nativeName: 'Lietuvių', icon: '🇱🇹', enabled: false },
+          el: { code: 'el', name: 'Greek', nativeName: 'Ελληνικά', icon: '🇬🇷', enabled: false },
+          id: { code: 'id', name: 'Indonesian', nativeName: 'Bahasa Indonesia', icon: '🇮🇩', enabled: false },
+          ms: { code: 'ms', name: 'Malay', nativeName: 'Bahasa Melayu', icon: '🇲🇾', enabled: false },
+          tl: { code: 'tl', name: 'Filipino', nativeName: 'Filipino', icon: '🇵🇭', enabled: false },
+          he: { code: 'he', name: 'Hebrew', nativeName: 'עברית', icon: '🇮🇱', enabled: false },
+          fa: { code: 'fa', name: 'Persian', nativeName: 'فارسی', icon: '🇮🇷', enabled: false },
+          ur: { code: 'ur', name: 'Urdu', nativeName: 'اردو', icon: '🇵🇰', enabled: false },
+          ta: { code: 'ta', name: 'Tamil', nativeName: 'தமிழ்', icon: '🇱🇰', enabled: false },
+          te: { code: 'te', name: 'Telugu', nativeName: 'తెలుగు', icon: '🇮🇳', enabled: false },
+          ml: { code: 'ml', name: 'Malayalam', nativeName: 'മലയാളം', icon: '🇮🇳', enabled: false },
+          kn: { code: 'kn', name: 'Kannada', nativeName: 'ಕನ್ನಡ', icon: '🇮🇳', enabled: false },
+          gu: { code: 'gu', name: 'Gujarati', nativeName: 'ગુજરાતી', icon: '🇮🇳', enabled: false },
+          pa: { code: 'pa', name: 'Punjabi', nativeName: 'ਪੰਜਾਬੀ', icon: '🇮🇳', enabled: false },
+          sw: { code: 'sw', name: 'Swahili', nativeName: 'Kiswahili', icon: '🇰🇪', enabled: false },
+          af: { code: 'af', name: 'Afrikaans', nativeName: 'Afrikaans', icon: '🇿🇦', enabled: false },
+          am: { code: 'am', name: 'Amharic', nativeName: 'አማርኛ', icon: '🇪🇹', enabled: false },
+          ca: { code: 'ca', name: 'Catalan', nativeName: 'Català', icon: '🏳️', enabled: false },
+          eu: { code: 'eu', name: 'Basque', nativeName: 'Euskera', icon: '🏳️', enabled: false },
+          gl: { code: 'gl', name: 'Galician', nativeName: 'Galego', icon: '🏳️', enabled: false },
+          cy: { code: 'cy', name: 'Welsh', nativeName: 'Cymraeg', icon: '🏴󠁧󠁢󠁷󠁬󠁳󠁿', enabled: false },
+          ga: { code: 'ga', name: 'Irish', nativeName: 'Gaeilge', icon: '🇮🇪', enabled: false },
+          mt: { code: 'mt', name: 'Maltese', nativeName: 'Malti', icon: '🇲🇹', enabled: false },
+          is: { code: 'is', name: 'Icelandic', nativeName: 'Íslenska', icon: '🇮🇸', enabled: false },
+          mk: { code: 'mk', name: 'Macedonian', nativeName: 'Македонски', icon: '🇲🇰', enabled: false },
+          sq: { code: 'sq', name: 'Albanian', nativeName: 'Shqip', icon: '🇦🇱', enabled: false },
+          sr: { code: 'sr', name: 'Serbian', nativeName: 'Српски', icon: '🇷🇸', enabled: false },
+          bs: { code: 'bs', name: 'Bosnian', nativeName: 'Bosanski', icon: '🇧🇦', enabled: false },
+          uk: { code: 'uk', name: 'Ukrainian', nativeName: 'Українська', icon: '🇺🇦', enabled: false },
+          be: { code: 'be', name: 'Belarusian', nativeName: 'Беларуская', icon: '🇧🇾', enabled: false }
         };
       }
     } catch (error) {
-      console.log('Could not load languages from content script, using fallback');
+      console.log('Could not load languages from content script, using fallback:', error.message);
+      console.log('Error details:', error);
     }
   }
 
@@ -310,6 +364,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   function renderLanguages(searchTerm = '') {
     languageOptions.innerHTML = '';
     
+    // Always show languages initially
+    if (!languageOptions.classList.contains('expanded') && Object.keys(languages).length > 0) {
+      languageOptions.classList.add('expanded');
+    }
+    
     const filteredLanguages = Object.entries(languages).filter(([code, lang]) => {
       if (!searchTerm) return true;
       const term = searchTerm.toLowerCase();
@@ -328,30 +387,34 @@ document.addEventListener('DOMContentLoaded', async () => {
       'gl', 'cy', 'ga', 'mt', 'is', 'mk', 'sq', 'sr', 'bs', 'uk', 'be'
     ];
 
-    // Önce seçili diller, sonra popülerlik sırası
+    // Sort languages based on current sort preference
     filteredLanguages.sort(([codeA, langA], [codeB, langB]) => {
       const aSelected = currentState.selectedLanguages.includes(codeA);
       const bSelected = currentState.selectedLanguages.includes(codeB);
       
-      // Seçili diller önce gelir
+      // Seçili diller her zaman önce gelir
       if (aSelected && !bSelected) return -1;
       if (!aSelected && bSelected) return 1;
       
-      // Popülerlik sırasına göre sırala
-      const aIndex = popularityOrder.indexOf(codeA);
-      const bIndex = popularityOrder.indexOf(codeB);
-      
-      // Eğer ikisi de listede varsa, sırasına göre
-      if (aIndex !== -1 && bIndex !== -1) {
-        return aIndex - bIndex;
+      // Sort by selected method
+      if (currentSortBy === 'name') {
+        return langA.name.localeCompare(langB.name);
+      } else { // popularity
+        const aIndex = popularityOrder.indexOf(codeA);
+        const bIndex = popularityOrder.indexOf(codeB);
+        
+        // Eğer ikisi de listede varsa, sırasına göre
+        if (aIndex !== -1 && bIndex !== -1) {
+          return aIndex - bIndex;
+        }
+        
+        // Eğer biri listede yoksa, alfabetik sırala
+        if (aIndex === -1 && bIndex !== -1) return 1;
+        if (aIndex !== -1 && bIndex === -1) return -1;
+        
+        // Her ikisi de listede yoksa alfabetik
+        return langA.name.localeCompare(langB.name);
       }
-      
-      // Eğer biri listede yoksa, alfabetik sırala
-      if (aIndex === -1 && bIndex !== -1) return 1;
-      if (aIndex !== -1 && bIndex === -1) return -1;
-      
-      // Her ikisi de listede yoksa alfabetik
-      return langA.name.localeCompare(langB.name);
     });
 
     filteredLanguages.forEach(([code, lang]) => {
@@ -368,7 +431,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   async function loadCurrentState() {
     try {
       const stored = await chrome.storage.sync.get([
-        'enabled', 'strictMode', 'hideVideos', 'hideChannels', 'selectedLanguages'
+        'enabled', 'strictMode', 'hideVideos', 'hideChannels', 'selectedLanguages', 'sortBy'
       ]);
       
       currentState = {
@@ -378,6 +441,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         hideChannels: stored.hideChannels !== false,    // Varsayılan true
         selectedLanguages: stored.selectedLanguages || ['en']
       };
+      
+      currentSortBy = stored.sortBy || 'popularity';
 
       try {
         const response = await chrome.tabs.sendMessage(tab.id, { action: 'getStatus' });
@@ -407,6 +472,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     updateStatusText(state.enabled);
     updateLanguageSelectorVisibility(state.enabled);
+    updateSortUI();
     renderLanguages();
     
     // Event listener'ları geri ekle
@@ -523,14 +589,29 @@ document.addEventListener('DOMContentLoaded', async () => {
     languageSearch.addEventListener('click', handleSearchFocus);
     languageSearch.addEventListener('focus', handleSearchFocus);
     
+    // Sort button and dropdown events
+    if (sortButton) {
+      sortButton.addEventListener('click', handleSortButtonClick);
+    }
+    
+    if (sortDropdown) {
+      sortDropdown.addEventListener('click', handleSortOptionClick);
+    }
+    
     // Close dropdown when clicking outside
     document.addEventListener('click', (e) => {
       const languageOptions = document.getElementById('languageOptions');
       const languageSearch = document.getElementById('languageSearch');
       const languageSelector = document.querySelector('.language-selector');
+      const sortContainer = document.querySelector('.sort-container');
       
       if (!languageSelector.contains(e.target)) {
         languageOptions.classList.remove('expanded');
+      }
+      
+      if (!sortContainer.contains(e.target)) {
+        sortDropdown.classList.remove('show');
+        sortButton.classList.remove('active');
       }
     });
     
@@ -595,6 +676,58 @@ document.addEventListener('DOMContentLoaded', async () => {
     languageSearch.removeEventListener('input', handleSearchInput);
     languageSearch.removeEventListener('click', handleSearchFocus);
     languageSearch.removeEventListener('focus', handleSearchFocus);
+    
+    if (sortButton) {
+      sortButton.removeEventListener('click', handleSortButtonClick);
+    }
+    
+    if (sortDropdown) {
+      sortDropdown.removeEventListener('click', handleSortOptionClick);
+    }
+  }
+
+  // Sort functionality functions
+  function updateSortUI() {
+    // Update sort button text
+    const sortText = document.querySelector('.sort-text');
+    if (sortText) {
+      sortText.textContent = `Sort by`;
+    }
+    
+    // Update active sort option
+    const sortOptions = document.querySelectorAll('.sort-option');
+    sortOptions.forEach(option => {
+      option.classList.remove('active');
+      if (option.dataset.sort === currentSortBy) {
+        option.classList.add('active');
+      }
+    });
+  }
+
+  function handleSortButtonClick() {
+    sortDropdown.classList.toggle('show');
+    sortButton.classList.toggle('active');
+  }
+
+  async function handleSortOptionClick(e) {
+    const target = e.target.closest('.sort-option');
+    if (!target) return;
+    
+    const newSortBy = target.dataset.sort;
+    if (newSortBy && newSortBy !== currentSortBy) {
+      currentSortBy = newSortBy;
+      
+      // Save to storage
+      await chrome.storage.sync.set({ sortBy: currentSortBy });
+      
+      // Update UI
+      updateSortUI();
+      renderLanguages(languageSearch.value);
+    }
+    
+    // Close dropdown
+    sortDropdown.classList.remove('show');
+    sortButton.classList.remove('active');
   }
 
   // Storage değişikliklerini dinle

@@ -120,13 +120,104 @@ input:checked + .slider:before {
   border: 1px solid var(--border);
 }
 
+.selector-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
 .language-selector h3 {
-  margin: 0 0 12px 0;
+  margin: 0;
   font-size: 14px;
   font-weight: 600;
   color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
+}
+
+.sort-container {
+  position: relative;
+}
+
+.sort-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.sort-button:hover {
+  background: var(--bg-secondary);
+  border-color: var(--border-hover);
+}
+
+.sort-button.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+}
+
+.sort-icon {
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+.sort-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+  min-width: 100px;
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+.sort-dropdown.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: all;
+}
+
+.sort-option {
+  padding: 8px 12px;
+  font-size: 12px;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.sort-option:first-child {
+  border-radius: 6px 6px 0 0;
+}
+
+.sort-option:last-child {
+  border-radius: 0 0 6px 6px;
+}
+
+.sort-option:hover {
+  background: var(--bg-tertiary);
+  color: var(--primary);
+}
+
+.sort-option.active {
+  background: var(--primary);
+  color: white;
 }
 
 .search-container {
@@ -155,17 +246,20 @@ input:checked + .slider:before {
 }
 
 .language-options {
-  max-height: 200px;
-  overflow-y: auto;
-  display: none;
+  max-height: 0;
+  opacity: 0;
+  display: flex;
   flex-direction: column;
   gap: 6px;
   margin-bottom: 10px;
   transition: all 0.3s ease;
+  overflow: hidden;
 }
 
 .language-options.expanded {
-  display: flex;
+  max-height: 200px;
+  opacity: 1;
+  overflow-y: auto;
 }
 
 .language-options::-webkit-scrollbar {
