@@ -274,7 +274,8 @@ input:checked + .slider:before {
 }
 
 .guide-btn,
-.feedback-btn {
+.feedback-btn,
+.rate-us-btn {
   border: none;
   padding: 12px 16px;
   border-radius: 8px;
@@ -297,11 +298,21 @@ input:checked + .slider:before {
 }
 
 .feedback-btn {
-  background: linear-gradient(45deg, #330000, #ff0000);
+  background: linear-gradient(45deg, #000000, #4CAF50);
 }
 
 .feedback-btn:hover {
-  background: linear-gradient(45deg, #440000, #ff2222);
-  box-shadow: 0 4px 12px rgba(255, 0, 0, 0.3);
+  background: linear-gradient(45deg, #000000, #66BB6A);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+  transform: translateY(-1px);
+}
+
+.rate-us-btn {
+  background: linear-gradient(45deg, #000000, #ffc107);
+}
+
+.rate-us-btn:hover {
+  background: linear-gradient(45deg, #000000, #ffca28);
+  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
   transform: translateY(-1px);
 }

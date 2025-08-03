@@ -1,8 +1,8 @@
 *.zip
 
-# Personal/Developer files
-emrah.jpeg
-Vakkas.jpeg
+# Personal/Developer files (keep root directory images for extension functionality)
+# emrah.jpeg - needed for welcome.html
+# Vakkas.jpeg - needed for welcome.html  
 opentomoney.png
 icons/emrah.jpg
 icons/vakkas.jpg

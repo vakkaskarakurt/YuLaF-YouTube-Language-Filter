@@ -976,11 +976,11 @@ body {
 }
 
 /* Header Feedback Button */
-.feedback-header-btn {
+.feedback-header-btn,
+.rate-us-header-btn {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: linear-gradient(45deg, #4CAF50, #66BB6A);
   color: #fff;
   text-decoration: none;
   padding: 10px 16px;
@@ -993,10 +993,24 @@ body {
   white-space: nowrap;
 }
 
+.feedback-header-btn {
+  background: linear-gradient(45deg, #000000, #4CAF50);
+}
+
+.rate-us-header-btn {
+  background: linear-gradient(45deg, #000000, #ffc107);
+}
+
 .feedback-header-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
-  background: linear-gradient(45deg, #5CBF60, #76CB7A);
+  background: linear-gradient(45deg, #000000, #66BB6A);
+}
+
+.rate-us-header-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4);
+  background: linear-gradient(45deg, #000000, #ffca28);
 }
 
 /* Feedback Modal */

@@ -476,6 +476,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (feedbackBtn) {
       feedbackBtn.addEventListener('click', handleFeedbackClick);
     }
+
+    // Rate Us button
+    const rateUsBtn = document.getElementById('rateUsBtn');
+    if (rateUsBtn) {
+      rateUsBtn.addEventListener('click', handleRateUsClick);
+    }
   }
 
   function handleGuideClick() {
@@ -505,6 +511,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       }, 2000); // Uzun süre bekleyelim
     });
     // Close popup
+    window.close();
+  }
+
+  function handleRateUsClick() {
+    chrome.tabs.create({
+      url: 'https://chromewebstore.google.com/detail/yulaf-youtube-language-fi/ejfoldoabjeidjdddhomeaojicaemdpm'
+    });
     window.close();
   }
 

@@ -190,6 +190,11 @@ class WelcomeController {
       feedbackHeaderBtn.addEventListener('click', () => this.openFeedbackModal());
     }
 
+    const rateUsHeaderBtn = document.getElementById('rateUsHeaderBtn');
+    if (rateUsHeaderBtn) {
+      rateUsHeaderBtn.addEventListener('click', () => this.handleRateUsClick());
+    }
+
     if (modalClose) {
       modalClose.addEventListener('click', () => this.closeFeedbackModal());
     }
@@ -471,7 +476,7 @@ class WelcomeController {
         nextBtn.style.display = 'none';
       } else {
         nextBtn.style.display = 'block';
-        nextBtn.textContent = 'Sonraki →';
+        nextBtn.textContent = 'Next →';
       }
     }
 
@@ -504,6 +509,10 @@ class WelcomeController {
     } else {
       window.open('https://www.youtube.com', '_blank');
     }
+  }
+
+  handleRateUsClick() {
+    window.open('https://chromewebstore.google.com/detail/yulaf-youtube-language-fi/ejfoldoabjeidjdddhomeaojicaemdpm', '_blank');
   }
 
 
