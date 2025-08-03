@@ -9,7 +9,195 @@ document.addEventListener('DOMContentLoaded', async () => {
   const tab = tabs[0];
 
   if (!tab.url.includes('youtube.com')) {
-    document.body.innerHTML = '<div style="padding: 20px; text-align: center; color: #fff; background: #0f0f0f;">Please visit YouTube to use this extension.</div>';
+    document.body.style.cssText = 'margin: 0; padding: 0; overflow: hidden;';
+    document.body.innerHTML = `
+      <div style="
+        width: 380px;
+        min-height: 400px;
+        padding: 40px 30px;
+        background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+        color: #fff;
+        text-align: center;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 18px;
+        box-sizing: border-box;
+        margin: 0;
+        position: relative;
+      ">
+        <div style="
+          width: 80px;
+          height: 80px;
+          background: linear-gradient(45deg, #ff0000, #ff4444);
+          border-radius: 20px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 2.5rem;
+          box-shadow: 0 8px 25px rgba(255, 0, 0, 0.3);
+          margin-bottom: 10px;
+        ">
+          🎯
+        </div>
+        
+        <h2 style="
+          margin: 0;
+          font-size: 1.4rem;
+          font-weight: 600;
+          color: #fff;
+          line-height: 1.3;
+        ">
+          YuLaF is Ready!
+        </h2>
+        
+        <p style="
+          margin: 0;
+          font-size: 1rem;
+          color: #ccc;
+          line-height: 1.5;
+          max-width: 280px;
+        ">
+          Please visit <strong style="color: #ff4444;">YouTube</strong> to start filtering videos by language.
+        </p>
+        
+        <button id="goToYouTubeBtn" style="
+          background: linear-gradient(45deg, #ff0000, #ff4444);
+          color: white;
+          border: none;
+          padding: 12px 24px;
+          border-radius: 8px;
+          font-size: 1rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          margin-top: 10px;
+        ">
+          🚀 Go to YouTube
+        </button>
+        
+        <div style="
+          display: flex;
+          gap: 10px;
+          margin-top: 20px;
+          padding-top: 20px;
+          border-top: 1px solid #333;
+          width: 100%;
+          max-width: 280px;
+          justify-content: space-between;
+        ">
+          <button id="guideBtn" style="
+            background: linear-gradient(45deg, #ff0000, #330000);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 130px;
+          ">
+            📖 Guide
+          </button>
+          
+          <button id="feedbackBtn" style="
+            background: linear-gradient(45deg, #330000, #ff0000);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 130px;
+          ">
+            📝 Feedback
+          </button>
+        </div>
+        
+        <p style="
+          margin: 15px 0 0 0;
+          font-size: 0.8rem;
+          color: #666;
+          font-style: italic;
+        ">
+          YouTube Language Filter v1.0.3
+        </p>
+      </div>
+    `;
+    
+    // Add event listeners for the buttons
+    setTimeout(() => {
+      const goToYouTubeBtn = document.getElementById('goToYouTubeBtn');
+      const guideBtn = document.getElementById('guideBtn');
+      const feedbackBtn = document.getElementById('feedbackBtn');
+      
+      if (goToYouTubeBtn) {
+        goToYouTubeBtn.addEventListener('click', () => {
+          chrome.tabs.create({url: 'https://www.youtube.com'});
+          window.close();
+        });
+        
+        goToYouTubeBtn.addEventListener('mouseover', () => {
+          goToYouTubeBtn.style.background = 'linear-gradient(45deg, #ff2222, #ff6666)';
+          goToYouTubeBtn.style.transform = 'translateY(-2px)';
+          goToYouTubeBtn.style.boxShadow = '0 8px 25px rgba(255, 0, 0, 0.3)';
+        });
+        
+        goToYouTubeBtn.addEventListener('mouseout', () => {
+          goToYouTubeBtn.style.background = 'linear-gradient(45deg, #ff0000, #ff4444)';
+          goToYouTubeBtn.style.transform = 'translateY(0)';
+          goToYouTubeBtn.style.boxShadow = 'none';
+        });
+      }
+      
+      if (guideBtn) {
+        guideBtn.addEventListener('click', () => {
+          chrome.tabs.create({url: chrome.runtime.getURL('src/html/welcome.html')});
+          window.close();
+        });
+        
+        guideBtn.addEventListener('mouseover', () => {
+          guideBtn.style.background = 'linear-gradient(45deg, #ff2222, #440000)';
+          guideBtn.style.transform = 'translateY(-1px)';
+          guideBtn.style.boxShadow = '0 4px 12px rgba(255, 0, 0, 0.3)';
+        });
+        
+        guideBtn.addEventListener('mouseout', () => {
+          guideBtn.style.background = 'linear-gradient(45deg, #ff0000, #330000)';
+          guideBtn.style.transform = 'translateY(0)';
+          guideBtn.style.boxShadow = 'none';
+        });
+      }
+      
+      if (feedbackBtn) {
+        feedbackBtn.addEventListener('click', () => {
+          chrome.tabs.create({url: chrome.runtime.getURL('src/html/welcome.html')}, (tab) => {
+            setTimeout(() => {
+              chrome.tabs.sendMessage(tab.id, { action: 'openFeedback' }).catch(() => {});
+            }, 1500);
+          });
+          window.close();
+        });
+        
+        feedbackBtn.addEventListener('mouseover', () => {
+          feedbackBtn.style.background = 'linear-gradient(45deg, #440000, #ff2222)';
+          feedbackBtn.style.transform = 'translateY(-1px)';
+          feedbackBtn.style.boxShadow = '0 4px 12px rgba(255, 0, 0, 0.3)';
+        });
+        
+        feedbackBtn.addEventListener('mouseout', () => {
+          feedbackBtn.style.background = 'linear-gradient(45deg, #330000, #ff0000)';
+          feedbackBtn.style.transform = 'translateY(0)';
+          feedbackBtn.style.boxShadow = 'none';
+        });
+      }
+    }, 100);
+    
     return;
   }
 
@@ -246,17 +434,84 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function handleSearchInput(e) {
+    const languageOptions = document.getElementById('languageOptions');
+    
+    // Show options when typing
+    if (!languageOptions.classList.contains('expanded')) {
+      languageOptions.classList.add('expanded');
+    }
+    
     renderLanguages(e.target.value);
+  }
+
+  function handleSearchFocus(e) {
+    const languageOptions = document.getElementById('languageOptions');
+    languageOptions.classList.toggle('expanded');
   }
 
   function addEventListeners() {
     enableFilter.addEventListener('change', handleEnableChange);
     languageSearch.addEventListener('input', handleSearchInput);
+    languageSearch.addEventListener('click', handleSearchFocus);
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      const languageOptions = document.getElementById('languageOptions');
+      const languageSearch = document.getElementById('languageSearch');
+      const languageSelector = document.querySelector('.language-selector');
+      
+      if (!languageSelector.contains(e.target)) {
+        languageOptions.classList.remove('expanded');
+      }
+    });
+    
+    // Guide button
+    const guideBtn = document.getElementById('guideBtn');
+    if (guideBtn) {
+      guideBtn.addEventListener('click', handleGuideClick);
+    }
+    
+    // Feedback button
+    const feedbackBtn = document.getElementById('feedbackBtn');
+    if (feedbackBtn) {
+      feedbackBtn.addEventListener('click', handleFeedbackClick);
+    }
+  }
+
+  function handleGuideClick() {
+    // Open guide (welcome page)
+    chrome.tabs.create({
+      url: chrome.runtime.getURL('src/html/welcome.html')
+    });
+    // Close popup
+    window.close();
+  }
+
+  function handleFeedbackClick() {
+    console.log('Feedback button clicked'); // Debug log
+    // Open feedback in welcome page with auto-opening form
+    chrome.tabs.create({
+      url: chrome.runtime.getURL('src/html/welcome.html')
+    }, (tab) => {
+      console.log('Welcome page opened, tab id:', tab.id); // Debug log
+      // Send message to open feedback modal after page loads
+      setTimeout(() => {
+        console.log('Sending openFeedback message'); // Debug log
+        chrome.tabs.sendMessage(tab.id, { action: 'openFeedback' }).then((response) => {
+          console.log('Message sent successfully, response:', response);
+        }).catch((error) => {
+          console.log('Message failed:', error);
+        });
+      }, 2000); // Uzun süre bekleyelim
+    });
+    // Close popup
+    window.close();
   }
 
   function removeEventListeners() {
     enableFilter.removeEventListener('change', handleEnableChange);
     languageSearch.removeEventListener('input', handleSearchInput);
+    languageSearch.removeEventListener('click', handleSearchFocus);
   }
 
   // Storage değişikliklerini dinle

@@ -1,4 +1,4 @@
-chrome.runtime.onInstalled.addListener(() => {
+chrome.runtime.onInstalled.addListener((details) => {
   chrome.storage.sync.set({
     enabled: true,
     strictMode: true,
@@ -6,6 +6,13 @@ chrome.runtime.onInstalled.addListener(() => {
     hideChannels: true,
     selectedLanguages: ['en'] // İlk yüklemede sadece İngilizce seçili
   });
+
+  // İlk kurulumda welcome sayfasını aç
+  if (details.reason === 'install') {
+    chrome.tabs.create({
+      url: chrome.runtime.getURL('src/html/welcome.html')
+    });
+  }
 });
 
 chrome.storage.onChanged.addListener((changes, area) => {

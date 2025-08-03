@@ -16,7 +16,8 @@
   ],
 
   "host_permissions": [
-    "*://*.youtube.com/*"
+    "*://*.youtube.com/*",
+    "*://formspree.io/*"
   ],
 
   "content_scripts": [
@@ -28,24 +29,31 @@
         "src/services/language-service.js",
         "src/services/dom-service.js",
         "src/services/filter-service.js",
-        "src/content.js"
+        "src/js/content.js"
       ],
-      "css": ["styles.css"],
+      "css": ["src/css/styles.css"],
       "run_at": "document_idle"
     }
   ],
 
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "src/js/background.js"
   },
 
   "action": {
-    "default_popup": "popup.html",
+    "default_popup": "src/html/popup.html",
     "default_title": "YuLaF - YouTube Language Filter",
     "default_icon": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png",
       "128": "icons/icon128.png"
     }
-  }
+  },
+
+  "web_accessible_resources": [
+    {
+      "resources": ["src/html/welcome.html", "src/css/welcome.css", "src/js/welcome.js", "icons/*"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }

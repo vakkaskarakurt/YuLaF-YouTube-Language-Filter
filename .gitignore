@@ -1,1 +1,25 @@
 *.zip
+
+# Personal/Developer files
+emrah.jpeg
+Vakkas.jpeg
+opentomoney.png
+icons/emrah.jpg
+icons/vakkas.jpg
+icons/opentomoney.png
+
+# IDE/Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
