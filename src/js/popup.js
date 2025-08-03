@@ -265,18 +265,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Fallback - directly from config if content script not ready
         languages = {
           en: { code: 'en', name: 'English', nativeName: 'English', icon: '🇬🇧', enabled: false },
+          es: { code: 'es', name: 'Spanish', nativeName: 'Español', icon: '🇪🇸', enabled: false },
+          zh: { code: 'zh', name: 'Chinese', nativeName: '中文', icon: '🇨🇳', enabled: false },
+          hi: { code: 'hi', name: 'Hindi', nativeName: 'हिन्दी', icon: '🇮🇳', enabled: false },
+          ar: { code: 'ar', name: 'Arabic', nativeName: 'العربية', icon: '🇸🇦', enabled: false },
+          pt: { code: 'pt', name: 'Portuguese', nativeName: 'Português', icon: '🇵🇹', enabled: false },
+          ru: { code: 'ru', name: 'Russian', nativeName: 'Русский', icon: '🇷🇺', enabled: false },
+          ja: { code: 'ja', name: 'Japanese', nativeName: '日本語', icon: '🇯🇵', enabled: false },
           fr: { code: 'fr', name: 'French', nativeName: 'Français', icon: '🇫🇷', enabled: false },
           de: { code: 'de', name: 'German', nativeName: 'Deutsch', icon: '🇩🇪', enabled: false },
-          es: { code: 'es', name: 'Spanish', nativeName: 'Español', icon: '🇪🇸', enabled: false },
+          ko: { code: 'ko', name: 'Korean', nativeName: '한국어', icon: '🇰🇷', enabled: false },
           it: { code: 'it', name: 'Italian', nativeName: 'Italiano', icon: '🇮🇹', enabled: false },
           tr: { code: 'tr', name: 'Turkish', nativeName: 'Türkçe', icon: '🇹🇷', enabled: false },
-          ru: { code: 'ru', name: 'Russian', nativeName: 'Русский', icon: '🇷🇺', enabled: false },
-          zh: { code: 'zh', name: 'Chinese', nativeName: '中文', icon: '🇨🇳', enabled: false },
-          ja: { code: 'ja', name: 'Japanese', nativeName: '日本語', icon: '🇯🇵', enabled: false },
-          ko: { code: 'ko', name: 'Korean', nativeName: '한국어', icon: '🇰🇷', enabled: false },
-          ar: { code: 'ar', name: 'Arabic', nativeName: 'العربية', icon: '🇸🇦', enabled: false },
-          hi: { code: 'hi', name: 'Hindi', nativeName: 'हिन्दी', icon: '🇮🇳', enabled: false },
-          pt: { code: 'pt', name: 'Portuguese', nativeName: 'Português', icon: '🇵🇹', enabled: false },
           nl: { code: 'nl', name: 'Dutch', nativeName: 'Nederlands', icon: '🇳🇱', enabled: false },
           pl: { code: 'pl', name: 'Polish', nativeName: 'Polski', icon: '🇵🇱', enabled: false }
         };
@@ -318,14 +318,39 @@ document.addEventListener('DOMContentLoaded', async () => {
              code.toLowerCase().includes(term);
     });
 
-    // Önce seçili diller, sonra alfabetik sıra
+    // Sık kullanılan dillerin sırasını tanımla
+    const popularityOrder = [
+      'en', 'es', 'zh', 'hi', 'ar', 'pt', 'bn', 'ru', 'ja', 'fr',
+      'de', 'ko', 'it', 'tr', 'vi', 'th', 'pl', 'nl', 'sv', 'da',
+      'no', 'fi', 'cs', 'hu', 'ro', 'bg', 'hr', 'sk', 'sl', 'et',
+      'lv', 'lt', 'el', 'id', 'ms', 'tl', 'he', 'fa', 'ur', 'ta',
+      'te', 'ml', 'kn', 'gu', 'pa', 'sw', 'af', 'am', 'ca', 'eu',
+      'gl', 'cy', 'ga', 'mt', 'is', 'mk', 'sq', 'sr', 'bs', 'uk', 'be'
+    ];
+
+    // Önce seçili diller, sonra popülerlik sırası
     filteredLanguages.sort(([codeA, langA], [codeB, langB]) => {
       const aSelected = currentState.selectedLanguages.includes(codeA);
       const bSelected = currentState.selectedLanguages.includes(codeB);
       
+      // Seçili diller önce gelir
       if (aSelected && !bSelected) return -1;
       if (!aSelected && bSelected) return 1;
       
+      // Popülerlik sırasına göre sırala
+      const aIndex = popularityOrder.indexOf(codeA);
+      const bIndex = popularityOrder.indexOf(codeB);
+      
+      // Eğer ikisi de listede varsa, sırasına göre
+      if (aIndex !== -1 && bIndex !== -1) {
+        return aIndex - bIndex;
+      }
+      
+      // Eğer biri listede yoksa, alfabetik sırala
+      if (aIndex === -1 && bIndex !== -1) return 1;
+      if (aIndex !== -1 && bIndex === -1) return -1;
+      
+      // Her ikisi de listede yoksa alfabetik
       return langA.name.localeCompare(langB.name);
     });
 
