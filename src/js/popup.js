@@ -489,13 +489,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   function handleSearchFocus(e) {
     const languageOptions = document.getElementById('languageOptions');
-    languageOptions.classList.toggle('expanded');
+    languageOptions.classList.add('expanded');
   }
 
   function addEventListeners() {
     enableFilter.addEventListener('change', handleEnableChange);
     languageSearch.addEventListener('input', handleSearchInput);
     languageSearch.addEventListener('click', handleSearchFocus);
+    languageSearch.addEventListener('focus', handleSearchFocus);
     
     // Close dropdown when clicking outside
     document.addEventListener('click', (e) => {
@@ -568,6 +569,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     enableFilter.removeEventListener('change', handleEnableChange);
     languageSearch.removeEventListener('input', handleSearchInput);
     languageSearch.removeEventListener('click', handleSearchFocus);
+    languageSearch.removeEventListener('focus', handleSearchFocus);
   }
 
   // Storage değişikliklerini dinle
