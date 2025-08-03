@@ -301,7 +301,7 @@ body {
 .welcome-hero h2 {
   font-size: 3rem;
   margin-bottom: 20px;
-  background: linear-gradient(45deg, #fff, #ccc);
+  background: #fff;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -942,12 +942,12 @@ body {
 }
 
 .btn-primary {
-  background: linear-gradient(45deg, #ff0000, #ff4444);
+  background-color: #ff0000;
   color: white;
 }
 
 .btn-primary:hover {
-  background: linear-gradient(45deg, #ff2222, #ff6666);
+  background-color: #ff2222;
   box-shadow: 0 8px 25px rgba(255, 0, 0, 0.3);
   transform: translateY(-2px);
 }

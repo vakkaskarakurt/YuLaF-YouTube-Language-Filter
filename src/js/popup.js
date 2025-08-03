@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         </p>
         
         <button id="goToYouTubeBtn" style="
-          background: linear-gradient(45deg, #ff0000, #ff4444);
+          background-color: #ff0000;
           color: white;
           border: none;
           padding: 12px 24px;
@@ -74,22 +74,24 @@ document.addEventListener('DOMContentLoaded', async () => {
           cursor: pointer;
           transition: all 0.3s ease;
           margin-top: 10px;
+          display: flex; justify-content: center; align-items: center;
         ">
-          🚀 Go to YouTube
+          Go to YouTube
         </button>
         
         <div style="
           display: flex;
+          flex-wrap: wrap;
           gap: 10px;
           margin-top: 20px;
           padding-top: 20px;
           border-top: 1px solid #333;
           width: 100%;
           max-width: 280px;
-          justify-content: space-between;
+          justify-content: center;
         ">
           <button id="guideBtn" style="
-            background: linear-gradient(45deg, #ff0000, #330000);
+            background-color: #ff0000;
             color: white;
             border: none;
             padding: 10px 16px;
@@ -98,13 +100,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            width: 130px;
+            flex: 1;
+            min-width: 80px;
+            display: flex; justify-content: center; align-items: center;
           ">
-            📖 Guide
+            Guide
           </button>
           
           <button id="feedbackBtn" style="
-            background: linear-gradient(45deg, #330000, #ff0000);
+            background-color: #ff0000;
             color: white;
             border: none;
             padding: 10px 16px;
@@ -113,9 +117,28 @@ document.addEventListener('DOMContentLoaded', async () => {
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            width: 130px;
+            flex: 1;
+            min-width: 80px;
+            display: flex; justify-content: center; align-items: center;
           ">
-            📝 Feedback
+            Feedback
+          </button>
+
+          <button id="rateUsBtn" style="
+            background-color: #FFA500;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 80px;
+            display: flex; justify-content: center; align-items: center;
+          ">
+            Rate Us
           </button>
         </div>
         
@@ -135,6 +158,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const goToYouTubeBtn = document.getElementById('goToYouTubeBtn');
       const guideBtn = document.getElementById('guideBtn');
       const feedbackBtn = document.getElementById('feedbackBtn');
+      const rateUsBtn = document.getElementById('rateUsBtn');
       
       if (goToYouTubeBtn) {
         goToYouTubeBtn.addEventListener('click', () => {
@@ -143,13 +167,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
         
         goToYouTubeBtn.addEventListener('mouseover', () => {
-          goToYouTubeBtn.style.background = 'linear-gradient(45deg, #ff2222, #ff6666)';
+          goToYouTubeBtn.style.background = '#ff2222';
           goToYouTubeBtn.style.transform = 'translateY(-2px)';
           goToYouTubeBtn.style.boxShadow = '0 8px 25px rgba(255, 0, 0, 0.3)';
         });
         
         goToYouTubeBtn.addEventListener('mouseout', () => {
-          goToYouTubeBtn.style.background = 'linear-gradient(45deg, #ff0000, #ff4444)';
+          goToYouTubeBtn.style.background = '#ff0000';
           goToYouTubeBtn.style.transform = 'translateY(0)';
           goToYouTubeBtn.style.boxShadow = 'none';
         });
@@ -162,13 +186,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
         
         guideBtn.addEventListener('mouseover', () => {
-          guideBtn.style.background = 'linear-gradient(45deg, #ff2222, #440000)';
+          guideBtn.style.background = '#ff2222';
           guideBtn.style.transform = 'translateY(-1px)';
           guideBtn.style.boxShadow = '0 4px 12px rgba(255, 0, 0, 0.3)';
         });
         
         guideBtn.addEventListener('mouseout', () => {
-          guideBtn.style.background = 'linear-gradient(45deg, #ff0000, #330000)';
+          guideBtn.style.background = '#ff0000';
           guideBtn.style.transform = 'translateY(0)';
           guideBtn.style.boxShadow = 'none';
         });
@@ -185,15 +209,34 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
         
         feedbackBtn.addEventListener('mouseover', () => {
-          feedbackBtn.style.background = 'linear-gradient(45deg, #440000, #ff2222)';
+          feedbackBtn.style.background = '#ff2222';
           feedbackBtn.style.transform = 'translateY(-1px)';
           feedbackBtn.style.boxShadow = '0 4px 12px rgba(255, 0, 0, 0.3)';
         });
         
         feedbackBtn.addEventListener('mouseout', () => {
-          feedbackBtn.style.background = 'linear-gradient(45deg, #330000, #ff0000)';
+          feedbackBtn.style.background = '#ff0000';
           feedbackBtn.style.transform = 'translateY(0)';
           feedbackBtn.style.boxShadow = 'none';
+        });
+      }
+
+      if (rateUsBtn) {
+        rateUsBtn.addEventListener('click', () => {
+          chrome.tabs.create({url: 'https://chromewebstore.google.com/detail/yulaf-youtube-language-fi/ejfoldoabjeidjdddhomeaojicaemdpm'});
+          window.close();
+        });
+        
+        rateUsBtn.addEventListener('mouseover', () => {
+          rateUsBtn.style.background = '#FF8C00';
+          rateUsBtn.style.transform = 'translateY(-1px)';
+          rateUsBtn.style.boxShadow = '0 4px 12px rgba(255, 165, 0, 0.3)';
+        });
+        
+        rateUsBtn.addEventListener('mouseout', () => {
+          rateUsBtn.style.background = '#FFA500';
+          rateUsBtn.style.transform = 'translateY(0)';
+          rateUsBtn.style.boxShadow = 'none';
         });
       }
     }, 100);

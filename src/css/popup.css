@@ -100,7 +100,7 @@ body {
 }
 
 input:checked + .slider {
-  background: linear-gradient(45deg, var(--primary), #cc0000);
+  background-color: var(--primary);
 }
 
 input:checked + .slider:before {
@@ -253,10 +253,7 @@ input:checked + .slider:before {
 }
 
 .selected-count span {
-  background: linear-gradient(45deg, var(--primary), #cc0000);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--primary);
   font-weight: 600;
 }
 
@@ -288,31 +285,31 @@ input:checked + .slider:before {
 }
 
 .guide-btn {
-  background: linear-gradient(45deg, #ff0000, #330000);
+  background-color: var(--primary);
 }
 
 .guide-btn:hover {
-  background: linear-gradient(45deg, #ff2222, #440000);
+  background-color: var(--primary-hover);
   box-shadow: 0 4px 12px rgba(255, 0, 0, 0.3);
   transform: translateY(-1px);
 }
 
 .feedback-btn {
-  background: linear-gradient(45deg, #000000, #4CAF50);
+  background-color: #4CAF50;
 }
 
 .feedback-btn:hover {
-  background: linear-gradient(45deg, #000000, #66BB6A);
+  background-color: #66BB6A;
   box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
   transform: translateY(-1px);
 }
 
 .rate-us-btn {
-  background: linear-gradient(45deg, #000000, #ffc107);
+  background-color: #FFA500;
 }
 
 .rate-us-btn:hover {
-  background: linear-gradient(45deg, #000000, #ffca28);
-  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+  background-color: #FF8C00;
+  box-shadow: 0 4px 12px rgba(255, 165, 0, 0.3);
   transform: translateY(-1px);
 }
