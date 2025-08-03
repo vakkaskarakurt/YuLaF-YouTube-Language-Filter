@@ -52,7 +52,7 @@
 
   "web_accessible_resources": [
     {
-      "resources": ["src/html/welcome.html", "src/css/welcome.css", "src/js/welcome.js", "icons/*"],
+      "resources": ["src/assets/team/*", "src/html/welcome.html", "src/css/welcome.css", "src/js/welcome.js", "icons/*"],
       "matches": ["<all_urls>"]
     }
   ]
