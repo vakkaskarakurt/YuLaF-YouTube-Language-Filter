@@ -248,15 +248,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   let currentState = {
     enabled: true,
-    strictMode: true,       // Varsayılan olarak true, UI'da gösterilmeyecek
-    hideVideos: true,       // Varsayılan olarak true, UI'da gösterilmeyecek
-    hideChannels: true,     // Varsayılan olarak true, UI'da gösterilmeyecek
-    selectedLanguages: ['en'] // Default English
+    strictMode: true,
+    hideVideos: true,
+    hideChannels: true,
+    selectedLanguages: ['en']
   };
 
-  let isInitializing = true;
   let languages = {};
-  let currentSortBy = 'popularity'; // Default sort by popularity
+  let currentSortBy = 'popularity';
+  let listenersAdded = false; // Event listener tracking
 
   // Languages'ı config'den yükle
   async function loadLanguages() {
@@ -364,8 +364,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   function renderLanguages(searchTerm = '') {
     languageOptions.innerHTML = '';
     
-    // Always show languages initially
-    if (!languageOptions.classList.contains('expanded') && Object.keys(languages).length > 0) {
+    // ✅ Her durumda açık tut - diller yüklenmişse
+    if (Object.keys(languages).length > 0) {
       languageOptions.classList.add('expanded');
     }
     
@@ -436,9 +436,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       
       currentState = {
         enabled: stored.enabled !== false,
-        strictMode: stored.strictMode !== false,        // Varsayılan true
-        hideVideos: stored.hideVideos !== false,        // Varsayılan true
-        hideChannels: stored.hideChannels !== false,    // Varsayılan true
+        strictMode: stored.strictMode !== false,
+        hideVideos: stored.hideVideos !== false,
+        hideChannels: stored.hideChannels !== false,
         selectedLanguages: stored.selectedLanguages || ['en']
       };
       
@@ -464,19 +464,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function updateUI(state) {
-    // Event listener'ları geçici olarak kaldır
-    removeEventListeners();
-    
-    // UI güncelle
+    // ✅ Sadece UI'ı güncelle, event listener manipülasyonu yok
     enableFilter.checked = state.enabled;
-    
     updateStatusText(state.enabled);
     updateLanguageSelectorVisibility(state.enabled);
     updateSortUI();
     renderLanguages();
-    
-    // Event listener'ları geri ekle
-    setTimeout(addEventListeners, 100);
   }
 
   async function saveState(updates, forceReload = false) {
@@ -510,8 +503,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   async function handleEnableChange(e) {
-    if (isInitializing) return;
-    
     const newEnabled = e.target.checked;
     updateStatusText(newEnabled);
     updateLanguageSelectorVisibility(newEnabled);
@@ -527,8 +518,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   async function handleLanguageChange(e) {
-    if (isInitializing) return;
-    
     const language = e.target.value;
     const isChecked = e.target.checked;
     
@@ -568,25 +557,52 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function handleSearchInput(e) {
-    const languageOptions = document.getElementById('languageOptions');
-    
-    // Show options when typing
+    // ✅ Her input'ta listeyi aç
     if (!languageOptions.classList.contains('expanded')) {
       languageOptions.classList.add('expanded');
     }
     
     renderLanguages(e.target.value);
+    
+    // ✅ Diller yüklenmemişse retry
+    if (Object.keys(languages).length === 0) {
+      setTimeout(async () => {
+        await loadLanguages();
+        renderLanguages(e.target.value);
+      }, 100);
+    }
   }
 
   function handleSearchFocus(e) {
-    const languageOptions = document.getElementById('languageOptions');
+    console.log('Search focus triggered, languages count:', Object.keys(languages).length);
+    
+    // ✅ Her durumda listeyi aç
     languageOptions.classList.add('expanded');
+    languageOptions.classList.add('force-open'); // CSS fallback
+    
+    // ✅ Diller yüklenmemişse yeniden yükle
+    if (Object.keys(languages).length === 0) {
+      console.log('Languages not loaded, retrying...');
+      setTimeout(async () => {
+        await loadLanguages();
+        renderLanguages();
+        languageOptions.classList.add('expanded');
+      }, 50);
+    }
+    
+    // ✅ Liste boşsa render et
+    if (languageOptions.children.length === 0) {
+      renderLanguages();
+    }
   }
 
   function addEventListeners() {
+    // ✅ Duplicate listener kontrolü
+    if (listenersAdded) return;
+    
     enableFilter.addEventListener('change', handleEnableChange);
     languageSearch.addEventListener('input', handleSearchInput);
-    languageSearch.addEventListener('click', handleSearchFocus);
+    languageSearch.addEventListener('click', handleSearchFocus); // ✅ Click event önemli
     languageSearch.addEventListener('focus', handleSearchFocus);
     
     // Sort button and dropdown events
@@ -600,13 +616,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // Close dropdown when clicking outside
     document.addEventListener('click', (e) => {
-      const languageOptions = document.getElementById('languageOptions');
-      const languageSearch = document.getElementById('languageSearch');
       const languageSelector = document.querySelector('.language-selector');
       const sortContainer = document.querySelector('.sort-container');
       
       if (!languageSelector.contains(e.target)) {
         languageOptions.classList.remove('expanded');
+        languageOptions.classList.remove('force-open');
       }
       
       if (!sortContainer.contains(e.target)) {
@@ -632,35 +647,32 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (rateUsBtn) {
       rateUsBtn.addEventListener('click', handleRateUsClick);
     }
+    
+    listenersAdded = true; // ✅ Flag set
   }
 
   function handleGuideClick() {
-    // Open guide (welcome page)
     chrome.tabs.create({
       url: chrome.runtime.getURL('src/html/welcome.html')
     });
-    // Close popup
     window.close();
   }
 
   function handleFeedbackClick() {
-    console.log('Feedback button clicked'); // Debug log
-    // Open feedback in welcome page with auto-opening form
+    console.log('Feedback button clicked');
     chrome.tabs.create({
       url: chrome.runtime.getURL('src/html/welcome.html')
     }, (tab) => {
-      console.log('Welcome page opened, tab id:', tab.id); // Debug log
-      // Send message to open feedback modal after page loads
+      console.log('Welcome page opened, tab id:', tab.id);
       setTimeout(() => {
-        console.log('Sending openFeedback message'); // Debug log
+        console.log('Sending openFeedback message');
         chrome.tabs.sendMessage(tab.id, { action: 'openFeedback' }).then((response) => {
           console.log('Message sent successfully, response:', response);
         }).catch((error) => {
           console.log('Message failed:', error);
         });
-      }, 2000); // Uzun süre bekleyelim
+      }, 2000);
     });
-    // Close popup
     window.close();
   }
 
@@ -671,30 +683,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.close();
   }
 
-  function removeEventListeners() {
-    enableFilter.removeEventListener('change', handleEnableChange);
-    languageSearch.removeEventListener('input', handleSearchInput);
-    languageSearch.removeEventListener('click', handleSearchFocus);
-    languageSearch.removeEventListener('focus', handleSearchFocus);
-    
-    if (sortButton) {
-      sortButton.removeEventListener('click', handleSortButtonClick);
-    }
-    
-    if (sortDropdown) {
-      sortDropdown.removeEventListener('click', handleSortOptionClick);
-    }
-  }
-
   // Sort functionality functions
   function updateSortUI() {
-    // Update sort button text
     const sortText = document.querySelector('.sort-text');
     if (sortText) {
       sortText.textContent = `Sort by`;
     }
     
-    // Update active sort option
     const sortOptions = document.querySelectorAll('.sort-option');
     sortOptions.forEach(option => {
       option.classList.remove('active');
@@ -717,22 +712,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (newSortBy && newSortBy !== currentSortBy) {
       currentSortBy = newSortBy;
       
-      // Save to storage
       await chrome.storage.sync.set({ sortBy: currentSortBy });
       
-      // Update UI
       updateSortUI();
       renderLanguages(languageSearch.value);
     }
     
-    // Close dropdown
     sortDropdown.classList.remove('show');
     sortButton.classList.remove('active');
   }
 
   // Storage değişikliklerini dinle
   chrome.storage.onChanged.addListener((changes, area) => {
-    if (area === 'sync' && !isInitializing) {
+    if (area === 'sync') {
       let stateChanged = false;
       const newState = { ...currentState };
       
@@ -763,18 +755,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  // İlk yükleme
+  // ✅ İlk yükleme - tek event listener setup
   try {
     await loadLanguages();
     await loadCurrentState();
+    addEventListeners(); // ✅ Tek sefer event listener ekleme
     updateUI(currentState);
-    
-    setTimeout(() => {
-      isInitializing = false;
-    }, 500);
   } catch (error) {
     console.error('Error during initialization:', error);
+    addEventListeners(); // ✅ Hata durumunda da event listener'ları ekle
     updateUI(currentState);
-    isInitializing = false;
   }
 });

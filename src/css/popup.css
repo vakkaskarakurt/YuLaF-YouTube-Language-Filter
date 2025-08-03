@@ -241,8 +241,19 @@ input:checked + .slider:before {
   box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.2);
 }
 
-.search-container input::placeholder {
-  color: var(--text-secondary);
+/* ✅ Search container'a CSS fallback ekle */
+.search-container:focus-within .language-options {
+  max-height: 200px !important;
+  opacity: 1 !important;
+  pointer-events: all !important;
+}
+
+/* ✅ Guaranteed visibility on any interaction */
+.language-selector:focus-within .language-options,
+.search-container:active .language-options {
+  max-height: 200px !important;
+  opacity: 1 !important;
+  pointer-events: all !important;
 }
 
 .language-options {
@@ -254,12 +265,21 @@ input:checked + .slider:before {
   margin-bottom: 10px;
   transition: all 0.3s ease;
   overflow: hidden;
+  pointer-events: none; /* ✅ Kapalıyken tıklanmasın */
 }
 
 .language-options.expanded {
   max-height: 200px;
   opacity: 1;
   overflow-y: auto;
+  pointer-events: all; /* ✅ Açıkken tıklanabilir */
+}
+
+/* ✅ Force open class for JavaScript fallback */
+.language-options.force-open {
+  max-height: 200px !important;
+  opacity: 1 !important;
+  pointer-events: all !important;
 }
 
 .language-options::-webkit-scrollbar {
