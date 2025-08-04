@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           color: #666;
           font-style: italic;
         ">
-          YouTube Language Filter v1.0.3
+          YouTube Language Filter
         </p>
       </div>
     `;

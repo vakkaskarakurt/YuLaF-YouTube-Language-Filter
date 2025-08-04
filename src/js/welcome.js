@@ -567,7 +567,7 @@ class WelcomeController {
       email: document.getElementById('feedbackEmail').value,
       timestamp: new Date().toISOString(),
       userAgent: navigator.userAgent,
-      extensionVersion: '1.0.3'
+      extensionVersion: '1.0.4'
     };
 
     try {
