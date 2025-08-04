@@ -33,7 +33,7 @@ Perfect for polyglots, language learners, and anyone wanting to customize their 
 
 ## ✨ Features
 
-- **🌍 50+ Languages Supported** - Turkish, English, Spanish, French, German, Chinese, Japanese, Arabic, and many more
+- **🌍 61 Languages Supported** - Turkish, English, Spanish, French, German, Chinese, Japanese, Arabic, and many more
 - **🧠 Smart Detection** - Uses Chrome's built-in language API for accurate detection
 - **🎯 Multi-Language Support** - Select multiple target languages simultaneously
 - **🔒 Privacy-First** - All processing done locally, no data collected or transmitted
@@ -83,7 +83,7 @@ Perfect for polyglots, language learners, and anyone wanting to customize their 
 ## 🌍 Supported Languages
 
 <details>
-<summary>View all 50+ supported languages</summary>
+<summary>View all 61 supported languages</summary>
 
 **European Languages:**
 English, French, German, Spanish, Italian, Portuguese, Russian, Dutch, Polish, Turkish, Swedish, Danish, Norwegian, Finnish, Czech, Hungarian, Romanian, Bulgarian, Croatian, Slovak, Slovenian, Estonian, Latvian, Lithuanian, Greek, Ukrainian, Belarusian, Serbian, Bosnian, Albanian, Macedonian, Icelandic, Maltese, Welsh, Irish, Basque, Catalan, Galician

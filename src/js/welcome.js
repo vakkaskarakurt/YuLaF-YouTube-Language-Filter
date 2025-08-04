@@ -13,6 +13,7 @@ class WelcomeController {
     this.setupEventListeners();
     this.populateLanguageSelections();
     this.updateUI();
+    this.populateLanguageSupportSection();  // ← new call
     this.startAutoProgress();
   }
 
@@ -137,7 +138,7 @@ class WelcomeController {
       ca: { code: 'ca', name: 'Catalan', nativeName: 'Català', icon: '🏳️' },
       eu: { code: 'eu', name: 'Basque', nativeName: 'Euskera', icon: '🏳️' },
       gl: { code: 'gl', name: 'Galician', nativeName: 'Galego', icon: '🏳️' },
-      cy: { code: 'cy', name: 'Welsh', nativeName: 'Cymraeg', icon: '🏴󠁧󠁢󠁷󠁬󠁳󠁿' },
+      cy: { code: 'cy', name: 'Welsh', nativeName: 'Cymraeg', icon: '🏴' },
       ga: { code: 'ga', name: 'Irish', nativeName: 'Gaeilge', icon: '🇮🇪' },
       mt: { code: 'mt', name: 'Maltese', nativeName: 'Malti', icon: '🇲🇹' },
       is: { code: 'is', name: 'Icelandic', nativeName: 'Íslenska', icon: '🇮🇸' },
@@ -690,6 +691,17 @@ ${feedbackData.message}
       form.style.display = 'none';
       success.style.display = 'block';
     }
+  }
+
+  // Add this new method
+  populateLanguageSupportSection() {
+    const count = Object.keys(this.languages).length;
+    const container = document.getElementById('languageSupportSection');
+    if (!container) return;
+    container.innerHTML = `
+      <h3>${count} Language Support</h3>
+      <p>Supports all popular languages worldwide</p>
+    `;
   }
 }
 
