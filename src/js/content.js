@@ -28,9 +28,9 @@ class YouTubeLanguageFilter {
       this.settings.hideChannels = stored.hideChannels !== false;
       this.settings.selectedLanguages = stored.selectedLanguages || ['en'];
       
-      // Dilleri ayarla
+      // Language Service'i yapılandır
       window.LanguageService.setLanguages(this.settings.selectedLanguages);
-      window.LanguageService.setStrictMode(this.settings.strictMode);  // ← add this
+      window.LanguageService.setStrictMode(this.settings.strictMode);
       
       chrome.storage.onChanged.addListener((changes, area) => {
         if (area === 'sync') {

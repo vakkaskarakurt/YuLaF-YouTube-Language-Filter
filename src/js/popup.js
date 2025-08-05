@@ -1,6 +1,15 @@
 document.addEventListener('DOMContentLoaded', async () => {
+  // ✅ FOUC Önleme - Container'ı başlangıçta gizle
+  const container = document.querySelector('.container');
+  if (container) {
+    container.style.opacity = '0';
+    container.classList.remove('loaded');
+  }
+
   const enableFilter = document.getElementById('enableFilter');
   const statusText = document.getElementById('statusText');
+  const strictModeToggle = document.getElementById('strictModeToggle');
+  const strictModeText = document.getElementById('strictModeText');
   const languageSearch = document.getElementById('languageSearch');
   const languageOptions = document.getElementById('languageOptions');
   const selectedCount = document.getElementById('selectedCount');
@@ -29,6 +38,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         box-sizing: border-box;
         margin: 0;
         position: relative;
+        opacity: 1;
       ">
         <div style="
           width: 80px;
@@ -256,7 +266,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   let languages = {};
   let currentSortBy = 'popularity';
-  let listenersAdded = false; // Event listener tracking
+  let listenersAdded = false;
 
   // Languages'ı config'den yükle
   async function loadLanguages() {
@@ -322,7 +332,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           ca: { code: 'ca', name: 'Catalan', nativeName: 'Català', icon: '🏳️', enabled: false },
           eu: { code: 'eu', name: 'Basque', nativeName: 'Euskera', icon: '🏳️', enabled: false },
           gl: { code: 'gl', name: 'Galician', nativeName: 'Galego', icon: '🏳️', enabled: false },
-          cy: { code: 'cy', name: 'Welsh', nativeName: 'Cymraeg', icon: '🏴', enabled: false },
+          cy: { code: 'cy', name: 'Welsh', nativeName: 'Cymraeg', icon: '🏴󠁧󠁢󠁷󠁬󠁳󠁿', enabled: false },
           ga: { code: 'ga', name: 'Irish', nativeName: 'Gaeilge', icon: '🇮🇪', enabled: false },
           mt: { code: 'mt', name: 'Maltese', nativeName: 'Malti', icon: '🇲🇹', enabled: false },
           is: { code: 'is', name: 'Icelandic', nativeName: 'Íslenska', icon: '🇮🇸', enabled: false },
@@ -364,7 +374,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   function renderLanguages(searchTerm = '') {
     languageOptions.innerHTML = '';
     
-    // ✅ Her durumda açık tut - diller yüklenmişse
     if (Object.keys(languages).length > 0) {
       languageOptions.classList.add('expanded');
     }
@@ -377,7 +386,6 @@ document.addEventListener('DOMContentLoaded', async () => {
              code.toLowerCase().includes(term);
     });
 
-    // Sık kullanılan dillerin sırasını tanımla
     const popularityOrder = [
       'en', 'es', 'zh', 'hi', 'ar', 'pt', 'bn', 'ru', 'ja', 'fr',
       'de', 'ko', 'it', 'tr', 'vi', 'th', 'pl', 'nl', 'sv', 'da',
@@ -387,32 +395,26 @@ document.addEventListener('DOMContentLoaded', async () => {
       'gl', 'cy', 'ga', 'mt', 'is', 'mk', 'sq', 'sr', 'bs', 'uk', 'be'
     ];
 
-    // Sort languages based on current sort preference
     filteredLanguages.sort(([codeA, langA], [codeB, langB]) => {
       const aSelected = currentState.selectedLanguages.includes(codeA);
       const bSelected = currentState.selectedLanguages.includes(codeB);
       
-      // Seçili diller her zaman önce gelir
       if (aSelected && !bSelected) return -1;
       if (!aSelected && bSelected) return 1;
       
-      // Sort by selected method
       if (currentSortBy === 'name') {
         return langA.name.localeCompare(langB.name);
-      } else { // popularity
+      } else {
         const aIndex = popularityOrder.indexOf(codeA);
         const bIndex = popularityOrder.indexOf(codeB);
         
-        // Eğer ikisi de listede varsa, sırasına göre
         if (aIndex !== -1 && bIndex !== -1) {
           return aIndex - bIndex;
         }
         
-        // Eğer biri listede yoksa, alfabetik sırala
         if (aIndex === -1 && bIndex !== -1) return 1;
         if (aIndex !== -1 && bIndex === -1) return -1;
         
-        // Her ikisi de listede yoksa alfabetik
         return langA.name.localeCompare(langB.name);
       }
     });
@@ -464,9 +466,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function updateUI(state) {
-    // ✅ Sadece UI'ı güncelle, event listener manipülasyonu yok
     enableFilter.checked = state.enabled;
+    strictModeToggle.checked = state.strictMode;
     updateStatusText(state.enabled);
+    updateStrictModeUI(state.enabled, state.strictMode);
     updateLanguageSelectorVisibility(state.enabled);
     updateSortUI();
     renderLanguages();
@@ -505,6 +508,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   async function handleEnableChange(e) {
     const newEnabled = e.target.checked;
     updateStatusText(newEnabled);
+    updateStrictModeUI(newEnabled, currentState.strictMode);
     updateLanguageSelectorVisibility(newEnabled);
     
     const success = await saveState({ enabled: newEnabled }, true);
@@ -512,7 +516,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!success) {
       e.target.checked = !newEnabled;
       updateStatusText(!newEnabled);
+      updateStrictModeUI(!newEnabled, currentState.strictMode);
       updateLanguageSelectorVisibility(!newEnabled);
+      alert('Settings could not be saved. Please try again.');
+    }
+  }
+
+  async function handleStrictModeChange(e) {
+    const newStrictMode = e.target.checked;
+    updateStrictModeUI(currentState.enabled, newStrictMode);
+    
+    const success = await saveState({ strictMode: newStrictMode }, true);
+    
+    if (!success) {
+      e.target.checked = !newStrictMode;
+      updateStrictModeUI(currentState.enabled, !newStrictMode);
       alert('Settings could not be saved. Please try again.');
     }
   }
@@ -557,14 +575,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function handleSearchInput(e) {
-    // ✅ Her input'ta listeyi aç
     if (!languageOptions.classList.contains('expanded')) {
       languageOptions.classList.add('expanded');
     }
     
     renderLanguages(e.target.value);
     
-    // ✅ Diller yüklenmemişse retry
     if (Object.keys(languages).length === 0) {
       setTimeout(async () => {
         await loadLanguages();
@@ -576,11 +592,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   function handleSearchFocus(e) {
     console.log('Search focus triggered, languages count:', Object.keys(languages).length);
     
-    // ✅ Her durumda listeyi aç
     languageOptions.classList.add('expanded');
-    languageOptions.classList.add('force-open'); // CSS fallback
+    languageOptions.classList.add('force-open');
     
-    // ✅ Diller yüklenmemişse yeniden yükle
     if (Object.keys(languages).length === 0) {
       console.log('Languages not loaded, retrying...');
       setTimeout(async () => {
@@ -590,22 +604,20 @@ document.addEventListener('DOMContentLoaded', async () => {
       }, 50);
     }
     
-    // ✅ Liste boşsa render et
     if (languageOptions.children.length === 0) {
       renderLanguages();
     }
   }
 
   function addEventListeners() {
-    // ✅ Duplicate listener kontrolü
     if (listenersAdded) return;
     
     enableFilter.addEventListener('change', handleEnableChange);
+    strictModeToggle.addEventListener('change', handleStrictModeChange);
     languageSearch.addEventListener('input', handleSearchInput);
-    languageSearch.addEventListener('click', handleSearchFocus); // ✅ Click event önemli
+    languageSearch.addEventListener('click', handleSearchFocus);
     languageSearch.addEventListener('focus', handleSearchFocus);
     
-    // Sort button and dropdown events
     if (sortButton) {
       sortButton.addEventListener('click', handleSortButtonClick);
     }
@@ -614,7 +626,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       sortDropdown.addEventListener('click', handleSortOptionClick);
     }
     
-    // Close dropdown when clicking outside
     document.addEventListener('click', (e) => {
       const languageSelector = document.querySelector('.language-selector');
       const sortContainer = document.querySelector('.sort-container');
@@ -630,34 +641,22 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     });
     
-    // Guide button
     const guideBtn = document.getElementById('guideBtn');
     if (guideBtn) {
       guideBtn.addEventListener('click', handleGuideClick);
     }
     
-    // Feedback button
     const feedbackBtn = document.getElementById('feedbackBtn');
     if (feedbackBtn) {
       feedbackBtn.addEventListener('click', handleFeedbackClick);
     }
 
-    // Rate Us button
     const rateUsBtn = document.getElementById('rateUsBtn');
     if (rateUsBtn) {
       rateUsBtn.addEventListener('click', handleRateUsClick);
     }
-
-    // Strict Mode toggle listener
-    const strictModeToggle = document.getElementById('strictModeToggle');
-    if (strictModeToggle) {
-      strictModeToggle.addEventListener('change', async (e) => {
-        const newStrictMode = e.target.checked;
-        await saveState({ strictMode: newStrictMode }, true);
-      });
-    }
-
-    listenersAdded = true; // ✅ Flag set
+    
+    listenersAdded = true;
   }
 
   function handleGuideClick() {
@@ -692,7 +691,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.close();
   }
 
-  // Sort functionality functions
   function updateSortUI() {
     const sortText = document.querySelector('.sort-text');
     if (sortText) {
@@ -731,7 +729,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     sortButton.classList.remove('active');
   }
 
-  // Storage değişikliklerini dinle
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area === 'sync') {
       let stateChanged = false;
@@ -756,6 +753,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     statusText.style.color = enabled ? '#ff0000' : '#aaa';
   }
 
+  function updateStrictModeUI(filterEnabled, strictModeEnabled) {
+    const toggleGroup = strictModeToggle.closest('.toggle-group');
+    
+    if (filterEnabled) {
+      toggleGroup.classList.remove('disabled');
+      strictModeText.style.color = strictModeEnabled ? 'var(--text-primary)' : 'var(--text-secondary)';
+    } else {
+      toggleGroup.classList.add('disabled');
+      strictModeText.style.color = 'var(--text-secondary)';
+    }
+  }
+
   function updateLanguageSelectorVisibility(enabled) {
     if (enabled) {
       document.querySelector('.language-selector').classList.remove('disabled');
@@ -764,15 +773,32 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  // ✅ İlk yükleme - tek event listener setup
+  // ✅ İlk yükleme - FOUC önleme ile
   try {
     await loadLanguages();
     await loadCurrentState();
-    addEventListeners(); // ✅ Tek sefer event listener ekleme
+    addEventListeners();
     updateUI(currentState);
+    
+    // ✅ Her şey hazır olunca göster
+    setTimeout(() => {
+      if (container) {
+        container.classList.add('loaded');
+        container.style.opacity = '1';
+      }
+    }, 100);
+    
   } catch (error) {
     console.error('Error during initialization:', error);
-    addEventListeners(); // ✅ Hata durumunda da event listener'ları ekle
+    addEventListeners();
     updateUI(currentState);
+    
+    // ✅ Hata durumunda da göster
+    setTimeout(() => {
+      if (container) {
+        container.classList.add('loaded');
+        container.style.opacity = '1';
+      }
+    }, 100);
   }
 });

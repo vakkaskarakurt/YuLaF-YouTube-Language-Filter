@@ -23,6 +23,12 @@ body {
 
 .container {
   padding: 20px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.container.loaded {
+  opacity: 1;
 }
 
 .header {
@@ -55,11 +61,33 @@ body {
   flex: 1;
 }
 
-.main-toggle {
+.main-controls {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  margin-bottom: 20px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+  min-height: 40px;
+}
+
+.toggle-group {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 20px;
+  flex: 1;
+  min-width: 150px;
+  max-width: 50%;
+}
+
+.toggle-group span {
+  font-weight: 500;
+  color: var(--text-primary);
+  font-size: 14px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: fit-content;
 }
 
 .switch {
@@ -67,6 +95,7 @@ body {
   display: inline-block;
   width: 50px;
   height: 24px;
+  flex-shrink: 0;
 }
 
 .switch input {
@@ -107,9 +136,9 @@ input:checked + .slider:before {
   transform: translateX(26px);
 }
 
-#statusText {
-  font-weight: 500;
-  color: var(--text-primary);
+.toggle-group.disabled {
+  opacity: 0.4;
+  pointer-events: none;
 }
 
 .language-selector {
@@ -241,14 +270,12 @@ input:checked + .slider:before {
   box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.2);
 }
 
-/* ✅ Search container'a CSS fallback ekle */
 .search-container:focus-within .language-options {
   max-height: 200px !important;
   opacity: 1 !important;
   pointer-events: all !important;
 }
 
-/* ✅ Guaranteed visibility on any interaction */
 .language-selector:focus-within .language-options,
 .search-container:active .language-options {
   max-height: 200px !important;
@@ -265,17 +292,16 @@ input:checked + .slider:before {
   margin-bottom: 10px;
   transition: all 0.3s ease;
   overflow: hidden;
-  pointer-events: none; /* ✅ Kapalıyken tıklanmasın */
+  pointer-events: none;
 }
 
 .language-options.expanded {
   max-height: 200px;
   opacity: 1;
   overflow-y: auto;
-  pointer-events: all; /* ✅ Açıkken tıklanabilir */
+  pointer-events: all;
 }
 
-/* ✅ Force open class for JavaScript fallback */
 .language-options.force-open {
   max-height: 200px !important;
   opacity: 1 !important;
@@ -426,4 +452,20 @@ input:checked + .slider:before {
   background-color: #FF8C00;
   box-shadow: 0 4px 12px rgba(255, 165, 0, 0.3);
   transform: translateY(-1px);
+}
+
+@media (max-width: 350px) {
+  .main-controls {
+    flex-direction: column !important;
+    gap: 15px;
+  }
+  
+  .toggle-group {
+    max-width: 100%;
+    min-width: auto;
+  }
+  
+  .toggle-group span {
+    font-size: 13px;
+  }
 }

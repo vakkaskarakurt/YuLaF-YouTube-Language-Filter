@@ -1,13 +1,12 @@
 chrome.runtime.onInstalled.addListener((details) => {
   chrome.storage.sync.set({
     enabled: true,
-    strictMode: true,    // ← Varsayılan strict mode açık
+    strictMode: true,
     hideVideos: true,   
     hideChannels: true,
-    selectedLanguages: ['en'] // İlk yüklemede sadece İngilizce seçili
+    selectedLanguages: ['en']
   });
 
-  // İlk kurulumda welcome sayfasını aç
   if (details.reason === 'install') {
     chrome.tabs.create({
       url: chrome.runtime.getURL('src/html/welcome.html')

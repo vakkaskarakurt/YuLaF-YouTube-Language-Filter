@@ -1,7 +1,6 @@
-// src/services/language-service.js
 window.LanguageService = {
   selectedLanguages: [],
-  strictMode: true, // ← Yeni ayar
+  strictMode: true,
   
   setLanguages(langCodes) {
     this.selectedLanguages = langCodes.filter(code => 
@@ -24,7 +23,6 @@ window.LanguageService = {
     }
     
     try {
-      // Universal detector ile kontrol et
       return await window.LanguageDetector.detect(text, this.selectedLanguages, this.strictMode);
     } catch (error) {
       console.error('Language detection error:', error);

@@ -1,4 +1,3 @@
-// src/services/language-detector.js
 window.LanguageDetector = {
   name: 'Universal Language Detector',
   
@@ -16,12 +15,12 @@ window.LanguageDetector = {
         if (result && result.languages && result.languages.length > 0) {
           const topLanguage = result.languages[0];
           
-          // 🔑 STRICT MODE KONTROLÜ
+          // Strict Mode kontrolü
           if (strictMode && !result.isReliable) {
-            return false; // Strict mode'da isReliable zorunlu
+            return false;
           }
           
-          // Dil eşleşmesi kontrolü
+          // Dil eşleşmesi
           return targetLanguages.some(targetLang => {
             return topLanguage.language === targetLang || 
                    topLanguage.language.startsWith(targetLang + '-') ||
