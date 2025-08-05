@@ -1,7 +1,8 @@
+// src/services/language-detector.js
 window.LanguageDetector = {
   name: 'Universal Language Detector',
   
-  detect: async function(text, targetLanguages) {
+  detect: async function(text, targetLanguages, strictMode = true) {
     if (!text || text.length < 3) return false;
     
     try {
@@ -12,16 +13,20 @@ window.LanguageDetector = {
           });
         });
         
-        if (result && result.languages && result.languages.length > 0 && result.isReliable) {
-          // En yüksek güvenilirlik oranına sahip dili kontrol et
+        if (result && result.languages && result.languages.length > 0) {
           const topLanguage = result.languages[0];
           
-          // Seçili diller arasında eşleşme var mı kontrol et
+          // 🔑 STRICT MODE KONTROLÜ
+          if (strictMode && !result.isReliable) {
+            return false; // Strict mode'da isReliable zorunlu
+          }
+          
+          // Dil eşleşmesi kontrolü
           return targetLanguages.some(targetLang => {
-            // Exact match veya prefix match (örn: en-US -> en)
             return topLanguage.language === targetLang || 
                    topLanguage.language.startsWith(targetLang + '-') ||
-                   (topLanguage.language.includes('-') && topLanguage.language.split('-')[0] === targetLang);
+                   (topLanguage.language.includes('-') && 
+                    topLanguage.language.split('-')[0] === targetLang);
           });
         }
       }

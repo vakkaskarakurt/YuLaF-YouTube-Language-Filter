@@ -1,7 +1,7 @@
 chrome.runtime.onInstalled.addListener((details) => {
   chrome.storage.sync.set({
     enabled: true,
-    strictMode: true,
+    strictMode: true,    // ← Varsayılan strict mode açık
     hideVideos: true,   
     hideChannels: true,
     selectedLanguages: ['en'] // İlk yüklemede sadece İngilizce seçili

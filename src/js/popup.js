@@ -322,7 +322,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           ca: { code: 'ca', name: 'Catalan', nativeName: 'Català', icon: '🏳️', enabled: false },
           eu: { code: 'eu', name: 'Basque', nativeName: 'Euskera', icon: '🏳️', enabled: false },
           gl: { code: 'gl', name: 'Galician', nativeName: 'Galego', icon: '🏳️', enabled: false },
-          cy: { code: 'cy', name: 'Welsh', nativeName: 'Cymraeg', icon: '🏴󠁧󠁢󠁷󠁬󠁳󠁿', enabled: false },
+          cy: { code: 'cy', name: 'Welsh', nativeName: 'Cymraeg', icon: '🏴', enabled: false },
           ga: { code: 'ga', name: 'Irish', nativeName: 'Gaeilge', icon: '🇮🇪', enabled: false },
           mt: { code: 'mt', name: 'Maltese', nativeName: 'Malti', icon: '🇲🇹', enabled: false },
           is: { code: 'is', name: 'Icelandic', nativeName: 'Íslenska', icon: '🇮🇸', enabled: false },
@@ -647,7 +647,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (rateUsBtn) {
       rateUsBtn.addEventListener('click', handleRateUsClick);
     }
-    
+
+    // Strict Mode toggle listener
+    const strictModeToggle = document.getElementById('strictModeToggle');
+    if (strictModeToggle) {
+      strictModeToggle.addEventListener('change', async (e) => {
+        const newStrictMode = e.target.checked;
+        await saveState({ strictMode: newStrictMode }, true);
+      });
+    }
+
     listenersAdded = true; // ✅ Flag set
   }
 

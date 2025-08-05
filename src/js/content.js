@@ -30,6 +30,7 @@ class YouTubeLanguageFilter {
       
       // Dilleri ayarla
       window.LanguageService.setLanguages(this.settings.selectedLanguages);
+      window.LanguageService.setStrictMode(this.settings.strictMode);  // ← add this
       
       chrome.storage.onChanged.addListener((changes, area) => {
         if (area === 'sync') {
@@ -64,6 +65,9 @@ class YouTubeLanguageFilter {
     for (const key in changes) {
       if (key in this.settings && key !== 'selectedLanguages' && changes[key].newValue !== this.settings[key]) {
         this.settings[key] = changes[key].newValue;
+        if (key === 'strictMode') {
+          window.LanguageService.setStrictMode(this.settings.strictMode);  // ← add this
+        }
         shouldRestart = true;
       }
     }
@@ -254,6 +258,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           settingsKeys.forEach(key => {
             if (key in request.state && request.state[key] !== filter.settings[key]) {
               filter.settings[key] = request.state[key];
+              if (key === 'strictMode') {
+                window.LanguageService.setStrictMode(filter.settings.strictMode);  // ← add this
+              }
               shouldRestart = true;
             }
           });
