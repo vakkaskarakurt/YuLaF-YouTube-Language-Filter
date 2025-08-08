@@ -6,7 +6,7 @@
 YuLaF (YouTube Language Filter) is a browser extension that filters YouTube content based on user's selected languages. This privacy policy explains how we handle your data.
 
 ## Data Collection
-YuLaF does **NOT** collect any personal data or information. The extension operates entirely locally on your device.
+YuLaF does **NOT** collect any personal data or information for its core functionality. The extension operates entirely locally on your device for language filtering purposes.
 
 ## Data Storage
 The following settings are stored locally on your device using Chrome's storage API:
@@ -34,11 +34,25 @@ YuLaF requests the following permissions:
 - **Usage**: Filter content based on detected language
 - **Data**: No browsing data is collected or stored
 
+### Host Permission (formspree.io)
+- **Purpose**: Send user feedback and bug reports
+- **Usage**: Only when user explicitly submits feedback through the extension
+- **Data**: Only feedback data (subject, message, optional email) that user voluntarily provides
+
 ## Third-Party Services
-YuLaF does not use any third-party services, analytics, or tracking tools.
+YuLaF uses the following third-party service:
+
+### Formspree.io
+- **Purpose**: Process user feedback and bug reports
+- **Data Collected**: Only feedback data that users voluntarily submit (feedback type, subject, message, optional email address)
+- **Usage**: Feedback is sent to Formspree.io for processing and forwarding to our development team
+- **Privacy**: Formspree.io's privacy policy applies to data submitted through their service
+- **Control**: Users can choose not to submit feedback; this service is completely optional
+
+**Note**: No personal browsing data, language preferences, or extension usage data is ever sent to Formspree.io or any other external service.
 
 ## Data Sharing
-We do not sell, trade, or transfer your data to third parties. Since no data is collected, there is nothing to share.
+We do not sell, trade, or transfer your data to third parties. The only data that may be transmitted is feedback information that you voluntarily submit through the feedback form, which is processed by Formspree.io as described above.
 
 ## Children's Privacy
 YuLaF does not knowingly collect any information from children under 13 years of age.
