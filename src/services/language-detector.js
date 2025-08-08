@@ -15,8 +15,14 @@ window.LanguageDetector = {
         if (result && result.languages && result.languages.length > 0) {
           const topLanguage = result.languages[0];
           
-          // Strict Mode kontrolü
+          // Strict Mode kontrolü - isReliable kontrolü
           if (strictMode && !result.isReliable) {
+            return false;
+          }
+          
+          // Threshold kontrolü - confidence değeri varsa eşik kontrolü yap
+          const threshold = window.YT_FILTER_CONFIG?.detection?.threshold || 0.7;
+          if (topLanguage.confidence !== undefined && topLanguage.confidence < threshold) {
             return false;
           }
           

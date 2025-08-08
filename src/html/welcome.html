@@ -92,6 +92,10 @@
           </div>
           <div class="step" data-step="4">
             <div class="step-number">4</div>
+            <span>Strict Mode</span>
+          </div>
+          <div class="step" data-step="5">
+            <div class="step-number">5</div>
             <span>Ready!</span>
           </div>
         </div>
@@ -212,8 +216,48 @@
           </div>
         </section>
 
-        <!-- Step 4: Ready -->
+        <!-- Step 4: Strict Mode Settings -->
         <section class="section" data-section="4">
+          <h2>🎯 Configure Strict Mode</h2>
+          <p class="section-description">
+            Strict Mode ensures more accurate language detection by only showing content when the language is reliably detected.
+          </p>
+
+          <div class="strict-mode-section">
+            <div class="strict-mode-content">
+              <div class="strict-mode-header">
+                <h3>🎯 Strict Mode Settings</h3>
+                <p class="section-description">
+                  Choose how strictly you want the extension to filter content based on language detection accuracy.
+                </p>
+              </div>
+
+              <div class="strict-mode-toggle-section">
+                <div class="toggle-group">
+                  <label class="switch">
+                    <input type="checkbox" id="strictModeToggle" checked>
+                    <span class="slider"></span>
+                  </label>
+                  <span id="strictModeText">Strict Mode Enabled</span>
+                </div>
+                
+                <div class="strict-mode-info">
+                  <div class="info-card enabled">
+                    <h4>✅ Enabled (Recommended)</h4>
+                    <p>Only shows content when language is reliably detected. This provides the most accurate filtering but may hide some content.</p>
+                  </div>
+                  <div class="info-card disabled">
+                    <h4>⚠️ Disabled</h4>
+                    <p>Shows more content but may include less accurate results. Useful if you want to see more content even with uncertain language detection.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Step 5: Ready -->
+        <section class="section" data-section="5">
           <div class="ready-section">
             <h2>🚀 Everything is Ready!</h2>
             <div class="action-buttons">

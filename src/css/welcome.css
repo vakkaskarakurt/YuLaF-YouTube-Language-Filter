@@ -1,3 +1,137 @@
+/* Strict Mode Section */
+.strict-mode-section {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 24px;
+  margin: 24px 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.strict-mode-content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.strict-mode-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.strict-mode-header h3 {
+  color: #ff4444;
+  font-size: 1.5rem;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.strict-mode-toggle-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.strict-mode-section .toggle-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.strict-mode-section .switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.strict-mode-section .switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.strict-mode-section .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.strict-mode-section .slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+.strict-mode-section input:checked + .slider {
+  background-color: #ff4444;
+}
+
+.strict-mode-section input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.strict-mode-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 24px;
+}
+
+.info-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.info-card.enabled {
+  border-color: #4CAF50;
+  background: rgba(76, 175, 80, 0.1);
+}
+
+.info-card.disabled {
+  border-color: #FF9800;
+  background: rgba(255, 152, 0, 0.1);
+}
+
+.info-card h4 {
+  margin: 0 0 12px 0;
+  font-size: 1.1rem;
+  color: #fff;
+}
+
+.info-card p {
+  margin: 0;
+  color: #ccc;
+  line-height: 1.5;
+  font-size: 0.9rem;
+}
+
+.info-card.enabled h4 {
+  color: #4CAF50;
+}
+
+.info-card.disabled h4 {
+  color: #FF9800;
+}
+
 /* Reset and Base Styles */
 * {
   margin: 0;
@@ -1369,5 +1503,22 @@ body {
   .btn-submit {
     width: 100%;
     justify-content: center;
+  }
+}
+
+/* Responsive design for strict mode */
+@media (max-width: 768px) {
+  .strict-mode-info {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .strict-mode-content {
+    padding: 0 16px;
+  }
+  
+  .strict-mode-section {
+    padding: 20px;
+    margin: 16px 0;
   }
 }

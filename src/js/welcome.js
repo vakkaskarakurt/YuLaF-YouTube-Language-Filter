@@ -2,7 +2,7 @@
 class WelcomeController {
   constructor() {
     this.currentStep = 1;
-    this.totalSteps = 4;
+    this.totalSteps = 5;
     this.selectedLanguages = ['en']; // Default to English
     this.languages = {};
     this.init();
@@ -10,6 +10,10 @@ class WelcomeController {
 
   async init() {
     await this.loadLanguages();
+    await this.loadStrictModeSetting().then(strictMode => {
+      this.strictMode = strictMode;
+      this.updateStrictModeUI();
+    });
     this.setupEventListeners();
     this.populateLanguageSelections();
     this.updateUI();
@@ -23,7 +27,8 @@ class WelcomeController {
       1: 10000,  // Hoş Geldiniz - 10 saniye
       2: 10000,  // Nasıl Çalışır - 10 saniye  
       3: 0,      // Dil Seçimi - otomatik ilerleme yok (kullanıcı seçimi gerekli)
-      4: 0       // Son adım - bitmiş
+      4: 0,      // Strict Mode - otomatik ilerleme yok (kullanıcı seçimi gerekli)
+      5: 0       // Son adım - bitmiş
     };
 
     const duration = stepDurations[this.currentStep] || 0;
@@ -170,6 +175,12 @@ class WelcomeController {
     const searchInput = document.getElementById('languageSearch');
     if (searchInput) {
       searchInput.addEventListener('input', (e) => this.filterLanguages(e.target.value));
+    }
+
+    // Strict Mode toggle
+    const strictModeToggle = document.getElementById('strictModeToggle');
+    if (strictModeToggle) {
+      strictModeToggle.addEventListener('change', (e) => this.handleStrictModeChange(e));
     }
 
     // Final action buttons
@@ -390,6 +401,55 @@ class WelcomeController {
     }
   }
 
+  handleStrictModeChange(e) {
+    const isEnabled = e.target.checked;
+    const strictModeText = document.getElementById('strictModeText');
+    
+    if (strictModeText) {
+      strictModeText.textContent = isEnabled ? 'Strict Mode Enabled' : 'Strict Mode Disabled';
+    }
+    
+    // Save to storage
+    this.saveStrictModeSetting(isEnabled);
+  }
+
+  async saveStrictModeSetting(strictMode) {
+    try {
+      if (typeof chrome !== 'undefined' && chrome.storage) {
+        await chrome.storage.sync.set({
+          strictMode: strictMode
+        });
+      }
+    } catch (error) {
+      console.log('Could not save strict mode setting:', error);
+    }
+  }
+
+  async loadStrictModeSetting() {
+    try {
+      if (typeof chrome !== 'undefined' && chrome.storage) {
+        const result = await chrome.storage.sync.get(['strictMode']);
+        return result.strictMode !== false; // Default to true
+      }
+    } catch (error) {
+      console.log('Could not load strict mode setting:', error);
+    }
+    return true; // Default to true
+  }
+
+  updateStrictModeUI() {
+    const strictModeToggle = document.getElementById('strictModeToggle');
+    const strictModeText = document.getElementById('strictModeText');
+    
+    if (strictModeToggle) {
+      strictModeToggle.checked = this.strictMode;
+    }
+    
+    if (strictModeText) {
+      strictModeText.textContent = this.strictMode ? 'Strict Mode Enabled' : 'Strict Mode Disabled';
+    }
+  }
+
   nextStep() {
     // Kullanıcı etkileşimi olduğunda otomatik ilerlemeyi durdur
     this.stopAutoProgress();
@@ -406,7 +466,7 @@ class WelcomeController {
       this.updateUI();
       
       // Auto-save settings when reaching final step
-      if (this.currentStep === 4) {
+      if (this.currentStep === 5) {
         this.finalizeSetup();
       } else {
         // Yeni adımda otomatik ilerlemeyi yeniden başlat
@@ -491,7 +551,7 @@ class WelcomeController {
       if (typeof chrome !== 'undefined' && chrome.storage) {
         await chrome.storage.sync.set({
           enabled: true,
-          strictMode: true,
+          strictMode: this.strictMode,
           hideVideos: true,
           hideChannels: true,
           selectedLanguages: this.selectedLanguages,
