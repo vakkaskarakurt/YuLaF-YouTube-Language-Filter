@@ -28,5 +28,20 @@ window.LanguageService = {
       console.error('Language detection error:', error);
       return false;
     }
+  },
+
+  // Seçili diller ve strictMode'a dayalı deterministik bir imza üretir
+  getSelectionSignature() {
+    try {
+      const sortedLanguages = Array.isArray(this.selectedLanguages)
+        ? [...this.selectedLanguages].sort()
+        : [];
+      const strict = Boolean(this.strictMode);
+      return JSON.stringify({ languages: sortedLanguages, strict });
+    } catch (error) {
+      // Beklenmeyen durumda da stabil bir string döndür
+      const fallbackLangs = (this.selectedLanguages || []).join(',');
+      return `${this.strictMode ? '1' : '0'}|${fallbackLangs}`;
+    }
   }
 };

@@ -22,16 +22,20 @@ window.FilterService = {
   },
 
   async processElement(element, type) {
-    // Eğer daha önce işlendiyse ve dil değişmemişse geç
-    const currentLang = window.LanguageService.currentLanguage;
-    const lastCheckedLang = element.getAttribute('data-language-filter-lang');
-    
-    if (element.hasAttribute('data-language-filter-checked') && lastCheckedLang === currentLang) {
+    // Eğer daha önce işlendiyse ve seçim imzası değişmemişse geç
+    const selectionSignature =
+      typeof window.LanguageService?.getSelectionSignature === 'function'
+        ? window.LanguageService.getSelectionSignature()
+        : JSON.stringify({ languages: (window.LanguageService?.selectedLanguages || []).slice().sort(), strict: !!window.LanguageService?.strictMode });
+
+    const lastSignature = element.getAttribute('data-language-filter-sig');
+
+    if (element.hasAttribute('data-language-filter-checked') && lastSignature === selectionSignature) {
       return;
     }
-    
+
     element.setAttribute('data-language-filter-checked', 'true');
-    element.setAttribute('data-language-filter-lang', currentLang);
+    element.setAttribute('data-language-filter-sig', selectionSignature);
 
     // Önce gizle
     window.DOMService.hideElement(element, type);
