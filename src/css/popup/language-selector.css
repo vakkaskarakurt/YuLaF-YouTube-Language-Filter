@@ -57,8 +57,17 @@
 
 .language-option input[type="checkbox"]:checked + .language-label {
   color: var(--primary);
-  background: linear-gradient(45deg, rgba(255, 0, 0, 0.1), rgba(51, 0, 0, 0.1));
-  border-radius: 4px;
+}
+
+/* Enhanced styling for checked options */
+.language-option:has(input[type="checkbox"]:checked) {
+  border-color: var(--primary);
+  border-width: 2px;
+}
+
+/* Checkbox styling */
+.language-option input[type="checkbox"]:checked {
+  accent-color: var(--primary);
 }
 
 /* Language Label */
