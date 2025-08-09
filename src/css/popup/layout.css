@@ -1,0 +1,126 @@
+/* Main Container */
+.container {
+  padding: 20px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.container.loaded {
+  opacity: 1;
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+.header-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.header-icon:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 20px rgba(255, 0, 0, 0.6);
+}
+
+/* Main Controls Layout */
+.main-controls {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 20px;
+  margin-bottom: 20px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+  min-height: 40px;
+}
+
+/* Toggle Groups */
+.toggle-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 150px;
+  max-width: 50%;
+}
+
+.toggle-group span {
+  font-weight: 500;
+  color: var(--text-primary);
+  font-size: 14px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: fit-content;
+}
+
+.toggle-group.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* Language Selector Container */
+.language-selector {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+
+.selector-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+/* Search Container */
+.search-container {
+  margin-bottom: 12px;
+}
+
+.search-container input {
+  width: 100%;
+  padding: 8px 12px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: var(--transition);
+}
+
+/* Selected Count */
+.selected-count {
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-secondary);
+  padding: 8px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-sm);
+}
+
+.selected-count span {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* Footer Actions */
+.footer-actions {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 10px;
+}

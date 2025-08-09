@@ -1,0 +1,147 @@
+/* Mobile Adjustments */
+@media (max-width: 350px) {
+  .main-controls {
+    flex-direction: column !important;
+    gap: 15px;
+  }
+  
+  .toggle-group {
+    max-width: 100%;
+    min-width: auto;
+  }
+  
+  .toggle-group span {
+    font-size: 13px;
+  }
+  
+  .container {
+    padding: 15px;
+  }
+  
+  .header {
+    gap: 12px;
+  }
+  
+  .header-icon {
+    width: 45px;
+    height: 45px;
+  }
+  
+  h1 {
+    font-size: 16px;
+  }
+  
+  .language-selector {
+    padding: 12px;
+  }
+  
+  .footer-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .guide-btn,
+  .feedback-btn,
+  .rate-us-btn {
+    width: 100%;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 320px) {
+  body {
+    width: 320px;
+  }
+  
+  .container {
+    padding: 12px;
+  }
+  
+  .main-controls {
+    gap: 12px;
+  }
+  
+  .toggle-group {
+    gap: 8px;
+  }
+  
+  .switch {
+    width: 45px;
+    height: 22px;
+  }
+  
+  .slider:before {
+    height: 16px;
+    width: 16px;
+  }
+  
+  input:checked + .slider:before {
+    transform: translateX(23px);
+  }
+}
+
+/* Tablet/Larger Popup */
+@media (min-width: 450px) {
+  body {
+    width: 420px;
+  }
+  
+  .container {
+    padding: 25px;
+  }
+  
+  .header-icon {
+    width: 55px;
+    height: 55px;
+  }
+  
+  h1 {
+    font-size: 20px;
+  }
+  
+  .main-controls {
+    gap: 25px;
+  }
+  
+  .language-selector {
+    padding: 18px;
+  }
+}
+
+/* High DPI Displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .header-icon {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .container {
+    transition: none;
+  }
+  
+  .sort-dropdown {
+    transition: none;
+  }
+}
+
+/* Focus Visible Support */
+@supports selector(:focus-visible) {
+  .sort-button:focus:not(:focus-visible),
+  .language-option:focus:not(:focus-visible),
+  .guide-btn:focus:not(:focus-visible),
+  .feedback-btn:focus:not(:focus-visible),
+  .rate-us-btn:focus:not(:focus-visible) {
+    outline: none;
+  }
+}
