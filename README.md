@@ -8,7 +8,6 @@
 [![Chrome Web Store Last Updated](https://img.shields.io/chrome-web-store/last-updated/ejfoldoabjeidjdddhomeaojicaemdpm?style=for-the-badge&color=purple)](https://chromewebstore.google.com/detail/yulaf-youtube-language-fi/ejfoldoabjeidjdddhomeaojicaemdpm)
 [![YuLaF](https://img.shields.io/badge/YuLaF-Language%20Filter-red?style=for-the-badge&logo=youtube&logoColor=red)](https://chromewebstore.google.com/detail/yulaf-youtube-language-fi/ejfoldoabjeidjdddhomeaojicaemdpm)
 
-
 ## 👥 Team
 
 **Vakkas Karakurt** - Developer  
@@ -24,7 +23,6 @@
 - **[Issues](https://github.com/vakkaskarakurt/YuLaF-YouTube-Language-Filter/issues)** - Report bugs or request features
 - **[Privacy Policy](PRIVACY.md)** - Our privacy commitment
 
-
 ## 🚀 Simple Idea
 
 Learning a new language but YouTube keeps showing content in your native language? **YuLaF** filters your feed to show only content in your target language(s), giving you maximum exposure to the languages you're learning.
@@ -34,12 +32,21 @@ Perfect for polyglots, language learners, and anyone wanting to customize their 
 ## ✨ Features
 
 - **🌍 61 Languages Supported** - Turkish, English, Spanish, French, German, Chinese, Japanese, Arabic, and many more
-- **🧠 Smart Detection** - Uses Chrome's built-in language API for accurate detection
-- **🎯 Multi-Language Support** - Select multiple target languages simultaneously
+- **🎯 Precision Control** - New Strict Mode for more accurate language detection
+- **🧠 Smart Detection** - Uses Chrome's built-in language API with 99% accuracy
+- **🔄 Multi-Language Support** - Select multiple target languages simultaneously
 - **🔒 Privacy-First** - All processing done locally, no data collected or transmitted
 - **⚡ One-Click Toggle** - Easy on/off control with visual status indicator
-- **🎨 Clean Interface** - Modern, intuitive popup design
-- **🆓 Completely Free** - Free to use 
+- **🎨 Enhanced Interface** - Improved popup design with dual-toggle controls
+- **🆓 Completely Free** - Free to use forever
+
+## 🆕 What's New in v1.0.5
+
+- **🎯 Strict Mode** - New precision toggle for stricter language detection
+- **🔧 Enhanced Controls** - Dual-toggle interface for filter and strict mode
+- **💪 Improved Stability** - Better error handling and content script reliability
+- **🎨 UI Refinements** - Modular CSS architecture and improved visual feedback
+- **⚡ Performance Boost** - Optimized language detection algorithms
 
 ## 📱 Installation
 
@@ -59,39 +66,46 @@ Perfect for polyglots, language learners, and anyone wanting to customize their 
 
 ## 🎯 How It Works
 
-1. **Select Languages** - Choose your target language(s) from 50+ options
-2. **Enable Filter** - Toggle the extension on with one click
+1. **Select Languages** - Choose your target language(s) from 61+ options
+2. **Configure Settings** - Enable filter and adjust strict mode if needed
 3. **Browse Normally** - Visit YouTube and browse as usual
 4. **Smart Filtering** - Only content in your selected languages will appear
 5. **Toggle Anytime** - Turn off to see all content again
 
+## ⚙️ Settings Explained
+
+- **Filter Toggle** - Master switch to enable/disable language filtering
+- **Strict Mode** - When enabled, only highly confident language detections are accepted
+- **Language Selection** - Choose multiple languages with search and sort functionality
+
 ## 🔧 Technical Details
 
 ### Architecture
+
 - **Manifest V3** - Latest Chrome extension standards
 - **Content Scripts** - Real-time DOM manipulation
 - **Background Service Worker** - Efficient state management
 - **Local Storage** - Privacy-focused settings storage
 
 ### Language Detection
-- Uses Chrome's native `chrome.i18n.detectLanguage` API
-- Fallback detection for reliable results
-- Configurable confidence thresholds
-- Support for language variants (e.g., en-US, en-GB)
 
+- Uses Chrome's native `chrome.i18n.detectLanguage` API
+- Configurable confidence thresholds with Strict Mode
+- Support for language variants (e.g., en-US, en-GB)
+- Real-time processing with optimized algorithms
 
 ## 🌍 Supported Languages
 
 <details>
 <summary>View all 61 supported languages</summary>
 
-**European Languages:**
+**European Languages:**  
 English, French, German, Spanish, Italian, Portuguese, Russian, Dutch, Polish, Turkish, Swedish, Danish, Norwegian, Finnish, Czech, Hungarian, Romanian, Bulgarian, Croatian, Slovak, Slovenian, Estonian, Latvian, Lithuanian, Greek, Ukrainian, Belarusian, Serbian, Bosnian, Albanian, Macedonian, Icelandic, Maltese, Welsh, Irish, Basque, Catalan, Galician
 
-**Asian Languages:**
+**Asian Languages:**  
 Chinese, Japanese, Korean, Hindi, Arabic, Thai, Vietnamese, Indonesian, Malay, Filipino, Hebrew, Persian, Urdu, Bengali, Tamil, Telugu, Malayalam, Kannada, Gujarati, Punjabi
 
-**African Languages:**
+**African Languages:**  
 Swahili, Afrikaans, Amharic
 
 </details>
@@ -103,16 +117,9 @@ YuLaF is built with privacy as a core principle:
 - **No Data Collection** - We don't collect any personal information
 - **Local Processing** - All language detection happens on your device
 - **No External Services** - No data sent to external servers
-- **Complete Transparency** - Privacy-focused development"
+- **Complete Transparency** - Privacy-focused development
 
 Read our full [Privacy Policy](PRIVACY.md) for details.
-
-### Areas for Contribution
-- 🌍 Additional language support
-- 🎨 UI/UX improvements
-- 🐛 Bug fixes and optimizations
-- 📚 Documentation improvements
-- 🧪 Testing and quality assurance
 
 ## 📊 Browser Compatibility
 
@@ -123,7 +130,6 @@ Read our full [Privacy Policy](PRIVACY.md) for details.
 - ❌ **Firefox** - Not supported (Manifest V3 differences)
 - ❌ **Safari** - Not supported
 
-
 ## 📄 License
 
 This project is proprietary software. All rights reserved - see the [LICENSE](LICENSE) file for details.
@@ -131,10 +137,11 @@ This project is proprietary software. All rights reserved - see the [LICENSE](LI
 ## ⭐ Support
 
 If YuLaF helps with your language learning journey:
-- ⭐ **Star** this repository
-- 📝 **Rate** us on the Chrome Web Store
-- 🐛 **Report** any issues you find
-- 💡 **Suggest** new features
+
+- ⭐ Star this repository
+- 📝 Rate us on the Chrome Web Store
+- 🐛 Report any issues you find
+- 💡 Suggest new features
 
 ---
 
