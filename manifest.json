@@ -1,9 +1,15 @@
 {
   "manifest_version": 3,
   "name": "YuLaF - YouTube Language Filter",
-  "version": "1.0.4",
+  "short_name": "YuLaF",
+  "version": "1.0.5",
   "description": "Filter YouTube content by language - supports 61 languages",
-
+  
+  "author": "Vakkas Karakurt & Emrah Fidan",
+  "homepage_url": "https://github.com/vakkaskarakurt/YuLaF-YouTube-Language-Filter",
+  
+  "minimum_chrome_version": "88",
+  
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
@@ -32,12 +38,14 @@
         "src/js/content.js"
       ],
       "css": ["src/css/styles.css"],
-      "run_at": "document_idle"
+      "run_at": "document_idle",
+      "all_frames": false
     }
   ],
 
   "background": {
-    "service_worker": "src/js/background.js"
+    "service_worker": "src/js/background.js",
+    "type": "module"
   },
 
   "action": {
@@ -60,8 +68,23 @@
         "src/assets/team/emrah.jpeg",
         "icons/icon16.png",
         "icons/icon48.png",
-        "icons/icon128.png"      ],
+        "icons/icon128.png"
+      ],
       "matches": ["<all_urls>"]
     }
-  ]
+  ],
+
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self';"
+  },
+
+  "externally_connectable": {
+    "matches": [
+      "*://*.youtube.com/*"
+    ]
+  },
+
+  "incognito": "spanning",
+  
+  "offline_enabled": false
 }
