@@ -3,10 +3,21 @@
   padding: 20px;
   opacity: 0;
   transition: opacity 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 40px);
+  max-height: calc(600px - 40px); /* Chrome limit - padding */
+  box-sizing: border-box;
 }
 
 .container.loaded {
   opacity: 1;
+}
+
+/* Main content area - flex grow */
+.main-content {
+  flex: 1;
+  overflow-y: auto;
 }
 
 /* Header */
@@ -118,9 +129,14 @@
 
 /* Footer Actions */
 .footer-actions {
-  margin-top: 20px;
+  margin-top: auto;
   padding-top: 15px;
   border-top: 1px solid var(--border);
   display: flex;
   gap: 10px;
+  flex-shrink: 0;
+  background: var(--bg-primary);
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
 }

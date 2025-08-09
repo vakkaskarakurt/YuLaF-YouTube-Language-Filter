@@ -12,28 +12,28 @@
 }
 
 .language-options.expanded {
-  max-height: 200px;
+  max-height: 120px;
   opacity: 1;
   overflow-y: auto;
   pointer-events: all;
 }
 
 .language-options.force-open {
-  max-height: 200px !important;
+  max-height: 120px !important;
   opacity: 1 !important;
   pointer-events: all !important;
 }
 
 /* Focus States for Language Selector */
 .search-container:focus-within .language-options {
-  max-height: 200px !important;
+  max-height: 120px !important;
   opacity: 1 !important;
   pointer-events: all !important;
 }
 
 .language-selector:focus-within .language-options,
 .search-container:active .language-options {
-  max-height: 200px !important;
+  max-height: 120px !important;
   opacity: 1 !important;
   pointer-events: all !important;
 }
@@ -93,7 +93,7 @@
 /* Search Focus Enhancements */
 .search-container input:focus + .language-options,
 .search-container input:active + .language-options {
-  max-height: 200px;
+  max-height: 120px;
   opacity: 1;
   pointer-events: all;
 }
@@ -111,13 +111,13 @@
 
 /* Improved Interaction */
 .language-options:hover {
-  max-height: 200px;
+  max-height: 120px;
   opacity: 1;
   pointer-events: all;
 }
 
 .language-selector:hover .language-options {
-  max-height: 200px;
+  max-height: 120px;
   opacity: 1;
   pointer-events: all;
 }

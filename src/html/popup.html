@@ -50,46 +50,48 @@
       <h1>YuLaF - YouTube Language Filter</h1>
     </div>
     
-    <div class="main-controls">
-      <div class="toggle-group">
-        <label class="switch">
-          <input type="checkbox" id="enableFilter">
-          <span class="slider"></span>
-        </label>
-        <span id="statusText">Filter Enabled</span>
-      </div>
-      
-      <div class="toggle-group">
-        <label class="switch">
-          <input type="checkbox" id="strictModeToggle">
-          <span class="slider"></span>
-        </label>
-        <span id="strictModeText">Strict Mode</span>
-      </div>
-    </div>
-    
-    <div class="language-selector">
-      <div class="selector-header">
-        <h3>Select Languages to Show</h3>
-        <div class="sort-container">
-          <button class="sort-button" id="sortButton">
-            <span class="sort-icon">⇅</span>
-            <span class="sort-text">Sort by</span>
-          </button>
-          <div class="sort-dropdown" id="sortDropdown">
-            <div class="sort-option" data-sort="name">Name</div>
-            <div class="sort-option" data-sort="popularity">Popularity</div>
-          </div>
+    <div class="main-content">
+      <div class="main-controls">
+        <div class="toggle-group">
+          <label class="switch">
+            <input type="checkbox" id="enableFilter">
+            <span class="slider"></span>
+          </label>
+          <span id="statusText">Filter Enabled</span>
+        </div>
+        
+        <div class="toggle-group">
+          <label class="switch">
+            <input type="checkbox" id="strictModeToggle">
+            <span class="slider"></span>
+          </label>
+          <span id="strictModeText">Strict Mode</span>
         </div>
       </div>
-      <div class="search-container">
-        <input type="text" id="languageSearch" placeholder="Search languages...">
-      </div>
-      <div class="language-options" id="languageOptions">
-        <!-- Languages will be populated dynamically -->
-      </div>
-      <div class="selected-count">
-        <span id="selectedCount">0</span> languages selected
+      
+      <div class="language-selector">
+        <div class="selector-header">
+          <h3>Select Languages to Show</h3>
+          <div class="sort-container">
+            <button class="sort-button" id="sortButton">
+              <span class="sort-icon">⇅</span>
+              <span class="sort-text">Sort by</span>
+            </button>
+            <div class="sort-dropdown" id="sortDropdown">
+              <div class="sort-option" data-sort="name">Name</div>
+              <div class="sort-option" data-sort="popularity">Popularity</div>
+            </div>
+          </div>
+        </div>
+        <div class="search-container">
+          <input type="text" id="languageSearch" placeholder="Search languages...">
+        </div>
+        <div class="language-options" id="languageOptions">
+          <!-- Languages will be populated dynamically -->
+        </div>
+        <div class="selected-count">
+          <span id="selectedCount">0</span> languages selected
+        </div>
       </div>
     </div>
     

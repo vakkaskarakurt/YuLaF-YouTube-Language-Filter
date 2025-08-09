@@ -108,6 +108,24 @@
   }
 }
 
+/* Küçük yükseklikler için optimize et */
+@media (max-height: 500px) {
+  .language-options.expanded {
+    max-height: 80px;
+  }
+  
+  .footer-actions {
+    gap: 6px;
+  }
+  
+  .guide-btn,
+  .feedback-btn,
+  .rate-us-btn {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+}
+
 /* High DPI Displays */
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
   .header-icon {
