@@ -33,6 +33,14 @@ body {
   color: var(--text-primary);
   overflow-y: auto; /* Scroll ekle */
   box-sizing: border-box;
+  /* Popup büyüme animasyonu için */
+  transition: height 0.3s ease, min-height 0.3s ease;
+}
+
+/* Popup expanded state */
+body.language-expanded {
+  min-height: 520px; /* Dil listesi açıkken daha yüksek */
+  height: auto;
 }
 
 /* Typography */

@@ -304,4 +304,31 @@ export class UIManager {
       }
     }, 100);
   }
+
+  setupLanguageExpansion() {
+    // Document click listener ekle
+    document.addEventListener('click', (e) => {
+      const languageSelector = document.querySelector('.language-selector');
+      const languageOptions = document.getElementById('languageOptions');
+      
+      if (languageSelector && !languageSelector.contains(e.target)) {
+        // Dil seçici dışına tıklandığında
+        languageOptions?.classList.remove('expanded');
+        languageOptions?.classList.remove('force-open');
+        // Popup'ı küçült
+        document.body.classList.remove('language-expanded');
+      }
+    });
+
+    // ESC tuşu ile kapatma
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const languageOptions = document.getElementById('languageOptions');
+        languageOptions?.classList.remove('expanded');
+        languageOptions?.classList.remove('force-open');
+        // Popup'ı küçült
+        document.body.classList.remove('language-expanded');
+      }
+    });
+  }
 }

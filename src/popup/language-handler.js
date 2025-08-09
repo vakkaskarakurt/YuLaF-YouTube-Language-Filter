@@ -128,6 +128,8 @@ export class LanguageHandler {
     
     if (!languageOptions.classList.contains('expanded')) {
       languageOptions.classList.add('expanded');
+      // Popup'ı büyüt
+      document.body.classList.add('language-expanded');
     }
     
     this.renderLanguages(e.target.value);
@@ -146,6 +148,9 @@ export class LanguageHandler {
     
     languageOptions.classList.add('expanded');
     languageOptions.classList.add('force-open');
+    
+    // Popup'ı büyüt
+    document.body.classList.add('language-expanded');
     
     if (Object.keys(this.languages).length === 0) {
       setTimeout(async () => {

@@ -64,6 +64,9 @@ class PopupController {
     this.toggleHandler.updateToggles(state);
     this.uiManager.updateSortUI(state.sortBy || 'popularity');
     this.languageHandler.renderLanguages();
+    
+    // Language expansion setup
+    this.uiManager.setupLanguageExpansion();
   }
 
   setupEventListeners() {
