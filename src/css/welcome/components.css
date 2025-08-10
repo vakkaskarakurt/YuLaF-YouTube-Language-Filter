@@ -89,46 +89,50 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--text-primary);
+  color: white;
   text-decoration: none;
   padding: 10px 16px;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   font-size: 0.9rem;
   font-weight: 600;
   transition: all 0.3s ease;
   border: none;
   cursor: pointer;
   white-space: nowrap;
+  position: relative;
+  overflow: hidden;
 }
 
 .feedback-header-btn {
-  background: linear-gradient(45deg, #000000, var(--success));
+  background: linear-gradient(45deg, var(--success), var(--success-hover));
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
 }
 
 .rate-us-header-btn {
-  background: linear-gradient(45deg, #000000, var(--warning));
+  background: linear-gradient(45deg, var(--warning), var(--warning-hover));
+  box-shadow: 0 2px 8px rgba(255, 193, 7, 0.2);
 }
 
 .coffee-btn {
   background: linear-gradient(45deg, #9C27B0, #FF6B6B);
-  border: 2px solid transparent;
+  box-shadow: 0 2px 8px rgba(156, 39, 176, 0.2);
 }
 
 .feedback-header-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
-  background: linear-gradient(45deg, #000000, var(--success-hover));
+  box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+  background: linear-gradient(45deg, var(--success-hover), #76CB7A);
 }
 
 .rate-us-header-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4);
-  background: linear-gradient(45deg, #000000, var(--warning-hover));
+  box-shadow: 0 8px 25px rgba(255, 193, 7, 0.4);
+  background: linear-gradient(45deg, var(--warning-hover), #FFD54F);
 }
 
 .coffee-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(156, 39, 176, 0.4);
+  box-shadow: 0 8px 25px rgba(156, 39, 176, 0.4);
   background: linear-gradient(45deg, #BA68C8, #FF7B7B);
 }
 
@@ -273,7 +277,13 @@
 .coffee-avatar {
   width: 34px;
   height: 34px;
-  border-radius: 50%;  
+  border-radius: 50%;
   object-fit: cover;
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.coffee-avatar:hover {
+  border-color: rgba(255, 255, 255, 0.8);
+  transform: scale(1.1);
 }

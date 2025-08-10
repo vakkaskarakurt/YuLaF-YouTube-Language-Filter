@@ -130,19 +130,26 @@ input:checked + .slider:before {
   color: white;
 }
 
-/* Action Buttons */
+/* Action Buttons - Font boyutu artırıldı */
 .guide-btn,
 .feedback-btn,
-.rate-us-btn {
+.rate-us-btn,
+.coffee-btn {
   border: none;
-  padding: 12px 16px;
+  padding: 8px 10px; /* 10px 12px'den 8px 10px'e azaltıldı */
   border-radius: var(--radius-md);
-  font-size: 14px;
+  font-size: 12px; /* 11px'den 12px'e artırıldı */
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition);
   flex: 1;
   color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px; /* 4px'den 3px'e azaltıldı */
+  text-align: center;
+  min-height: 36px; /* Minimum yükseklik */
 }
 
 .guide-btn {
@@ -172,6 +179,16 @@ input:checked + .slider:before {
 .rate-us-btn:hover {
   background-color: var(--warning-hover);
   box-shadow: 0 4px 12px rgba(255, 165, 0, 0.3);
+  transform: translateY(-1px);
+}
+
+.coffee-btn {
+  background: linear-gradient(45deg, #9C27B0, #FF6B6B);
+}
+
+.coffee-btn:hover {
+  background: linear-gradient(45deg, #BA68C8, #FF7B7B);
+  box-shadow: 0 4px 12px rgba(156, 39, 176, 0.3);
   transform: translateY(-1px);
 }
 

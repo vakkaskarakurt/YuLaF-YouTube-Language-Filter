@@ -2,7 +2,7 @@
 @media (max-width: 350px) {
   .main-controls {
     flex-direction: column !important;
-    gap: 15px;
+    gap: 12px; /* 15px'den 12px'e azaltıldı */
   }
   
   .toggle-group {
@@ -15,52 +15,66 @@
   }
   
   .container {
-    padding: 15px 15px 70px 15px; /* Mobilde daha az padding */
+    padding: 12px; /* Mobilde daha da az padding */
   }
   
   .main-content {
-    max-height: calc(100% - 80px); /* Mobilde footer için daha az yer */
+    margin-bottom: 6px; /* 12px'den 6px'e azaltıldı */
   }
   
   .header {
-    gap: 12px;
+    gap: 10px; /* 12px'den 10px'e azaltıldı */
+    margin-bottom: 12px;
+    padding-bottom: 12px;
   }
   
   .header-icon {
-    width: 45px;
-    height: 45px;
+    width: 40px; /* 45px'den 40px'e azaltıldı */
+    height: 40px;
   }
   
   h1 {
-    font-size: 16px;
+    font-size: 15px; /* 16px'den 15px'e azaltıldı */
   }
   
   .language-selector {
-    padding: 12px;
+    padding: 10px; /* 12px'den 10px'e azaltıldı */
+    margin-bottom: 6px; /* 12px'den 6px'e azaltıldı */
   }
   
   .footer-actions {
-    flex-direction: column;
-    gap: 8px;
-    padding: 12px 15px; /* Mobilde daha az padding */
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(4, 1fr);
+    gap: 4px; /* 6px'den 4px'e azaltıldı */
+    padding: 6px; /* 8px'den 6px'e azaltıldı */
+    padding-top: 6px; /* Üst padding da azaltıldı */
+    min-height: 140px; /* 4 buton için yeterli alan */
   }
   
   .guide-btn,
   .feedback-btn,
-  .rate-us-btn {
+  .rate-us-btn,
+  .coffee-btn {
     width: 100%;
+    padding: 6px 8px; /* 8px 12px'den 6px 8px'e azaltıldı */
+    font-size: 11px; /* 10px'den 11px'e artırıldı */
+    min-height: 30px; /* Mobilde daha küçük */
   }
   
   .language-options.expanded,
   .language-options.force-open {
-    max-height: 80px !important; /* Mobilde daha az yükseklik */
+    max-height: 70px !important; /* 80px'den 70px'e azaltıldı */
   }
 }
 
 /* Mobile için popup expansion */
 @media (max-width: 350px) {
+  body {
+    min-height: 520px; /* Mobilde daha yüksek */
+  }
+  
   body.language-expanded {
-    min-height: 480px; /* Mobilde biraz daha küçük */
+    min-height: 580px;
   }
 }
 
@@ -68,14 +82,15 @@
 @media (max-width: 320px) {
   body {
     width: 320px;
+    min-height: 500px;
   }
   
   .container {
-    padding: 12px 12px 65px 12px;
+    padding: 10px;
   }
   
   .main-controls {
-    gap: 12px;
+    gap: 10px;
   }
   
   .toggle-group {
@@ -98,7 +113,23 @@
   
   .language-options.expanded,
   .language-options.force-open {
-    max-height: 70px !important;
+    max-height: 60px !important;
+  }
+  
+  .footer-actions {
+    gap: 3px;
+    padding: 4px;
+    padding-top: 4px;
+    min-height: 130px;
+  }
+  
+  .guide-btn,
+  .feedback-btn,
+  .rate-us-btn,
+  .coffee-btn {
+    padding: 5px 6px;
+    font-size: 10px; /* 9px'den 10px'e artırıldı */
+    min-height: 28px;
   }
 }
 
@@ -106,10 +137,11 @@
 @media (min-width: 450px) {
   body {
     width: 420px;
+    min-height: 500px;
   }
   
   .container {
-    padding: 25px;
+    padding: 20px;
   }
   
   .header-icon {
@@ -126,25 +158,43 @@
   }
   
   .language-selector {
-    padding: 18px;
+    padding: 16px;
+  }
+  
+  .footer-actions {
+    gap: 8px;
+    min-height: 90px;
+  }
+  
+  .guide-btn,
+  .feedback-btn,
+  .rate-us-btn,
+  .coffee-btn {
+    padding: 10px 14px;
+    font-size: 13px; /* 12px'den 13px'e artırıldı */
+    min-height: 40px;
   }
 }
 
 /* Küçük yükseklikler için optimize et */
 @media (max-height: 500px) {
-  .language-options.expanded {
-    max-height: 80px;
+  .language-options.expanded,
+  .language-options.force-open {
+    max-height: 60px !important;
   }
   
   .footer-actions {
-    gap: 6px;
+    gap: 4px;
+    min-height: 70px;
   }
   
   .guide-btn,
   .feedback-btn,
-  .rate-us-btn {
-    padding: 8px 12px;
-    font-size: 12px;
+  .rate-us-btn,
+  .coffee-btn {
+    padding: 6px 8px;
+    font-size: 10px;
+    min-height: 32px;
   }
 }
 
@@ -181,7 +231,8 @@
   .language-option:focus:not(:focus-visible),
   .guide-btn:focus:not(:focus-visible),
   .feedback-btn:focus:not(:focus-visible),
-  .rate-us-btn:focus:not(:focus-visible) {
+  .rate-us-btn:focus:not(:focus-visible),
+  .coffee-btn:focus:not(:focus-visible) {
     outline: none;
   }
 }

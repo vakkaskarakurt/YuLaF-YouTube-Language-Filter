@@ -134,6 +134,29 @@
     width: 100%;
     justify-content: center;
   }
+  
+  .coffee-btn {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+  }
+  
+  .coffee-avatar {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-right {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .coffee-btn {
+    order: -1; /* Coffee button'u üste taşı */
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 /* Tablet */

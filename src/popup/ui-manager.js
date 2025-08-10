@@ -202,6 +202,23 @@ export class UIManager {
           ">
             Rate Us
           </button>
+
+          <button id="coffeeBtn" style="
+            background: linear-gradient(45deg, #9C27B0, #FF6B6B);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 80px;
+            display: flex; justify-content: center; align-items: center;
+          ">
+            ☕ Donate Us
+          </button>
         </div>
         
         <p style="
@@ -222,6 +239,7 @@ export class UIManager {
       const guideBtn = document.getElementById('guideBtn');
       const feedbackBtn = document.getElementById('feedbackBtn');
       const rateUsBtn = document.getElementById('rateUsBtn');
+      const coffeeBtn = document.getElementById('coffeeBtn');
       
       if (goToYouTubeBtn) {
         goToYouTubeBtn.addEventListener('click', () => {
@@ -300,6 +318,25 @@ export class UIManager {
           rateUsBtn.style.background = '#FFA500';
           rateUsBtn.style.transform = 'translateY(0)';
           rateUsBtn.style.boxShadow = 'none';
+        });
+      }
+
+      if (coffeeBtn) {
+        coffeeBtn.addEventListener('click', () => {
+          chrome.tabs.create({url: 'https://buymeacoffee.com/yulafdev'});
+          window.close();
+        });
+        
+        coffeeBtn.addEventListener('mouseover', () => {
+          coffeeBtn.style.background = 'linear-gradient(45deg, #BA68C8, #FF7B7B)';
+          coffeeBtn.style.transform = 'translateY(-1px)';
+          coffeeBtn.style.boxShadow = '0 4px 12px rgba(156, 39, 176, 0.3)';
+        });
+        
+        coffeeBtn.addEventListener('mouseout', () => {
+          coffeeBtn.style.background = 'linear-gradient(45deg, #9C27B0, #FF6B6B)';
+          coffeeBtn.style.transform = 'translateY(0)';
+          coffeeBtn.style.boxShadow = 'none';
         });
       }
     }, 100);

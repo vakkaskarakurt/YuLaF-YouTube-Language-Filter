@@ -112,6 +112,7 @@ class PopupController {
     const guideBtn = document.getElementById('guideBtn');
     const feedbackBtn = document.getElementById('feedbackBtn');
     const rateUsBtn = document.getElementById('rateUsBtn');
+    const coffeeBtn = document.getElementById('coffeeBtn');
 
     if (guideBtn) {
       guideBtn.addEventListener('click', () => {
@@ -129,7 +130,7 @@ class PopupController {
         }, (tab) => {
           setTimeout(() => {
             chrome.tabs.sendMessage(tab.id, { action: 'openFeedback' }).catch(() => {});
-          }, 2000);
+          }, 1500);
         });
         window.close();
       });
@@ -139,6 +140,15 @@ class PopupController {
       rateUsBtn.addEventListener('click', () => {
         chrome.tabs.create({
           url: 'https://chromewebstore.google.com/detail/yulaf-youtube-language-fi/ejfoldoabjeidjdddhomeaojicaemdpm'
+        });
+        window.close();
+      });
+    }
+
+    if (coffeeBtn) {
+      coffeeBtn.addEventListener('click', () => {
+        chrome.tabs.create({
+          url: 'https://buymeacoffee.com/yulafdev'
         });
         window.close();
       });
