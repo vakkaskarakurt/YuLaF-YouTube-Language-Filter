@@ -2,7 +2,8 @@ window.DOMService = {
   extractText(element, type) {
     const selectors = window.YT_FILTER_CONFIG.selectors[type === 'video' ? 'title' : type];
     
-    let text = '';
+    const foundTexts = new Set();
+
     for (const selector of selectors) {
       const el = element.querySelector(selector);
       if (el) {
@@ -13,14 +14,13 @@ window.DOMService = {
         if (!content) {
           content = el.textContent?.trim() || '';
         }
-        
         if (content) {
-          text += content + ' ';
+          foundTexts.add(content); // avoids duplicates
         }
       }
     }
-    
-    return text.trim();
+
+    return Array.from(foundTexts).join(' ');
   },
 
   hideElement(element, type) {
