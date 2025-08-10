@@ -12,16 +12,10 @@ export class UIManager {
 
   updateStatusText(enabled) {
     const statusText = document.getElementById('statusText');
-    const enableFilterToggle = document.getElementById('enableFilter');
-    const toggleText = enableFilterToggle?.parentElement.querySelector('.toggle-text');
     
     if (statusText) {
       statusText.textContent = enabled ? 'Filter Enabled' : 'Filter Disabled';
       statusText.style.color = enabled ? '#10B981' : '#aaa';
-    }
-    
-    if (toggleText) {
-      toggleText.textContent = enabled ? 'ON' : 'OFF';
     }
   }
 
@@ -29,7 +23,6 @@ export class UIManager {
     const strictModeToggle = document.getElementById('strictModeToggle');
     const strictModeText = document.getElementById('strictModeText');
     const toggleGroup = strictModeToggle?.closest('.toggle-group');
-    const toggleText = strictModeToggle?.parentElement.querySelector('.toggle-text');
     
     if (filterEnabled) {
       toggleGroup?.classList.remove('disabled');
@@ -41,10 +34,6 @@ export class UIManager {
       if (strictModeText) {
         strictModeText.style.color = 'var(--text-secondary)';
       }
-    }
-    
-    if (toggleText) {
-      toggleText.textContent = strictModeEnabled ? 'ON' : 'OFF';
     }
   }
 
@@ -64,8 +53,6 @@ export class UIManager {
     if (selectedCount) {
       selectedCount.textContent = count;
     }
-    
-    // Success toast kaldırıldı - sadece count'u güncelle
   }
 
   updateSortUI(currentSortBy) {
@@ -83,9 +70,6 @@ export class UIManager {
     });
   }
 
-  // Success toast fonksiyonları tamamen kaldırıldı
-
-  // Button Loading State
   setButtonLoading(buttonId, loading = true) {
     const button = document.getElementById(buttonId);
     if (button) {

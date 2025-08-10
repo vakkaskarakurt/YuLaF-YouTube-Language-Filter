@@ -25,8 +25,7 @@
   transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 8px;
+  justify-content: center;
 }
 
 .slider:before {
@@ -42,27 +41,12 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-/* Toggle Text */
-.toggle-text {
-  font-size: 9px;
-  font-weight: 700;
-  color: #999;
-  position: absolute;
-  transition: 0.3s;
-  pointer-events: none;
-  user-select: none;
-}
-
 input:checked + .slider {
   background-color: var(--success); /* Yeşil aktif durum */
 }
 
 input:checked + .slider:before {
   transform: translateX(27px); /* 26px'den 27px'e */
-}
-
-input:checked + .slider .toggle-text {
-  color: white;
 }
 
 /* Strict Mode için farklı renk */
