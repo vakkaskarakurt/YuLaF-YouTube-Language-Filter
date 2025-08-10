@@ -1,54 +1,62 @@
-/* Mobile Adjustments */
+/* Mobile First Approach - Enhanced */
 @media (max-width: 350px) {
+  body {
+    width: 350px;
+    min-height: 520px;
+  }
+  
   .main-controls {
     flex-direction: column !important;
-    gap: 12px; /* 15px'den 12px'e azaltıldı */
+    gap: 15px;
+    align-items: stretch;
   }
   
   .toggle-group {
     max-width: 100%;
     min-width: auto;
+    justify-content: space-between;
   }
   
   .toggle-group span {
-    font-size: 13px;
+    font-size: 13px; /* 14px'den 13px'e küçültüldü */
   }
   
   .container {
-    padding: 12px; /* Mobilde daha da az padding */
+    padding: 14px;
   }
   
   .main-content {
-    margin-bottom: 6px; /* 12px'den 6px'e azaltıldı */
+    margin-bottom: 8px;
   }
   
   .header {
-    gap: 10px; /* 12px'den 10px'e azaltıldı */
-    margin-bottom: 12px;
-    padding-bottom: 12px;
+    gap: 12px;
+    margin-bottom: 14px;
+    padding-bottom: 14px;
   }
   
   .header-icon {
-    width: 40px; /* 45px'den 40px'e azaltıldı */
-    height: 40px;
+    width: 42px;
+    height: 42px;
   }
   
   h1 {
-    font-size: 15px; /* 16px'den 15px'e azaltıldı */
+    font-size: 15px;
   }
   
   .language-selector {
-    padding: 10px; /* 12px'den 10px'e azaltıldı */
-    margin-bottom: 6px; /* 12px'den 6px'e azaltıldı */
+    padding: 12px;
+    margin-bottom: 8px;
   }
   
+  /* Footer Actions - Tek sütun */
   .footer-actions {
     grid-template-columns: 1fr;
     grid-template-rows: repeat(4, 1fr);
-    gap: 4px; /* 6px'den 4px'e azaltıldı */
-    padding: 6px; /* 8px'den 6px'e azaltıldı */
-    padding-top: 6px; /* Üst padding da azaltıldı */
-    min-height: 140px; /* 4 buton için yeterli alan */
+    gap: 6px;
+    padding: 8px;
+    padding-top: 8px;
+    min-height: 180px; /* 4 buton için daha fazla alan */
   }
   
   .guide-btn,
@@ -56,29 +64,33 @@
   .rate-us-btn,
   .coffee-btn {
     width: 100%;
-    padding: 6px 8px; /* 8px 12px'den 6px 8px'e azaltıldı */
-    font-size: 11px; /* 10px'den 11px'e artırıldı */
-    min-height: 30px; /* Mobilde daha küçük */
+    padding: 10px 12px;
+    font-size: 12px;
+    min-height: 38px;
   }
   
   .language-options.expanded,
   .language-options.force-open {
-    max-height: 70px !important; /* 80px'den 70px'e azaltıldı */
-  }
-}
-
-/* Mobile için popup expansion */
-@media (max-width: 350px) {
-  body {
-    min-height: 520px; /* Mobilde daha yüksek */
+    max-height: 80px !important;
   }
   
-  body.language-expanded {
-    min-height: 580px;
+  /* Switch boyutları küçültülmesi */
+  .switch {
+    width: 50px;
+    height: 26px;
+  }
+  
+  .slider:before {
+    height: 20px;
+    width: 20px;
+  }
+  
+  input:checked + .slider:before {
+    transform: translateX(24px);
   }
 }
 
-/* Small Mobile */
+/* Very Small Mobile - 320px */
 @media (max-width: 320px) {
   body {
     width: 320px;
@@ -86,115 +98,127 @@
   }
   
   .container {
-    padding: 10px;
+    padding: 12px;
   }
   
   .main-controls {
-    gap: 10px;
+    gap: 12px;
   }
   
   .toggle-group {
-    gap: 8px;
+    gap: 10px;
+  }
+  
+  .toggle-group span {
+    font-size: 12px;
   }
   
   .switch {
-    width: 45px;
-    height: 22px;
+    width: 48px;
+    height: 24px;
   }
   
   .slider:before {
-    height: 16px;
-    width: 16px;
+    height: 18px;
+    width: 18px;
   }
   
   input:checked + .slider:before {
-    transform: translateX(23px);
+    transform: translateX(22px);
   }
   
   .language-options.expanded,
   .language-options.force-open {
-    max-height: 60px !important;
-  }
-  
-  .footer-actions {
-    gap: 3px;
-    padding: 4px;
-    padding-top: 4px;
-    min-height: 130px;
-  }
-  
-  .guide-btn,
-  .feedback-btn,
-  .rate-us-btn,
-  .coffee-btn {
-    padding: 5px 6px;
-    font-size: 10px; /* 9px'den 10px'e artırıldı */
-    min-height: 28px;
-  }
-}
-
-/* Tablet/Larger Popup */
-@media (min-width: 450px) {
-  body {
-    width: 420px;
-    min-height: 500px;
-  }
-  
-  .container {
-    padding: 20px;
-  }
-  
-  .header-icon {
-    width: 55px;
-    height: 55px;
-  }
-  
-  h1 {
-    font-size: 20px;
-  }
-  
-  .main-controls {
-    gap: 25px;
-  }
-  
-  .language-selector {
-    padding: 16px;
-  }
-  
-  .footer-actions {
-    gap: 8px;
-    min-height: 90px;
-  }
-  
-  .guide-btn,
-  .feedback-btn,
-  .rate-us-btn,
-  .coffee-btn {
-    padding: 10px 14px;
-    font-size: 13px; /* 12px'den 13px'e artırıldı */
-    min-height: 40px;
-  }
-}
-
-/* Küçük yükseklikler için optimize et */
-@media (max-height: 500px) {
-  .language-options.expanded,
-  .language-options.force-open {
-    max-height: 60px !important;
+    max-height: 70px !important;
   }
   
   .footer-actions {
     gap: 4px;
-    min-height: 70px;
+    padding: 6px;
+    min-height: 170px;
   }
   
   .guide-btn,
   .feedback-btn,
   .rate-us-btn,
   .coffee-btn {
-    padding: 6px 8px;
-    font-size: 10px;
-    min-height: 32px;
+    padding: 8px 10px;
+    font-size: 11px;
+    min-height: 36px;
+  }
+  
+  h1 {
+    font-size: 14px;
+  }
+  
+  .header-icon {
+    width: 38px;
+    height: 38px;
+  }
+}
+
+/* Tablet/Larger Popup - Enhanced */
+@media (min-width: 450px) {
+  body {
+    width: 420px;
+    min-height: 520px;
+  }
+  
+  .container {
+    padding: 22px;
+  }
+  
+  .header-icon {
+    width: 52px;
+    height: 52px;
+  }
+  
+  h1 {
+    font-size: 17px;
+  }
+  
+  .toggle-group span {
+    font-size: 15px;
+  }
+  
+  .main-controls {
+    gap: 25px;
+    margin-bottom: 20px;
+  }
+  
+  .language-selector {
+    padding: 18px;
+  }
+  
+  .footer-actions {
+    gap: 10px;
+    min-height: 100px;
+    padding-top: 15px;
+  }
+  
+  .guide-btn,
+  .feedback-btn,
+  .rate-us-btn,
+  .coffee-btn {
+    padding: 14px 16px;
+    font-size: 14px;
+    min-height: 45px;
+  }
+  
+  .switch {
+    width: 60px;
+    height: 30px;
+  }
+  
+  .slider:before {
+    height: 24px;
+    width: 24px;
+    left: 3px;
+    bottom: 3px;
+  }
+  
+  input:checked + .slider:before {
+    transform: translateX(30px);
   }
 }
 
@@ -223,6 +247,10 @@
   .sort-dropdown {
     transition: none;
   }
+  
+  .success-toast {
+    transition: none;
+  }
 }
 
 /* Focus Visible Support */
@@ -235,4 +263,68 @@
   .coffee-btn:focus:not(:focus-visible) {
     outline: none;
   }
+}
+
+/* Landscape orientation on mobile */
+@media (max-width: 667px) and (orientation: landscape) {
+  body {
+    min-height: 400px;
+  }
+  
+  .language-options.expanded,
+  .language-options.force-open {
+    max-height: 60px !important;
+  }
+  
+  .footer-actions {
+    min-height: 60px;
+  }
+  
+  .guide-btn,
+  .feedback-btn,
+  .rate-us-btn,
+  .coffee-btn {
+    min-height: 32px;
+    font-size: 11px;
+  }
+}
+
+/* Dark mode enhancement (already dark, but can be overridden) */
+@media (prefers-color-scheme: light) {
+  /* Light mode overrides if user specifically requests it */
+  :root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --bg-tertiary: #e9ecef;
+    --text-primary: #212529;
+    --text-secondary: #6c757d;
+    --border: #dee2e6;
+    --border-hover: #adb5bd;
+  }
+}
+
+/* Keyboard navigation improvements */
+.guide-btn:focus-visible,
+.feedback-btn:focus-visible,
+.rate-us-btn:focus-visible,
+.coffee-btn:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+/* Loading state animation */
+@keyframes buttonPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(255, 0, 0, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
+  }
+}
+
+.guide-btn.loading {
+  animation: buttonPulse 2s infinite;
 }

@@ -12,9 +12,16 @@ export class UIManager {
 
   updateStatusText(enabled) {
     const statusText = document.getElementById('statusText');
+    const enableFilterToggle = document.getElementById('enableFilter');
+    const toggleText = enableFilterToggle?.parentElement.querySelector('.toggle-text');
+    
     if (statusText) {
       statusText.textContent = enabled ? 'Filter Enabled' : 'Filter Disabled';
-      statusText.style.color = enabled ? '#ff0000' : '#aaa';
+      statusText.style.color = enabled ? '#10B981' : '#aaa';
+    }
+    
+    if (toggleText) {
+      toggleText.textContent = enabled ? 'ON' : 'OFF';
     }
   }
 
@@ -22,6 +29,7 @@ export class UIManager {
     const strictModeToggle = document.getElementById('strictModeToggle');
     const strictModeText = document.getElementById('strictModeText');
     const toggleGroup = strictModeToggle?.closest('.toggle-group');
+    const toggleText = strictModeToggle?.parentElement.querySelector('.toggle-text');
     
     if (filterEnabled) {
       toggleGroup?.classList.remove('disabled');
@@ -33,6 +41,10 @@ export class UIManager {
       if (strictModeText) {
         strictModeText.style.color = 'var(--text-secondary)';
       }
+    }
+    
+    if (toggleText) {
+      toggleText.textContent = strictModeEnabled ? 'ON' : 'OFF';
     }
   }
 
@@ -52,6 +64,8 @@ export class UIManager {
     if (selectedCount) {
       selectedCount.textContent = count;
     }
+    
+    // Success toast kaldırıldı - sadece count'u güncelle
   }
 
   updateSortUI(currentSortBy) {
@@ -69,12 +83,28 @@ export class UIManager {
     });
   }
 
+  // Success toast fonksiyonları tamamen kaldırıldı
+
+  // Button Loading State
+  setButtonLoading(buttonId, loading = true) {
+    const button = document.getElementById(buttonId);
+    if (button) {
+      if (loading) {
+        button.classList.add('loading');
+        button.disabled = true;
+      } else {
+        button.classList.remove('loading');
+        button.disabled = false;
+      }
+    }
+  }
+
   showNonYouTubePage() {
     document.body.style.cssText = 'margin: 0; padding: 0; overflow: hidden;';
     document.body.innerHTML = `
       <div style="
         width: 380px;
-        min-height: 400px;
+        min-height: 420px;
         padding: 40px 30px;
         background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
         color: #fff;
@@ -84,31 +114,33 @@ export class UIManager {
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        gap: 18px;
+        gap: 20px;
         box-sizing: border-box;
         margin: 0;
         position: relative;
         opacity: 1;
       ">
         <div style="
-          width: 80px;
-          height: 80px;
+          width: 85px;
+          height: 85px;
           background: linear-gradient(45deg, #ff0000, #ff4444);
-          border-radius: 20px;
+          border-radius: 22px;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 2.5rem;
-          box-shadow: 0 8px 25px rgba(255, 0, 0, 0.3);
+          font-size: 2.8rem;
+          box-shadow: 0 10px 30px rgba(255, 0, 0, 0.4);
           margin-bottom: 10px;
+          transform: scale(1);
+          transition: transform 0.3s ease;
         ">
           🎯
         </div>
         
         <h2 style="
           margin: 0;
-          font-size: 1.4rem;
-          font-weight: 600;
+          font-size: 1.5rem;
+          font-weight: 700;
           color: #fff;
           line-height: 1.3;
         ">
@@ -117,117 +149,114 @@ export class UIManager {
         
         <p style="
           margin: 0;
-          font-size: 1rem;
+          font-size: 1.05rem;
           color: #ccc;
-          line-height: 1.5;
-          max-width: 280px;
+          line-height: 1.6;
+          max-width: 300px;
         ">
           Please visit <strong style="color: #ff4444;">YouTube</strong> to start filtering videos by language.
         </p>
         
         <button id="goToYouTubeBtn" style="
-          background-color: #ff0000;
+          background: linear-gradient(45deg, #ff0000, #ff2222);
           color: white;
           border: none;
-          padding: 12px 24px;
-          border-radius: 8px;
-          font-size: 1rem;
+          padding: 14px 28px;
+          border-radius: 10px;
+          font-size: 1.05rem;
           font-weight: 600;
           cursor: pointer;
           transition: all 0.3s ease;
           margin-top: 10px;
           display: flex; justify-content: center; align-items: center;
+          box-shadow: 0 5px 15px rgba(255, 0, 0, 0.3);
         ">
           Go to YouTube
         </button>
         
         <div style="
-          display: flex;
-          flex-wrap: wrap;
-          gap: 10px;
-          margin-top: 20px;
-          padding-top: 20px;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          grid-template-rows: 1fr 1fr;
+          gap: 12px;
+          margin-top: 25px;
+          padding-top: 25px;
           border-top: 1px solid #333;
           width: 100%;
-          max-width: 280px;
-          justify-content: center;
+          max-width: 300px;
         ">
           <button id="guideBtn" style="
-            background-color: #ff0000;
+            background: linear-gradient(45deg, #ff0000, #ff2222);
             color: white;
             border: none;
-            padding: 10px 16px;
-            border-radius: 6px;
-            font-size: 0.9rem;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            flex: 1;
-            min-width: 80px;
             display: flex; justify-content: center; align-items: center;
+            min-height: 42px;
           ">
-            Guide
+            📘 Guide
           </button>
           
           <button id="feedbackBtn" style="
-            background-color: #4CAF50;
+            background: linear-gradient(45deg, #10B981, #34D399);
             color: white;
             border: none;
-            padding: 10px 16px;
-            border-radius: 6px;
-            font-size: 0.9rem;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            flex: 1;
-            min-width: 80px;
             display: flex; justify-content: center; align-items: center;
+            min-height: 42px;
           ">
-            Feedback
+            📝 Feedback
           </button>
 
           <button id="rateUsBtn" style="
-            background-color: #FFA500;
+            background: linear-gradient(45deg, #F59E0B, #FBBF24);
             color: white;
             border: none;
-            padding: 10px 16px;
-            border-radius: 6px;
-            font-size: 0.9rem;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            flex: 1;
-            min-width: 80px;
             display: flex; justify-content: center; align-items: center;
+            min-height: 42px;
           ">
-            Rate Us
+            ⭐ Rate Us
           </button>
 
           <button id="coffeeBtn" style="
-            background: linear-gradient(45deg, #9C27B0, #FF6B6B);
+            background: linear-gradient(45deg, #8B5CF6, #FF6B6B);
             color: white;
             border: none;
-            padding: 10px 16px;
-            border-radius: 6px;
-            font-size: 0.9rem;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            flex: 1;
-            min-width: 80px;
             display: flex; justify-content: center; align-items: center;
+            min-height: 42px;
           ">
             ☕ Donate Us
           </button>
         </div>
         
         <p style="
-          margin: 15px 0 0 0;
-          font-size: 0.8rem;
+          margin: 20px 0 0 0;
+          font-size: 0.85rem;
           color: #666;
           font-style: italic;
         ">
-          YouTube Language Filter
+          YouTube Language Filter v1.0.5
         </p>
       </div>
     `;
@@ -241,22 +270,33 @@ export class UIManager {
       const rateUsBtn = document.getElementById('rateUsBtn');
       const coffeeBtn = document.getElementById('coffeeBtn');
       
+      // Enhanced hover effects
+      const addHoverEffect = (btn, hoverStyle, originalStyle) => {
+        if (btn) {
+          btn.addEventListener('mouseover', () => {
+            Object.assign(btn.style, hoverStyle);
+          });
+          
+          btn.addEventListener('mouseout', () => {
+            Object.assign(btn.style, originalStyle);
+          });
+        }
+      };
+      
       if (goToYouTubeBtn) {
         goToYouTubeBtn.addEventListener('click', () => {
           chrome.tabs.create({url: 'https://www.youtube.com'});
           window.close();
         });
         
-        goToYouTubeBtn.addEventListener('mouseover', () => {
-          goToYouTubeBtn.style.background = '#ff2222';
-          goToYouTubeBtn.style.transform = 'translateY(-2px)';
-          goToYouTubeBtn.style.boxShadow = '0 8px 25px rgba(255, 0, 0, 0.3)';
-        });
-        
-        goToYouTubeBtn.addEventListener('mouseout', () => {
-          goToYouTubeBtn.style.background = '#ff0000';
-          goToYouTubeBtn.style.transform = 'translateY(0)';
-          goToYouTubeBtn.style.boxShadow = 'none';
+        addHoverEffect(goToYouTubeBtn, {
+          background: 'linear-gradient(45deg, #ff2222, #ff4444)',
+          transform: 'translateY(-3px)',
+          boxShadow: '0 8px 25px rgba(255, 0, 0, 0.5)'
+        }, {
+          background: 'linear-gradient(45deg, #ff0000, #ff2222)',
+          transform: 'translateY(0)',
+          boxShadow: '0 5px 15px rgba(255, 0, 0, 0.3)'
         });
       }
       
@@ -266,16 +306,14 @@ export class UIManager {
           window.close();
         });
         
-        guideBtn.addEventListener('mouseover', () => {
-          guideBtn.style.background = '#ff2222';
-          guideBtn.style.transform = 'translateY(-1px)';
-          guideBtn.style.boxShadow = '0 4px 12px rgba(255, 0, 0, 0.3)';
-        });
-        
-        guideBtn.addEventListener('mouseout', () => {
-          guideBtn.style.background = '#ff0000';
-          guideBtn.style.transform = 'translateY(0)';
-          guideBtn.style.boxShadow = 'none';
+        addHoverEffect(guideBtn, {
+          background: 'linear-gradient(45deg, #ff2222, #ff4444)',
+          transform: 'translateY(-2px)',
+          boxShadow: '0 6px 20px rgba(255, 0, 0, 0.4)'
+        }, {
+          background: 'linear-gradient(45deg, #ff0000, #ff2222)',
+          transform: 'translateY(0)',
+          boxShadow: 'none'
         });
       }
       
@@ -289,16 +327,14 @@ export class UIManager {
           window.close();
         });
         
-        feedbackBtn.addEventListener('mouseover', () => {
-          feedbackBtn.style.background = '#66BB6A';
-          feedbackBtn.style.transform = 'translateY(-1px)';
-          feedbackBtn.style.boxShadow = '0 4px 12px rgba(76, 175, 80, 0.3)';
-        });
-        
-        feedbackBtn.addEventListener('mouseout', () => {
-          feedbackBtn.style.background = '#4CAF50';
-          feedbackBtn.style.transform = 'translateY(0)';
-          feedbackBtn.style.boxShadow = 'none';
+        addHoverEffect(feedbackBtn, {
+          background: 'linear-gradient(45deg, #34D399, #6EE7B7)',
+          transform: 'translateY(-2px)',
+          boxShadow: '0 6px 20px rgba(16, 185, 129, 0.4)'
+        }, {
+          background: 'linear-gradient(45deg, #10B981, #34D399)',
+          transform: 'translateY(0)',
+          boxShadow: 'none'
         });
       }
 
@@ -308,16 +344,14 @@ export class UIManager {
           window.close();
         });
         
-        rateUsBtn.addEventListener('mouseover', () => {
-          rateUsBtn.style.background = '#FF8C00';
-          rateUsBtn.style.transform = 'translateY(-1px)';
-          rateUsBtn.style.boxShadow = '0 4px 12px rgba(255, 165, 0, 0.3)';
-        });
-        
-        rateUsBtn.addEventListener('mouseout', () => {
-          rateUsBtn.style.background = '#FFA500';
-          rateUsBtn.style.transform = 'translateY(0)';
-          rateUsBtn.style.boxShadow = 'none';
+        addHoverEffect(rateUsBtn, {
+          background: 'linear-gradient(45deg, #FBBF24, #FCD34D)',
+          transform: 'translateY(-2px)',
+          boxShadow: '0 6px 20px rgba(245, 158, 11, 0.4)'
+        }, {
+          background: 'linear-gradient(45deg, #F59E0B, #FBBF24)',
+          transform: 'translateY(0)',
+          boxShadow: 'none'
         });
       }
 
@@ -327,16 +361,14 @@ export class UIManager {
           window.close();
         });
         
-        coffeeBtn.addEventListener('mouseover', () => {
-          coffeeBtn.style.background = 'linear-gradient(45deg, #BA68C8, #FF7B7B)';
-          coffeeBtn.style.transform = 'translateY(-1px)';
-          coffeeBtn.style.boxShadow = '0 4px 12px rgba(156, 39, 176, 0.3)';
-        });
-        
-        coffeeBtn.addEventListener('mouseout', () => {
-          coffeeBtn.style.background = 'linear-gradient(45deg, #9C27B0, #FF6B6B)';
-          coffeeBtn.style.transform = 'translateY(0)';
-          coffeeBtn.style.boxShadow = 'none';
+        addHoverEffect(coffeeBtn, {
+          background: 'linear-gradient(45deg, #A78BFA, #FF7B7B)',
+          transform: 'translateY(-2px)',
+          boxShadow: '0 6px 20px rgba(139, 92, 246, 0.4)'
+        }, {
+          background: 'linear-gradient(45deg, #8B5CF6, #FF6B6B)',
+          transform: 'translateY(0)',
+          boxShadow: 'none'
         });
       }
     }, 100);
