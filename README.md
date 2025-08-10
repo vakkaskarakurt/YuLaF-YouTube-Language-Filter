@@ -16,6 +16,30 @@
 **Emrah Fidan** - Developer  
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/emrah-fidann)
 
+## 💖 Support the Project
+
+If YuLaF helps with your language learning journey, consider supporting our work:
+
+<div align="center">
+
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy_Me_A_Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/yulafdev)
+
+<a href="https://buymeacoffee.com/yulafdev" target="_blank">
+  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="60" width="217">
+</a>
+
+**Every coffee helps us improve YuLaF and add new features! ☕**
+
+</div>
+
+### Other Ways to Support
+
+- ⭐ **Star this repository** - Show your appreciation
+- 📝 **Rate us** on the [Chrome Web Store](https://chromewebstore.google.com/detail/yulaf-youtube-language-fi/ejfoldoabjeidjdddhomeaojicaemdpm)
+- 🐛 **Report bugs** and suggest features via [Issues](https://github.com/vakkaskarakurt/YuLaF-YouTube-Language-Filter/issues)
+- 🌍 **Share** with fellow language learners
+- 💬 **Spread the word** on social media
+
 ## 🔗 Links
 
 - **[Chrome Web Store](https://chromewebstore.google.com/detail/yulaf-youtube-language-fi/ejfoldoabjeidjdddhomeaojicaemdpm)** - Install the extension
@@ -134,20 +158,15 @@ Read our full [Privacy Policy](PRIVACY.md) for details.
 
 This project is proprietary software. All rights reserved - see the [LICENSE](LICENSE) file for details.
 
-## ⭐ Support
-
-If YuLaF helps with your language learning journey:
-
-- ⭐ Star this repository
-- 📝 Rate us on the Chrome Web Store
-- 🐛 Report any issues you find
-- 💡 Suggest new features
-
----
+## 🙏 Thank You
 
 <div align="center">
 
 **Made with ❤️ for language learners worldwide**
+
+Your support keeps this project alive and helps us add new features!
+
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy_Me_A_Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/yulafdev)
 
 [⬆ Back to top](#yulaf---youtube-language-filter-)
 
