@@ -13,13 +13,14 @@ class YouTubeLanguageFilter {
     this.originalPushState = null;
     this.originalReplaceState = null;
     this.filterTimeout = null;
+    this.debugMode = false; // Debug modu
     this.init();
   }
 
   async init() {
     try {
       const stored = await chrome.storage.sync.get([
-        'enabled', 'strictMode', 'hideVideos', 'hideChannels', 'selectedLanguages'
+        'enabled', 'strictMode', 'hideVideos', 'hideChannels', 'selectedLanguages', 'debugMode'
       ]);
       
       this.enabled = stored.enabled !== false;
@@ -27,10 +28,16 @@ class YouTubeLanguageFilter {
       this.settings.hideVideos = stored.hideVideos !== false;
       this.settings.hideChannels = stored.hideChannels !== false;
       this.settings.selectedLanguages = stored.selectedLanguages || ['en'];
+      this.debugMode = stored.debugMode || false;
       
       // Language Service'i yapılandır
       window.LanguageService.setLanguages(this.settings.selectedLanguages);
       window.LanguageService.setStrictMode(this.settings.strictMode);
+      
+      // Debug modu aktifse console'a log yaz
+      if (this.debugMode) {
+        this.startDebugLogging();
+      }
       
       chrome.storage.onChanged.addListener((changes, area) => {
         if (area === 'sync') {
@@ -44,6 +51,22 @@ class YouTubeLanguageFilter {
     } catch (error) {
       console.error('Error initializing filter:', error);
     }
+  }
+
+  // Debug logging başlat
+  startDebugLogging() {
+    this.debugTimer = setInterval(() => {
+      const stats = window.LanguageService.getCacheStats();
+      console.log('YuLaF Cache Stats:', stats);
+    }, 30000); // 30 saniyede bir
+  }
+
+  // Message handler'a cache stats ekleme
+  getCacheStats() {
+    if (window.LanguageService && window.LanguageService.getCacheStats) {
+      return window.LanguageService.getCacheStats();
+    }
+    return null;
   }
 
   handleStorageChanges(changes) {
@@ -192,6 +215,11 @@ class YouTubeLanguageFilter {
       window.removeEventListener('popstate', this.popstateHandler);
       this.popstateHandler = null;
     }
+    
+    if (this.debugTimer) {
+      clearInterval(this.debugTimer);
+      this.debugTimer = null;
+    }
   }
 
   stopFiltering() {
@@ -237,6 +265,22 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         });
         break;
         
+      case 'getCacheStats':
+        sendResponse({ 
+          stats: filter.getCacheStats(),
+          success: true
+        });
+        break;
+        
+      case 'clearCache':
+        if (window.LanguageService && window.LanguageService.clearCache) {
+          window.LanguageService.clearCache();
+          sendResponse({ success: true, message: 'Cache cleared successfully' });
+        } else {
+          sendResponse({ success: false, message: 'Cache service not available' });
+        }
+        break;
+        
       case 'updateState':
         if (request.state) {
           let shouldRestart = false;
@@ -259,7 +303,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             if (key in request.state && request.state[key] !== filter.settings[key]) {
               filter.settings[key] = request.state[key];
               if (key === 'strictMode') {
-                window.LanguageService.setStrictMode(filter.settings.strictMode);  // ← add this
+                window.LanguageService.setStrictMode(filter.settings.strictMode);
               }
               shouldRestart = true;
             }
@@ -278,7 +322,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       case 'getStatus':
         sendResponse({ 
           enabled: filter.enabled,
-          settings: filter.settings
+          settings: filter.settings,
+          cacheStats: filter.getCacheStats()
         });
         break;
         

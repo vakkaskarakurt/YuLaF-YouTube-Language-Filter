@@ -120,6 +120,7 @@ window.LanguageDetector = {
             
             // Detected language character validation
             if (isMatch) {
+              console.log(text)
               const detectedLang = topLanguage.language;
               const baseLang = detectedLang.includes('-') ? detectedLang.split('-')[0] : detectedLang;
               
