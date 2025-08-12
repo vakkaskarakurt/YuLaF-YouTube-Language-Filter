@@ -138,7 +138,6 @@ window.LanguageService = {
   clearCache() {
     this.textCache.clear();
     this.cacheStats = { hits: 0, misses: 0 };
-    console.log('Language detection cache cleared');
   },
   
   // Cache istatistikleri
