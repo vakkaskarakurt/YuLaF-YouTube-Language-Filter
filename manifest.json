@@ -4,12 +4,11 @@
   "short_name": "YuLaF",
   "version": "1.0.5",
   "description": "Filter YouTube content by language - supports 61 languages",
-  
+
   "author": "Vakkas Karakurt & Emrah Fidan",
   "homepage_url": "https://github.com/vakkaskarakurt/YuLaF-YouTube-Language-Filter",
-  
   "minimum_chrome_version": "88",
-  
+
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
@@ -25,6 +24,21 @@
     "*://*.youtube.com/*",
     "*://formspree.io/*"
   ],
+
+  "background": {
+    "service_worker": "src/js/background.js",
+    "type": "module"
+  },
+
+  "action": {
+    "default_title": "YuLaF - YouTube Language Filter",
+    "default_popup": "src/html/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
 
   "content_scripts": [
     {
@@ -43,26 +57,11 @@
     }
   ],
 
-  "background": {
-    "service_worker": "src/js/background.js",
-    "type": "module"
-  },
-
-  "action": {
-    "default_popup": "src/html/popup.html",
-    "default_title": "YuLaF - YouTube Language Filter",
-    "default_icon": {
-      "16": "icons/icon16.png",
-      "48": "icons/icon48.png",
-      "128": "icons/icon128.png"
-    }
-  },
-
   "web_accessible_resources": [
     {
       "resources": [
         "src/html/welcome.html",
-        "src/css/welcome.css", 
+        "src/css/welcome.css",
         "src/js/welcome.js",
         "src/assets/team/vakkas.jpeg",
         "src/assets/team/emrah.jpeg",
@@ -79,12 +78,9 @@
   },
 
   "externally_connectable": {
-    "matches": [
-      "*://*.youtube.com/*"
-    ]
+    "matches": ["*://*.youtube.com/*"]
   },
 
   "incognito": "spanning",
-  
   "offline_enabled": false
 }

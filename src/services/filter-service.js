@@ -2,48 +2,48 @@ window.FilterService = {
   async filterContent(settings) {
     if (!settings) return;
 
-    const filterPromises = [];
+    const tasks = [];
 
     if (settings.hideVideos) {
-      filterPromises.push(this.filterElementType('video'));
-    }
-    
-    if (settings.hideChannels) {
-      filterPromises.push(this.filterElementType('channel'));
+      tasks.push(this.filterElementType('video'));
     }
 
-    await Promise.all(filterPromises);
+    if (settings.hideChannels) {
+      tasks.push(this.filterElementType('channel'));
+    }
+
+    await Promise.all(tasks);
   },
 
   async filterElementType(type) {
     const elements = window.DOMService.getAllElements(type);
-    const processPromises = elements.map(element => this.processElement(element, type));
-    await Promise.all(processPromises);
+    await Promise.all(elements.map(el => this.processElement(el, type)));
   },
 
   async processElement(element, type) {
-    // Eğer daha önce işlendiyse ve dil değişmemişse geç
     const currentLang = window.LanguageService.currentLanguage;
     const lastCheckedLang = element.getAttribute('data-language-filter-lang');
-    
+
+    // Eğer zaten aynı dil için kontrol edilmişse tekrar etme
     if (element.hasAttribute('data-language-filter-checked') && lastCheckedLang === currentLang) {
       return;
     }
-    
+
     element.setAttribute('data-language-filter-checked', 'true');
     element.setAttribute('data-language-filter-lang', currentLang);
 
     // Önce gizle
     window.DOMService.hideElement(element, type);
 
-    const text = window.DOMService.extractText(element, type);
-    
-    if (text.trim()) {
-      const isTargetLanguage = await window.LanguageService.detectLanguage(text.trim());
-      if (isTargetLanguage) {
+    const text = window.DOMService.extractText(element, type).trim();
+
+    if (text) {
+      const isTarget = await window.LanguageService.detectLanguage(text);
+      if (isTarget) {
         window.DOMService.showElement(element);
       }
     } else {
+      // Hiç text yoksa direkt göster
       window.DOMService.showElement(element);
     }
   },
@@ -51,35 +51,43 @@ window.FilterService = {
   processNewNode(node, settings) {
     if (!node.matches || !settings) return;
 
-    const isAd = node.matches('ytd-ad-slot-renderer, ytd-in-feed-ad-layout-renderer') ||
-                 node.closest('ytd-ad-slot-renderer, ytd-in-feed-ad-layout-renderer');
-    
-    if (isAd) return;
+    // Reklamları atla
+    if (
+      node.matches('ytd-ad-slot-renderer, ytd-in-feed-ad-layout-renderer') ||
+      node.closest('ytd-ad-slot-renderer, ytd-in-feed-ad-layout-renderer')
+    ) {
+      return;
+    }
 
-    const videoSelectors = window.YT_FILTER_CONFIG.selectors.video;
-    if (settings.hideVideos && videoSelectors.some(selector => node.matches(selector))) {
+    const { video: videoSelectors, channel: channelSelectors } = window.YT_FILTER_CONFIG.selectors;
+
+    // Tekil node video ise
+    if (settings.hideVideos && videoSelectors.some(sel => node.matches(sel))) {
       this.processElement(node, 'video');
     }
 
-    const channelSelectors = window.YT_FILTER_CONFIG.selectors.channel;
-    if (settings.hideChannels && channelSelectors.some(selector => node.matches(selector))) {
+    // Tekil node kanal ise
+    if (settings.hideChannels && channelSelectors.some(sel => node.matches(sel))) {
       this.processElement(node, 'channel');
     }
 
+    // Node’un içinde video veya kanal arayalım
     if (node.querySelectorAll) {
       if (settings.hideVideos) {
-        const innerVideos = node.querySelectorAll(videoSelectors.join(','));
-        innerVideos.forEach(video => {
-          if (!video.matches('ytd-ad-slot-renderer, ytd-in-feed-ad-layout-renderer') && 
-              !video.closest('ytd-ad-slot-renderer, ytd-in-feed-ad-layout-renderer')) {
+        node.querySelectorAll(videoSelectors.join(',')).forEach(video => {
+          if (
+            !video.matches('ytd-ad-slot-renderer, ytd-in-feed-ad-layout-renderer') &&
+            !video.closest('ytd-ad-slot-renderer, ytd-in-feed-ad-layout-renderer')
+          ) {
             this.processElement(video, 'video');
           }
         });
       }
-      
+
       if (settings.hideChannels) {
-        const innerChannels = node.querySelectorAll(channelSelectors.join(','));
-        innerChannels.forEach(channel => this.processElement(channel, 'channel'));
+        node.querySelectorAll(channelSelectors.join(',')).forEach(channel => {
+          this.processElement(channel, 'channel');
+        });
       }
     }
   }

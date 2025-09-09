@@ -4,23 +4,23 @@ export class ProgressManager {
     this.autoProgressTimer = null;
   }
 
+  /** 🔹 Otomatik ilerlemeyi başlat */
   startAutoProgress() {
     const stepDurations = {
-      1: 10000,  // Welcome - 10 seconds
-      2: 10000,  // How it works - 10 seconds  
-      3: 0,      // Language selection - no auto progress
-      4: 0       // Final step
+      1: 10000, // Welcome
+      2: 10000, // How it works
+      3: 0,     // Language selection
+      4: 0      // Final step
     };
 
     const duration = stepDurations[this.stateManager.currentStep] || 0;
-    
+
     if (duration > 0) {
-      this.autoProgressTimer = setTimeout(() => {
-        this.autoAdvance();
-      }, duration);
+      this.autoProgressTimer = setTimeout(() => this.autoAdvance(), duration);
     }
   }
 
+  /** 🔹 Otomatik ilerlemeyi durdur */
   stopAutoProgress() {
     if (this.autoProgressTimer) {
       clearTimeout(this.autoProgressTimer);
@@ -29,16 +29,19 @@ export class ProgressManager {
     this.hideAutoProgressIndicator();
   }
 
+  /** 🔹 Timer tetiklendiğinde adım ilerlet */
   autoAdvance() {
-    if (this.stateManager.currentStep === 1 || this.stateManager.currentStep === 2) {
+    const { currentStep } = this.stateManager;
+    if (currentStep === 1 || currentStep === 2) {
       this.stateManager.nextStep();
     }
   }
 
+  /** 🔹 Progress indicator’ı gizle */
   hideAutoProgressIndicator() {
     const indicator = document.getElementById('autoProgressIndicator');
     const fill = document.getElementById('autoProgressFill');
-    
+
     if (indicator) indicator.classList.remove('visible');
     if (fill) {
       fill.style.width = '0%';
@@ -46,21 +49,21 @@ export class ProgressManager {
     }
   }
 
+  /** 🔹 Progress bar genişliğini güncelle */
   updateProgressBar() {
     const progressSteps = document.querySelector('.progress-steps');
-    const progressWidth = ((this.stateManager.currentStep - 1) / (this.stateManager.totalSteps - 1)) * 100;
-    
-    if (progressSteps) {
-      progressSteps.style.setProperty('--progress-width', `${progressWidth}%`);
-    }
+    if (!progressSteps) return;
+
+    const percentage = ((this.stateManager.currentStep - 1) / (this.stateManager.totalSteps - 1)) * 100;
+    progressSteps.style.setProperty('--progress-width', `${percentage}%`);
   }
 
+  /** 🔹 Step numaralarını güncelle */
   updateSteps() {
     document.querySelectorAll('.step').forEach((step, index) => {
       const stepNum = index + 1;
-      
       step.classList.remove('active', 'completed');
-      
+
       if (stepNum === this.stateManager.currentStep) {
         step.classList.add('active');
       } else if (stepNum < this.stateManager.currentStep) {
@@ -69,6 +72,7 @@ export class ProgressManager {
     });
   }
 
+  /** 🔹 Navigasyon butonlarını güncelle */
   updateNavigationButtons() {
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
@@ -78,33 +82,27 @@ export class ProgressManager {
     }
 
     if (nextBtn) {
-      if (this.stateManager.currentStep >= this.stateManager.totalSteps) {
-        nextBtn.style.display = 'none';
-      } else {
-        nextBtn.style.display = 'block';
-        nextBtn.textContent = 'Next →';
-      }
+      const atLastStep = this.stateManager.currentStep >= this.stateManager.totalSteps;
+      nextBtn.style.display = atLastStep ? 'none' : 'block';
+      if (!atLastStep) nextBtn.textContent = 'Next →';
     }
   }
 
+  /** 🔹 İçerik bölümlerini güncelle */
   updateContentSections() {
     document.querySelectorAll('.section').forEach((section, index) => {
-      const sectionNum = index + 1;
-      if (sectionNum === this.stateManager.currentStep) {
-        section.classList.add('active');
-      } else {
-        section.classList.remove('active');
-      }
+      section.classList.toggle('active', index + 1 === this.stateManager.currentStep);
     });
   }
 
+  /** 🔹 Tüm UI öğelerini güncelle */
   updateUI() {
     this.updateSteps();
     this.updateProgressBar();
     this.updateContentSections();
     this.updateNavigationButtons();
-    
-    // Smooth scroll to top
+
+    // Yukarıya smooth scroll
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }

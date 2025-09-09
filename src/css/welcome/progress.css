@@ -1,324 +1,115 @@
-/* Progress Container */
-.progress-container {
-  padding: 40px 0;
-  position: relative;
-}
+/* Progress */
+.progress-container { padding:40px 0; position:relative; }
+.auto-progress-indicator { display:none; }
 
-/* Auto Progress Indicator - Hidden */
-.auto-progress-indicator {
-  display: none;
-}
-
-/* Progress Steps */
 .progress-steps {
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  max-width: 800px;
-  margin: 0 auto 40px auto;
-  padding-top: 20px;
+  position:relative; display:flex; justify-content:space-between; align-items:flex-start;
+  max-width:800px; margin:0 auto 40px; padding-top:20px;
 }
-
-/* Progress Bar Background */
-.progress-steps::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 6px;
-  background: var(--border);
-  border-radius: 3px;
-  z-index: 1;
+.progress-steps::before, .progress-steps::after {
+  content:''; position:absolute; top:0; height:6px; border-radius:3px;
 }
-
-/* Progress Bar Fill */
+.progress-steps::before { left:0; right:0; background:var(--border); z-index:1; }
 .progress-steps::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 6px;
-  background: linear-gradient(45deg, var(--primary), var(--secondary));
-  border-radius: 3px;
-  z-index: 2;
-  transition: width 0.5s ease;
-  width: var(--progress-width, 25%);
-  box-shadow: 0 2px 10px rgba(255, 0, 0, 0.3);
+  left:0; width:var(--progress-width,25%);
+  background:linear-gradient(45deg,var(--primary),var(--secondary));
+  box-shadow:0 2px 10px rgba(255,0,0,.3); transition:width .5s ease; z-index:2;
 }
 
-/* Step Items */
+/* Steps */
 .step {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 15px;
-  flex: 1;
-  opacity: 0.5;
-  transition: all 0.3s ease;
-  cursor: pointer;
-  z-index: 3;
+  flex:1; display:flex; flex-direction:column; align-items:center; gap:15px;
+  opacity:.5; cursor:pointer; transition:.3s all ease; z-index:3;
 }
-
-.step.active {
-  opacity: 1;
-}
-
-.step.completed {
-  opacity: 0.8;
-}
-
-/* Remove step numbers completely */
-.step-number {
-  display: none;
-}
-
+.step.active { opacity:1; }
+.step.completed { opacity:.8; }
+.step-number { display:none; }
 .step span {
-  font-size: 1rem;
-  color: var(--text-secondary);
-  font-weight: 500;
-  white-space: nowrap;
-  text-align: center;
-  margin-top: 10px;
+  margin-top:10px; font:500 1rem/1.4 inherit; text-align:center;
+  white-space:nowrap; color:var(--text-secondary);
 }
+.step.active span { color:var(--text-primary); font-weight:600; }
+.step.completed span { color:var(--text-muted); }
 
-.step.active span {
-  color: var(--text-primary);
-  font-weight: 600;
+/* Quick Tips & Features */
+.quick-tips, .pin-guide { margin-bottom:50px; }
+.quick-tips h3, .pin-guide h3 {
+  font-size:1.5rem; margin-bottom:30px; color:var(--text-primary); text-align:center;
 }
-
-.step.completed span {
-  color: var(--text-muted);
+.tips-grid, .features-grid, .pin-steps {
+  display:grid; gap:25px;
 }
-
-/* Quick Tips */
-.quick-tips {
-  margin-bottom: 50px;
-}
-
-.quick-tips h3 {
-  font-size: 1.5rem;
-  margin-bottom: 30px;
-  color: var(--text-primary);
-}
-
-.tips-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 25px;
-}
-
-/* Features Grid */
-.features-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
-  margin-top: 50px;
-}
-
-/* Pin Guide */
-.pin-guide {
-  margin-bottom: 50px;
-}
-
-.pin-guide h3 {
-  font-size: 1.5rem;
-  text-align: center;
-  margin-bottom: 30px;
-  color: var(--text-primary);
-}
-
-.pin-steps {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
-}
+.tips-grid, .features-grid { grid-template-columns:repeat(3,1fr); }
+.features-grid{gap:30px;margin-top:50px;}
+.pin-steps{grid-template-columns:repeat(3,1fr);gap:30px;}
 
 .pin-step {
-  text-align: center;
-  background: var(--bg-tertiary);
-  padding: 30px 20px;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border);
-  transition: all 0.3s ease;
+  text-align:center; padding:30px 20px; border:1px solid var(--border);
+  border-radius:var(--radius-lg); background:var(--bg-tertiary);
+  transition:.3s all ease;
 }
-
 .pin-step:hover {
-  transform: translateY(-5px);
-  border-color: var(--primary);
-  box-shadow: 0 10px 30px rgba(255, 0, 0, 0.1);
+  transform:translateY(-5px); border-color:var(--primary);
+  box-shadow:0 10px 30px rgba(255,0,0,.1);
 }
-
 .step-image {
-  margin-bottom: 20px;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  height:60px; margin-bottom:20px;
+  display:flex; align-items:center; justify-content:center;
 }
-
-.pin-step p {
-  color: var(--text-secondary);
-  line-height: 1.6;
-  font-size: 0.95rem;
-  margin: 0;
-}
-
-.pin-step strong {
-  color: var(--text-primary);
-  display: block;
-  margin-bottom: 5px;
-}
+.pin-step p { margin:0; font-size:.95rem; line-height:1.6; color:var(--text-secondary); }
+.pin-step strong { display:block; margin-bottom:5px; color:var(--text-primary); }
 
 /* Browser Mockup */
 .browser-mockup {
-  background: var(--bg-tertiary);
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-lg);
+  border:1px solid var(--border); border-radius:12px; overflow:hidden;
+  background:var(--bg-tertiary); box-shadow:var(--shadow-lg);
 }
-
 .browser-header {
-  display: flex;
-  align-items: center;
-  padding: 15px;
-  background: var(--bg-secondary);
-  border-bottom: 1px solid var(--border);
+  display:flex; align-items:center; padding:15px;
+  background:var(--bg-secondary); border-bottom:1px solid var(--border);
 }
-
-.browser-buttons {
-  display: flex;
-  gap: 8px;
-  margin-right: 15px;
-}
-
-.browser-buttons span {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-}
-
-.btn-close { background: #ff5f56; }
-.btn-minimize { background: #ffbd2e; }
-.btn-maximize { background: #27ca3f; }
+.browser-buttons { display:flex; gap:8px; margin-right:15px; }
+.browser-buttons span { width:12px; height:12px; border-radius:50%; }
+.btn-close{background:#ff5f56;} .btn-minimize{background:#ffbd2e;} .btn-maximize{background:#27ca3f;}
 
 .address-bar {
-  flex: 1;
-  background: var(--border);
-  padding: 8px 15px;
-  border-radius: 20px;
-  color: var(--text-secondary);
-  font-size: 0.9rem;
+  flex:1; padding:8px 15px; border-radius:20px;
+  background:var(--border); color:var(--text-secondary); font-size:.9rem;
 }
+.extension-icon{margin-left:15px;} 
+.extension-icon img{width:20px;height:20px;}
 
-.extension-icon {
-  margin-left: 15px;
-}
-
-.extension-icon img {
-  width: 20px;
-  height: 20px;
-}
-
-.browser-content {
-  padding: 30px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
+.browser-content { padding:30px; display:flex; flex-direction:column; gap:15px; }
 .youtube-video {
-  padding: 15px 20px;
-  border-radius: 8px;
-  font-weight: 500;
-  transition: all 0.3s ease;
+  padding:15px 20px; border-radius:8px; font-weight:500; transition:.3s all ease;
 }
+.youtube-video.visible { background:#1a4a1a; border:1px solid #4a8; color:#8f8; }
+.youtube-video.hidden { background:#4a1a1a; border:1px solid #a84; color:#f88; opacity:.6; }
 
-.youtube-video.visible {
-  background: #1a4a1a;
-  border: 1px solid #4a8;
-  color: #8f8;
-}
-
-.youtube-video.hidden {
-  background: #4a1a1a;
-  border: 1px solid #a84;
-  color: #f88;
-  opacity: 0.6;
-}
-
-/* Browser Bar for Pin Steps */
+/* Browser Bar & Extensions */
 .browser-bar {
-  background: var(--bg-secondary);
-  border-radius: 8px;
-  padding: 10px 15px;
-  border: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  min-width: 150px;
-  gap: 10px;
+  display:flex; align-items:center; justify-content:flex-end; gap:10px;
+  min-width:150px; padding:10px 15px; border:1px solid var(--border);
+  border-radius:8px; background:var(--bg-secondary);
 }
-
-.extension-puzzle {
-  font-size: 1.5rem;
-  cursor: pointer;
-  transition: transform 0.2s ease;
+.extension-puzzle, .pin-icon, .pinned-icon {
+  cursor:pointer; transition:.2s transform ease;
 }
-
-.extension-puzzle:hover {
-  transform: scale(1.1);
+.extension-puzzle{font-size:1.5rem;}
+.extension-puzzle:hover, .pin-icon:hover { transform:scale(1.1); }
+.pin-icon{margin-left:auto;} .pin-icon:hover{transform:scale(1.2);}
+.pinned-icon {
+  width:20px; height:20px; border-radius:4px; transition:.2s all ease;
 }
+.pinned-icon:hover { transform:scale(1.1); box-shadow:0 2px 8px rgba(255,0,0,.3); }
 
 .extension-list {
-  background: var(--bg-secondary);
-  border-radius: 8px;
-  padding: 15px;
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-md);
+  padding:15px; border-radius:8px; border:1px solid var(--border);
+  background:var(--bg-secondary); box-shadow:var(--shadow-md);
 }
-
 .extension-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px;
-  border-radius: 6px;
-  background: var(--bg-tertiary);
+  display:flex; align-items:center; gap:10px; padding:8px;
+  border-radius:6px; background:var(--bg-tertiary);
 }
-
-.extension-item img {
-  width: 20px;
-  height: 20px;
-}
-
-.extension-item span {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-}
-
-.pin-icon {
-  margin-left: auto;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-.pin-icon:hover {
-  transform: scale(1.2);
-}
-
-.pinned-icon {
-  width: 20px;
-  height: 20px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.pinned-icon:hover {
-  transform: scale(1.1);
-  box-shadow: 0 2px 8px rgba(255, 0, 0, 0.3);
-}
+.extension-item img{width:20px;height:20px;}
+.extension-item span{font-size:.9rem; color:var(--text-secondary);}

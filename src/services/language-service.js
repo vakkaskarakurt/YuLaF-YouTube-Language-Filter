@@ -1,205 +1,152 @@
-// src/services/language-service.js - Güncellenmiş
+// src/services/language-service.js
 window.LanguageService = {
   selectedLanguages: [],
   strictMode: true,
-  
-  // Text-based cache sistemi
+
+  // 🔹 Cache & stats
   textCache: new Map(),
   cacheStats: { hits: 0, misses: 0 },
-  
-  // Cache ayarları
+
   cacheConfig: {
-    maxSize: 1000,        // Maksimum cache entry sayısı
-    ttl: 1800000,         // 30 dakika (milliseconds)
-    cleanupInterval: 300000 // 5 dakikada bir cleanup
+    maxSize: 1000,          // Maksimum kayıt
+    ttl: 30 * 60 * 1000,    // 30 dk
+    cleanupInterval: 5 * 60 * 1000 // 5 dk
   },
-  
+
   init() {
-    this.textCache = new Map();
-    this.cacheStats = { hits: 0, misses: 0 };
-    
-    // Periyodik cache temizliği
+    this.clearCache();
     this.startCacheCleanup();
   },
-  
+
   setLanguages(langCodes) {
-    const newLanguages = langCodes.filter(code => 
-      window.YT_FILTER_CONFIG.languages[code]
-    );
-    
-    // Eğer diller değiştiyse cache'i temizle
-    if (JSON.stringify(this.selectedLanguages) !== JSON.stringify(newLanguages)) {
+    const valid = langCodes.filter(code => window.YT_FILTER_CONFIG.languages[code]);
+
+    if (JSON.stringify(valid) !== JSON.stringify(this.selectedLanguages)) {
       this.clearCache();
-      this.selectedLanguages = newLanguages;
+      this.selectedLanguages = valid;
     }
-    
     return true;
   },
-  
+
   setStrictMode(enabled) {
-    // Strict mode değiştiyse cache'i temizle
     if (this.strictMode !== enabled) {
       this.clearCache();
       this.strictMode = enabled;
     }
   },
-  
-  // Text'i normalize et (cache key için)
+
+  // 🔹 Normalization helpers
   normalizeText(text) {
-    return text.trim()
-               .toLowerCase()
-               .replace(/\s+/g, ' ')    // Çoklu boşlukları tek boşluk yap
-               .replace(/[^\w\s\u0080-\uFFFF]/g, ''); // Özel karakterleri temizle
+    return text
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, ' ') // çoklu boşluk → tek boşluk
+      .replace(/[^\w\s\u0080-\uFFFF]/g, ''); // özel karakterleri temizle
   },
-  
-  // Cache key oluştur
-  createCacheKey(text, targetLanguages, strictMode) {
-    const normalizedText = this.normalizeText(text);
-    const langKey = targetLanguages.sort().join(',');
-    return `${normalizedText}|${langKey}|${strictMode ? 'strict' : 'normal'}`;
+
+  createCacheKey(text, langs, strict) {
+    return `${this.normalizeText(text)}|${langs.sort().join(',')}|${strict ? 'strict' : 'normal'}`;
   },
-  
-  // Cache'den değer oku
-  getCachedResult(cacheKey) {
-    const cached = this.textCache.get(cacheKey);
-    
-    if (!cached) {
+
+  // 🔹 Cache ops
+  getCachedResult(key) {
+    const entry = this.textCache.get(key);
+    if (!entry) {
       this.cacheStats.misses++;
       return null;
     }
-    
-    // TTL kontrolü
-    const now = Date.now();
-    if (now - cached.timestamp > this.cacheConfig.ttl) {
-      this.textCache.delete(cacheKey);
+
+    if (Date.now() - entry.timestamp > this.cacheConfig.ttl) {
+      this.textCache.delete(key);
       this.cacheStats.misses++;
       return null;
     }
-    
+
     this.cacheStats.hits++;
-    return cached.result;
+    return entry.result;
   },
-  
-  // Cache'e değer yaz
-  setCachedResult(cacheKey, result) {
-    // Cache boyut kontrolü
+
+  setCachedResult(key, result) {
     if (this.textCache.size >= this.cacheConfig.maxSize) {
       this.cleanupOldEntries();
     }
-    
-    this.textCache.set(cacheKey, {
-      result: result,
-      timestamp: Date.now(),
-      accessCount: 1
-    });
+    this.textCache.set(key, { result, timestamp: Date.now() });
   },
-  
-  // Cache temizliği
+
   cleanupOldEntries() {
     const now = Date.now();
-    const entries = Array.from(this.textCache.entries());
-    
-    // TTL'si geçmiş entryleri temizle
-    let deletedCount = 0;
-    for (const [key, value] of entries) {
-      if (now - value.timestamp > this.cacheConfig.ttl) {
+    let deleted = 0;
+
+    // TTL geçmişleri sil
+    for (const [key, val] of this.textCache.entries()) {
+      if (now - val.timestamp > this.cacheConfig.ttl) {
         this.textCache.delete(key);
-        deletedCount++;
+        deleted++;
       }
     }
-    
-    // Hala çok büyükse, en eski entryleri sil
+
+    // Hala çok büyükse → en eski %20 sil
     if (this.textCache.size >= this.cacheConfig.maxSize) {
-      const sortedEntries = Array.from(this.textCache.entries())
-        .sort((a, b) => a[1].timestamp - b[1].timestamp);
-      
-      const entriesToDelete = sortedEntries.slice(0, Math.floor(this.cacheConfig.maxSize * 0.2));
-      entriesToDelete.forEach(([key]) => {
+      const oldest = [...this.textCache.entries()].sort((a, b) => a[1].timestamp - b[1].timestamp);
+      oldest.slice(0, Math.floor(this.cacheConfig.maxSize * 0.2)).forEach(([key]) => {
         this.textCache.delete(key);
-        deletedCount++;
+        deleted++;
       });
     }
-    
-    console.log(`Cache cleanup: ${deletedCount} entries deleted. Size: ${this.textCache.size}`);
+
+    console.log(`Cache cleanup: ${deleted} entries deleted. Size: ${this.textCache.size}`);
   },
-  
-  // Periyodik cleanup başlat
+
   startCacheCleanup() {
-    if (this.cleanupTimer) {
-      clearInterval(this.cleanupTimer);
-    }
-    
-    this.cleanupTimer = setInterval(() => {
-      this.cleanupOldEntries();
-    }, this.cacheConfig.cleanupInterval);
+    if (this.cleanupTimer) clearInterval(this.cleanupTimer);
+    this.cleanupTimer = setInterval(() => this.cleanupOldEntries(), this.cacheConfig.cleanupInterval);
   },
-  
-  // Cache'i temizle
+
   clearCache() {
     this.textCache.clear();
     this.cacheStats = { hits: 0, misses: 0 };
   },
-  
-  // Cache istatistikleri
+
   getCacheStats() {
     const total = this.cacheStats.hits + this.cacheStats.misses;
-    const hitRate = total > 0 ? (this.cacheStats.hits / total * 100).toFixed(1) : 0;
-    
+    const hitRate = total > 0 ? ((this.cacheStats.hits / total) * 100).toFixed(1) : 0;
+
     return {
       size: this.textCache.size,
       hits: this.cacheStats.hits,
       misses: this.cacheStats.misses,
-      hitRate: `${hitRate}%`,
-      total: total
+      total,
+      hitRate: `${hitRate}%`
     };
   },
-  
+
+  // 🔹 Asıl language detect
   async detectLanguage(text) {
-    if (!text || text.length < window.YT_FILTER_CONFIG.detection.minLength) {
-      return false;
-    }
-    
-    if (this.selectedLanguages.length === 0) {
-      return false;
-    }
-    
-    // Cache key oluştur
-    const cacheKey = this.createCacheKey(text, this.selectedLanguages, this.strictMode);
-    
-    // Cache'den kontrol et
-    const cachedResult = this.getCachedResult(cacheKey);
-    if (cachedResult !== null) {
-      return cachedResult;
-    }
-    
+    if (!text || text.length < window.YT_FILTER_CONFIG.detection.minLength) return false;
+    if (this.selectedLanguages.length === 0) return false;
+
+    const key = this.createCacheKey(text, this.selectedLanguages, this.strictMode);
+
+    const cached = this.getCachedResult(key);
+    if (cached !== null) return cached;
+
     try {
-      // API'den sonuç al
       const result = await window.LanguageDetector.detect(text, this.selectedLanguages, this.strictMode);
-      
-      // Sonucu cache'le
-      this.setCachedResult(cacheKey, result);
-      
+      this.setCachedResult(key, result);
       return result;
-    } catch (error) {
-      console.error('Language detection error:', error);
-      
-      // Hata durumunda false cache'le (kısa süreliğine)
-      this.setCachedResult(cacheKey, false);
+    } catch (err) {
+      console.error('Language detection error:', err);
+      this.setCachedResult(key, false); // hata durumunda kısa süreliğine false cache
       return false;
     }
   }
 };
 
-// İlk başlatma
+// İlk yükte init et
 if (typeof window !== 'undefined') {
   window.LanguageService.init();
-}
 
-// Sayfa kapatılırken cleanup
-if (typeof window !== 'undefined') {
   window.addEventListener('beforeunload', () => {
-    if (window.LanguageService.cleanupTimer) {
-      clearInterval(window.LanguageService.cleanupTimer);
-    }
+    if (window.LanguageService.cleanupTimer) clearInterval(window.LanguageService.cleanupTimer);
   });
 }

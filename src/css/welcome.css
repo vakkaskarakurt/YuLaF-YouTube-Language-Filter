@@ -1,4 +1,4 @@
-/* Import all welcome CSS modules */
+/* Welcome Imports */
 @import url('welcome/base.css');
 @import url('welcome/layout.css');
 @import url('welcome/components.css');
@@ -8,5 +8,5 @@
 @import url('welcome/animations.css');
 @import url('welcome/responsive.css');
 
-/* Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+/* Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300..700&display=swap');

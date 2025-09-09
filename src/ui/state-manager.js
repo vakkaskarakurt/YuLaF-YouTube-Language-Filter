@@ -5,46 +5,48 @@ export class StateManager {
     this.selectedLanguages = ['en'];
   }
 
+  /** 🔹 Sonraki adıma geç */
   nextStep() {
-    if (this.currentStep < this.totalSteps) {
-      // Validation for step 3 (language selection)
-      if (this.currentStep === 3 && this.selectedLanguages.length === 0) {
-        alert('Please select at least one language.');
-        return false;
-      }
-      
-      this.currentStep++;
-      return true;
+    if (this.currentStep >= this.totalSteps) return false;
+
+    // Step 3 → Dil seçimi kontrolü
+    if (this.currentStep === 3 && this.selectedLanguages.length === 0) {
+      alert('Please select at least one language.');
+      return false;
     }
-    return false;
+
+    this.currentStep++;
+    return true;
   }
 
+  /** 🔹 Önceki adıma dön */
   prevStep() {
-    if (this.currentStep > 1) {
-      this.currentStep--;
-      return true;
-    }
-    return false;
+    if (this.currentStep <= 1) return false;
+
+    this.currentStep--;
+    return true;
   }
 
+  /** 🔹 Belirli bir adıma git */
   goToStep(stepNum) {
-    if (stepNum >= 1 && stepNum <= this.totalSteps) {
-      this.currentStep = stepNum;
-      return true;
-    }
-    return false;
+    if (stepNum < 1 || stepNum > this.totalSteps) return false;
+
+    this.currentStep = stepNum;
+    return true;
   }
 
+  /** 🔹 Dil seçimini aç/kapat */
   toggleLanguage(code) {
-    const index = this.selectedLanguages.indexOf(code);
-    
-    if (index === -1) {
-      this.selectedLanguages.push(code);
+    const exists = this.selectedLanguages.includes(code);
+
+    if (exists) {
+      this.selectedLanguages = this.selectedLanguages.filter(lang => lang !== code);
     } else {
-      this.selectedLanguages.splice(index, 1);
+      this.selectedLanguages.push(code);
     }
   }
 
+  /** 🔹 Kurulumu tamamla ve ayarları kaydet */
   async finalizeSetup() {
     try {
       if (typeof chrome !== 'undefined' && chrome.storage) {
@@ -58,7 +60,7 @@ export class StateManager {
         });
       }
     } catch (error) {
-      console.log('Could not finalize setup:', error);
+      console.error('Could not finalize setup:', error);
     }
   }
 }

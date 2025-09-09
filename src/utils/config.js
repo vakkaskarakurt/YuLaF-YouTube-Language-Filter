@@ -2,7 +2,7 @@ window.YT_FILTER_CONFIG = {
   selectors: {
     video: [
       'ytd-video-renderer',
-      'ytd-compact-video-renderer', 
+      'ytd-compact-video-renderer',
       'ytd-grid-video-renderer',
       'ytd-rich-item-renderer',
       'ytd-reel-item-renderer',
@@ -38,17 +38,20 @@ window.YT_FILTER_CONFIG = {
       '#text.ytd-channel-name'
     ]
   },
+
   detection: {
-    threshold: 0.7,
-    minLength: 3
+    threshold: 0.7,  // Güven eşiği
+    minLength: 3     // Minimum karakter uzunluğu
   },
+
   timing: {
     titleRestore: 50,
     filterDelay: 100,
     urlChangeDelay: 150
   },
+
+  // 🌍 Desteklenen diller (ikon + isim + yerel isim)
   languages: {
-    // Sık kullanılan diller (konuşucu sayısına ve internet kullanımına göre)
     en: { code: 'en', name: 'English', nativeName: 'English', icon: '🇬🇧', enabled: false },
     es: { code: 'es', name: 'Spanish', nativeName: 'Español', icon: '🇪🇸', enabled: false },
     zh: { code: 'zh', name: 'Chinese', nativeName: '中文', icon: '🇨🇳', enabled: false },
@@ -100,7 +103,7 @@ window.YT_FILTER_CONFIG = {
     ca: { code: 'ca', name: 'Catalan', nativeName: 'Català', icon: '🏳️', enabled: false },
     eu: { code: 'eu', name: 'Basque', nativeName: 'Euskera', icon: '🏳️', enabled: false },
     gl: { code: 'gl', name: 'Galician', nativeName: 'Galego', icon: '🏳️', enabled: false },
-    cy: { code: 'cy', name: 'Welsh', nativeName: 'Cymraeg', icon: '🏴󠁧󠁢󠁷󠁬󠁳󠁿', enabled: false },
+    cy: { code: 'cy', name: 'Welsh', nativeName: 'Cymraeg', icon: '🏴', enabled: false },
     ga: { code: 'ga', name: 'Irish', nativeName: 'Gaeilge', icon: '🇮🇪', enabled: false },
     mt: { code: 'mt', name: 'Maltese', nativeName: 'Malti', icon: '🇲🇹', enabled: false },
     is: { code: 'is', name: 'Icelandic', nativeName: 'Íslenska', icon: '🇮🇸', enabled: false },

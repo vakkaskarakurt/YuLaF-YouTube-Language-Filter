@@ -11,52 +11,46 @@ class PopupController {
     this.toggleHandler = null;
     this.languageHandler = null;
     this.listenersAdded = false;
-    
     this.init();
   }
 
   async init() {
     try {
-      // Get current tab
-      const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
-      this.tab = tabs[0];
+      // Get active tab
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      this.tab = tab;
 
-      // Check if we're on YouTube
-      if (!this.tab.url.includes('youtube.com')) {
+      // Not YouTube → show special screen
+      if (!tab.url.includes('youtube.com')) {
         this.uiManager.showNonYouTubePage();
         this.uiManager.setupNonYouTubeEventListeners();
         return;
       }
 
-      // Initialize handlers
-      this.toggleHandler = new ToggleHandler(this.storageManager, this.uiManager, this.tab);
-      this.languageHandler = new LanguageHandler(this.storageManager, this.uiManager, this.tab);
+      // Init handlers
+      this.toggleHandler = new ToggleHandler(this.storageManager, this.uiManager, tab);
+      this.languageHandler = new LanguageHandler(this.storageManager, this.uiManager, tab);
 
-      // Load data
-      const [currentState, languages] = await Promise.all([
-        this.storageManager.loadCurrentState(this.tab),
-        this.storageManager.loadLanguages(this.tab)
+      // Load current state + languages
+      const [state, languages] = await Promise.all([
+        this.storageManager.loadCurrentState(tab),
+        this.storageManager.loadLanguages(tab)
       ]);
 
-      // Set state
-      this.toggleHandler.setCurrentState(currentState);
-      this.languageHandler.setCurrentState(currentState);
+      // Apply state
+      this.toggleHandler.setCurrentState(state);
+      this.languageHandler.setCurrentState(state);
       this.languageHandler.setLanguages(languages);
 
-      // Setup UI
+      // Setup
       this.setupEventListeners();
-      this.updateUI(currentState);
-      
-      // Show loaded UI
-      setTimeout(() => {
-        this.uiManager.showLoaded();
-      }, 100);
+      this.updateUI(state);
 
-    } catch (error) {
-      console.error('Error during initialization:', error);
-      setTimeout(() => {
-        this.uiManager.showLoaded();
-      }, 100);
+      // Fade-in UI
+      setTimeout(() => this.uiManager.showLoaded(), 100);
+    } catch (err) {
+      console.error('Popup init error:', err);
+      setTimeout(() => this.uiManager.showLoaded(), 100);
     }
   }
 
@@ -64,110 +58,76 @@ class PopupController {
     this.toggleHandler.updateToggles(state);
     this.uiManager.updateSortUI(state.sortBy || 'popularity');
     this.languageHandler.renderLanguages();
-    
-    // Language expansion setup
     this.uiManager.setupLanguageExpansion();
   }
 
   setupEventListeners() {
     if (this.listenersAdded) return;
 
-    // Setup component event listeners
+    // Components
     this.toggleHandler.setupEventListeners();
     this.languageHandler.setupEventListeners();
 
-    // Global event listeners
+    // Global click handler (close dropdowns etc.)
     document.addEventListener('click', (e) => {
-      const languageSelector = document.querySelector('.language-selector');
-      const sortContainer = document.querySelector('.sort-container');
-      
-      if (languageSelector && !languageSelector.contains(e.target)) {
-        const languageOptions = document.getElementById('languageOptions');
-        languageOptions?.classList.remove('expanded');
-        languageOptions?.classList.remove('force-open');
+      const langSel = document.querySelector('.language-selector');
+      const sortCont = document.querySelector('.sort-container');
+
+      if (langSel && !langSel.contains(e.target)) {
+        document.getElementById('languageOptions')?.classList.remove('expanded', 'force-open');
       }
-      
-      if (sortContainer && !sortContainer.contains(e.target)) {
-        const sortDropdown = document.getElementById('sortDropdown');
-        const sortButton = document.getElementById('sortButton');
-        sortDropdown?.classList.remove('show');
-        sortButton?.classList.remove('active');
+      if (sortCont && !sortCont.contains(e.target)) {
+        document.getElementById('sortDropdown')?.classList.remove('show');
+        document.getElementById('sortButton')?.classList.remove('active');
       }
     });
 
-    // Footer buttons
     this.setupFooterButtons();
-    
-    // Storage change listener
+
+    // Listen for storage updates
     chrome.storage.onChanged.addListener((changes, area) => {
-      if (area === 'sync') {
-        this.handleStorageChanges(changes);
-      }
+      if (area === 'sync') this.handleStorageChanges(changes);
     });
 
     this.listenersAdded = true;
   }
 
   setupFooterButtons() {
-    const guideBtn = document.getElementById('guideBtn');
-    const feedbackBtn = document.getElementById('feedbackBtn');
-    const rateUsBtn = document.getElementById('rateUsBtn');
-    const coffeeBtn = document.getElementById('coffeeBtn');
+    const openTab = (url, cb) =>
+      chrome.tabs.create({ url }, cb).then(() => window.close());
 
-    if (guideBtn) {
-      guideBtn.addEventListener('click', () => {
-        chrome.tabs.create({
-          url: chrome.runtime.getURL('src/html/welcome.html')
-        });
-        window.close();
-      });
-    }
+    document.getElementById('guideBtn')?.addEventListener('click', () =>
+      openTab(chrome.runtime.getURL('src/html/welcome.html'))
+    );
 
-    if (feedbackBtn) {
-      feedbackBtn.addEventListener('click', () => {
-        chrome.tabs.create({
-          url: chrome.runtime.getURL('src/html/welcome.html')
-        }, (tab) => {
-          setTimeout(() => {
-            chrome.tabs.sendMessage(tab.id, { action: 'openFeedback' }).catch(() => {});
-          }, 1500);
-        });
-        window.close();
-      });
-    }
+    document.getElementById('feedbackBtn')?.addEventListener('click', () =>
+      chrome.tabs.create({ url: chrome.runtime.getURL('src/html/welcome.html') }, (tab) => {
+        setTimeout(() => chrome.tabs.sendMessage(tab.id, { action: 'openFeedback' }).catch(() => {}), 1500);
+      }).then(() => window.close())
+    );
 
-    if (rateUsBtn) {
-      rateUsBtn.addEventListener('click', () => {
-        chrome.tabs.create({
-          url: 'https://chromewebstore.google.com/detail/yulaf-youtube-language-fi/ejfoldoabjeidjdddhomeaojicaemdpm'
-        });
-        window.close();
-      });
-    }
+    document.getElementById('rateUsBtn')?.addEventListener('click', () =>
+      openTab('https://chromewebstore.google.com/detail/yulaf-youtube-language-fi/ejfoldoabjeidjdddhomeaojicaemdpm')
+    );
 
-    if (coffeeBtn) {
-      coffeeBtn.addEventListener('click', () => {
-        chrome.tabs.create({
-          url: 'https://buymeacoffee.com/yulafdev'
-        });
-        window.close();
-      });
-    }
+    document.getElementById('coffeeBtn')?.addEventListener('click', () =>
+      openTab('https://buymeacoffee.com/yulafdev')
+    );
   }
 
   handleStorageChanges(changes) {
-    let stateChanged = false;
-    const currentState = this.toggleHandler.currentState;
-    const newState = { ...currentState };
-    
+    const current = this.toggleHandler.currentState;
+    const newState = { ...current };
+    let changed = false;
+
     for (const key in changes) {
-      if (key in currentState && JSON.stringify(changes[key].newValue) !== JSON.stringify(currentState[key])) {
+      if (key in current && JSON.stringify(changes[key].newValue) !== JSON.stringify(current[key])) {
         newState[key] = changes[key].newValue;
-        stateChanged = true;
+        changed = true;
       }
     }
-    
-    if (stateChanged) {
+
+    if (changed) {
       this.toggleHandler.setCurrentState(newState);
       this.languageHandler.setCurrentState(newState);
       this.updateUI(newState);
@@ -175,7 +135,5 @@ class PopupController {
   }
 }
 
-// Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-  new PopupController();
-});
+// Boot
+document.addEventListener('DOMContentLoaded', () => new PopupController());

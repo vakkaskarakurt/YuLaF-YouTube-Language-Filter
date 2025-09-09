@@ -4,9 +4,9 @@ export class LanguageManager {
     this.languages = {};
   }
 
+  /** 🔹 Dilleri yükle (statik liste) */
   async loadLanguages() {
     this.languages = {
-      // Popular languages for quick selection
       en: { code: 'en', name: 'English', nativeName: 'English', icon: '🇬🇧' },
       tr: { code: 'tr', name: 'Turkish', nativeName: 'Türkçe', icon: '🇹🇷' },
       es: { code: 'es', name: 'Spanish', nativeName: 'Español', icon: '🇪🇸' },
@@ -71,6 +71,7 @@ export class LanguageManager {
     };
   }
 
+  /** 🔹 UI populate */
   populateLanguageSelections() {
     this.populatePopularLanguages();
     this.populateAllLanguages();
@@ -82,65 +83,55 @@ export class LanguageManager {
     if (!container) return;
 
     const popularCodes = ['en', 'tr', 'es', 'fr', 'de', 'it', 'ru', 'zh', 'ja', 'ar', 'hi', 'pt'];
-    
     container.innerHTML = '';
     popularCodes.forEach(code => {
       if (this.languages[code]) {
-        const element = this.createLanguageElement(code, this.languages[code]);
-        container.appendChild(element);
+        container.appendChild(this.createLanguageElement(code, this.languages[code]));
       }
     });
   }
 
   populateAllLanguages() {
     const container = document.getElementById('allLanguages');
-    if (!container) return;
-
-    this.renderLanguageList(container, Object.entries(this.languages));
+    if (container) {
+      this.renderLanguageList(container, Object.entries(this.languages));
+    }
   }
 
-  createLanguageElement(code, language) {
+  /** 🔹 Dil kartı oluştur */
+  createLanguageElement(code, lang) {
     const element = document.createElement('div');
     element.className = `language-item ${this.stateManager.selectedLanguages.includes(code) ? 'selected' : ''}`;
     element.dataset.code = code;
-    
-    element.innerHTML = `
-      <span class="flag">${language.icon}</span>
-      <span class="name">${language.name}</span>
-    `;
-    
+    element.innerHTML = `<span class="flag">${lang.icon}</span><span class="name">${lang.name}</span>`;
     element.addEventListener('click', () => this.toggleLanguage(code));
-    
     return element;
   }
 
-  renderLanguageList(container, languageEntries, searchTerm = '') {
+  /** 🔹 Liste render */
+  renderLanguageList(container, entries, searchTerm = '') {
     container.innerHTML = '';
-    
-    const filtered = languageEntries.filter(([code, lang]) => {
-      if (!searchTerm) return true;
-      const term = searchTerm.toLowerCase();
-      return lang.name.toLowerCase().includes(term) || 
-             lang.nativeName.toLowerCase().includes(term) ||
-             code.toLowerCase().includes(term);
+
+    const term = searchTerm.toLowerCase();
+    const filtered = entries.filter(([code, lang]) =>
+      !term ||
+      lang.name.toLowerCase().includes(term) ||
+      lang.nativeName.toLowerCase().includes(term) ||
+      code.toLowerCase().includes(term)
+    );
+
+    filtered.sort(([cA, lA], [cB, lB]) => {
+      const selA = this.stateManager.selectedLanguages.includes(cA);
+      const selB = this.stateManager.selectedLanguages.includes(cB);
+      if (selA && !selB) return -1;
+      if (!selA && selB) return 1;
+      return lA.name.localeCompare(lB.name);
     });
 
-    filtered.sort(([codeA, langA], [codeB, langB]) => {
-      const aSelected = this.stateManager.selectedLanguages.includes(codeA);
-      const bSelected = this.stateManager.selectedLanguages.includes(codeB);
-      
-      if (aSelected && !bSelected) return -1;
-      if (!aSelected && bSelected) return 1;
-      
-      return langA.name.localeCompare(langB.name);
-    });
-
-    filtered.forEach(([code, language]) => {
-      const element = this.createLanguageElement(code, language);
-      container.appendChild(element);
-    });
+    filtered.forEach(([code, lang]) => container.appendChild(this.createLanguageElement(code, lang)));
   }
 
+  /** 🔹 Toggle dil */
   toggleLanguage(code) {
     this.stateManager.toggleLanguage(code);
     this.updateLanguageSelections();
@@ -150,61 +141,50 @@ export class LanguageManager {
 
   updateLanguageSelections() {
     document.querySelectorAll('.language-item').forEach(item => {
-      const code = item.dataset.code;
-      if (this.stateManager.selectedLanguages.includes(code)) {
-        item.classList.add('selected');
-      } else {
-        item.classList.remove('selected');
-      }
+      item.classList.toggle('selected', this.stateManager.selectedLanguages.includes(item.dataset.code));
     });
   }
 
+  /** 🔹 Summary (count + tagler) */
   updateSelectionSummary() {
-    const countElement = document.getElementById('selectedCount');
-    const tagsElement = document.getElementById('selectedLanguages');
-    
-    if (countElement) {
-      countElement.textContent = this.stateManager.selectedLanguages.length;
-    }
-    
-    if (tagsElement) {
-      tagsElement.innerHTML = '';
+    const countEl = document.getElementById('selectedCount');
+    const tagsEl = document.getElementById('selectedLanguages');
+
+    if (countEl) countEl.textContent = this.stateManager.selectedLanguages.length;
+
+    if (tagsEl) {
+      tagsEl.innerHTML = '';
       this.stateManager.selectedLanguages.forEach(code => {
-        if (this.languages[code]) {
-          const tag = document.createElement('span');
-          tag.className = 'selected-tag';
-          tag.innerHTML = `
-            <span class="flag">${this.languages[code].icon}</span>
-            <span>${this.languages[code].name}</span>
-            <span class="remove" data-code="${code}">×</span>
-          `;
-          
-          tag.querySelector('.remove').addEventListener('click', () => {
-            this.toggleLanguage(code);
-          });
-          
-          tagsElement.appendChild(tag);
-        }
+        if (!this.languages[code]) return;
+        const tag = document.createElement('span');
+        tag.className = 'selected-tag';
+        tag.innerHTML = `
+          <span class="flag">${this.languages[code].icon}</span>
+          <span>${this.languages[code].name}</span>
+          <span class="remove" data-code="${code}">×</span>
+        `;
+        tag.querySelector('.remove').addEventListener('click', () => this.toggleLanguage(code));
+        tagsEl.appendChild(tag);
       });
     }
   }
 
+  /** 🔹 Search filtre */
   filterLanguages(searchTerm) {
     const container = document.getElementById('allLanguages');
-    if (!container) return;
-    
-    this.renderLanguageList(container, Object.entries(this.languages), searchTerm);
+    if (container) {
+      this.renderLanguageList(container, Object.entries(this.languages), searchTerm);
+    }
   }
 
+  /** 🔹 Kaydet */
   async saveLanguageSelection() {
     try {
       if (typeof chrome !== 'undefined' && chrome.storage) {
-        await chrome.storage.sync.set({
-          selectedLanguages: this.stateManager.selectedLanguages
-        });
+        await chrome.storage.sync.set({ selectedLanguages: this.stateManager.selectedLanguages });
       }
-    } catch (error) {
-      console.log('Could not save to chrome storage:', error);
+    } catch (err) {
+      console.log('Could not save to chrome storage:', err);
     }
   }
 }
