@@ -1,0 +1,66 @@
+/* Language Selection */
+.section-description {
+  text-align:center; color:var(--text-secondary);
+  margin-bottom:40px; font-size:1.1rem;
+}
+.language-selection {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:40px; margin-bottom:40px;
+}
+.popular-languages h3, .all-languages h3 {
+  font-size:1.3rem; margin-bottom:20px; color:var(--text-primary);
+}
+
+/* Grid */
+.language-grid {
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:12px;
+}
+.language-item {
+  display:flex; align-items:center; gap:10px;
+  padding:12px 15px; background:var(--bg-tertiary);
+  border:1px solid var(--border); border-radius:var(--radius-md);
+  cursor:pointer; user-select:none; transition:.3s all ease;
+}
+.language-item:hover { border-color:var(--secondary); background:var(--border); }
+.language-item.selected { background:#1a3a3a; border-color:#4a8; color:#8f8; }
+.language-item .flag{font-size:1.2rem;}
+.language-item .name{font-size:.9rem; font-weight:500;}
+
+/* Search */
+.search-box { margin-bottom:20px; }
+.search-box input {
+  width:100%; padding:12px 15px; font-size:1rem;
+  background:var(--bg-tertiary); border:1px solid var(--border);
+  border-radius:var(--radius-md); color:var(--text-primary);
+}
+.search-box input:focus { outline:none; border-color:var(--secondary); }
+
+/* List */
+.language-list {
+  max-height:300px; overflow-y:auto;
+  display:flex; flex-direction:column; gap:8px;
+}
+.language-list::-webkit-scrollbar{width:6px;}
+.language-list::-webkit-scrollbar-track{background:var(--bg-secondary);border-radius:3px;}
+.language-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+
+/* Selection Summary */
+.selection-summary { text-align:center; margin:30px 0; }
+.selection-summary p {
+  color:var(--text-secondary); margin-bottom:15px; font-size:1.1rem;
+}
+.ready-section .selection-summary { margin:0 0 40px; }
+.ready-section .selection-summary p {
+  color:var(--text-primary); font-size:1.3rem; font-weight:600;
+}
+
+/* Selected Tags */
+.selected-tags { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; }
+.selected-tag {
+  display:flex; align-items:center; gap:8px;
+  padding:8px 15px; border-radius:20px; font-size:.9rem;
+  background:#1a3a3a; border:1px solid #4a8; color:#8f8;
+}
+.selected-tag .remove { cursor:pointer; opacity:.7; transition:opacity .2s; }
+.selected-tag .remove:hover { opacity:1; }

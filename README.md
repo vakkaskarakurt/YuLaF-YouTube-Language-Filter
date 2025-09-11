@@ -64,13 +64,6 @@ Perfect for polyglots, language learners, and anyone wanting to customize their 
 - **🎨 Enhanced Interface** - Improved popup design with dual-toggle controls
 - **🆓 Completely Free** - Free to use forever
 
-## 🆕 What's New in v1.0.5
-
-- **🎯 Strict Mode** - New precision toggle for stricter language detection
-- **🔧 Enhanced Controls** - Dual-toggle interface for filter and strict mode
-- **💪 Improved Stability** - Better error handling and content script reliability
-- **🎨 UI Refinements** - Modular CSS architecture and improved visual feedback
-- **⚡ Performance Boost** - Optimized language detection algorithms
 
 ## 📱 Installation
 

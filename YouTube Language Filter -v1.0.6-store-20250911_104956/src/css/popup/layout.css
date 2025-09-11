@@ -1,0 +1,111 @@
+/* Main Container */
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  min-height: calc(100vh - 24px);
+  box-sizing: border-box;
+  opacity: 0;
+  transition: opacity .3s ease;
+}
+.container.loaded { opacity: 1; }
+
+/* Content */
+.main-content { flex: 1; overflow: visible; margin-bottom: 6px; }
+
+/* Header */
+.header, .main-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.header-icon {
+  width: 44px; height: 44px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+.header-icon:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 20px rgba(255,0,0,.6);
+}
+
+/* Controls */
+.main-controls {
+  flex-direction: row !important;
+  gap: 18px;
+  min-height: 36px;
+}
+.toggle-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 140px;
+  max-width: 50%;
+}
+.toggle-group span {
+  font: 500 13px inherit;
+  color: var(--text-primary);
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: fit-content;
+}
+.toggle-group.disabled { opacity: .4; pointer-events: none; }
+
+/* Language Selector */
+.language-selector {
+  margin-bottom: 6px;
+  padding: 10px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+.selector-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.search-container { margin-bottom: 8px; }
+.search-container input {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 13px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  transition: var(--transition);
+  box-sizing: border-box;
+}
+
+/* Selected Count */
+.selected-count {
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-secondary);
+  padding: 5px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-sm);
+}
+.selected-count span { color: var(--primary); font-weight: 600; }
+
+/* Footer Actions */
+.footer-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 5px;
+  margin-top: auto;
+  padding-top: 6px;
+  min-height: 75px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-primary);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+}

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>YuLaF - YouTube Language Filter | Welcome</title>
+  <link rel="stylesheet" href="../css/welcome.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo-section">
+        <img src="../../icons/icon128.png" alt="YuLaF" class="logo">
+        <div class="title-section">
+          <h1>YuLaF</h1><p class="subtitle">YouTube Language Filter</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="header-developer-links">
+          <span class="developer-label">👨‍💻 Developers</span>
+          <div class="header-developer-avatars">
+            <a href="https://linkedin.com/in/vakkaskarakurt" target="_blank" class="header-developer-link" title="Vakkas Karakurt">
+              <img src="../assets/team/vakkas.jpeg" alt="Vakkas Karakurt">
+            </a>
+            <a href="https://www.linkedin.com/in/emrah-fidann/" target="_blank" class="header-developer-link" title="Emrah Fidan">
+              <img src="../assets/team/emrah.jpeg" alt="Emrah Fidan">
+            </a>
+          </div>
+        </div>
+        <a href="https://buymeacoffee.com/yulafdev" target="_blank" class="coffee-btn" title="Buy me a coffee">☕ Buy me a coffee</a>
+        <button class="feedback-header-btn" id="feedbackHeaderBtn" title="Send Feedback">📝 Feedback</button>
+        <button class="rate-us-header-btn" id="rateUsHeaderBtn" title="Rate Us">⭐ Rate Us</button>
+      </div>
+    </header>
+
+    <!-- Progress -->
+    <div class="progress-container">
+      <div class="auto-progress-indicator" id="autoProgressIndicator">
+        <span>Auto progressing</span>
+        <div class="auto-progress-timer"><div class="auto-progress-fill" id="autoProgressFill"></div></div>
+      </div>
+      <div class="progress-steps">
+        <div class="step active" data-step="1"><div class="step-number">1</div><span>Welcome</span></div>
+        <div class="step" data-step="2"><div class="step-number">2</div><span>How It Works</span></div>
+        <div class="step" data-step="3"><div class="step-number">3</div><span>Language Selection</span></div>
+        <div class="step" data-step="4"><div class="step-number">4</div><span>Ready!</span></div>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <main class="content">
+      <!-- Step 1 -->
+      <section class="section active" data-section="1">
+        <div class="welcome-hero">
+          <h2>🎉 Welcome to YuLaF!</h2>
+          <p class="hero-text">End the language chaos on YouTube! Now you can see only videos and channels in the languages you want.</p>
+          <div class="features-grid">
+            <div class="feature-card"><div class="feature-icon">🎯</div><h3>Smart Filtering</h3><p>99% accuracy with Chrome's built-in language detection technology</p></div>
+            <div class="feature-card"><div class="feature-icon">🌍</div><h3>61 Languages Supported</h3><p>Supports all popular languages worldwide</p></div>
+            <div class="feature-card"><div class="feature-icon">⚡</div><h3>Real-time</h3><p>Instant filtering on page changes</p></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Step 2 -->
+      <section class="section" data-section="2">
+        <h2>🔧 How Does It Work?</h2>
+        <div class="how-it-works">
+          <div class="step-explanation">
+            <div class="step-visual">
+              <div class="browser-mockup">
+                <div class="browser-header">
+                  <div class="browser-buttons"><span class="btn-close"></span><span class="btn-minimize"></span><span class="btn-maximize"></span></div>
+                  <div class="address-bar">youtube.com</div>
+                  <div class="extension-icon"><img src="../../icons/icon16.png" alt="YuLaF"></div>
+                </div>
+                <div class="browser-content">
+                  <div class="youtube-video hidden">🎥 Video (Hidden)</div>
+                  <div class="youtube-video visible">🎥 Video (Visible)</div>
+                  <div class="youtube-video hidden">🎥 Video (Hidden)</div>
+                </div>
+              </div>
+            </div>
+            <div class="step-text">
+              <h3>1. Automatic Detection</h3><p>YuLaF automatically scans all video titles and channel names on YouTube.</p>
+              <h3>2. Language Analysis</h3><p>Determines the language of content with 99% accuracy using Chrome's advanced language detection technology.</p>
+              <h3>3. Smart Filtering</h3><p>Shows only content in the languages you select, hiding the rest.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Step 3 -->
+      <section class="section" data-section="3">
+        <h2>🌍 Make Your First Language Selection</h2>
+        <p class="section-description">Select the languages you want to see. You can change them anytime from the popup menu.</p>
+        <div class="selection-summary"><p>Selected languages: <span id="selectedCount">0</span></p><div id="selectedLanguages" class="selected-tags"></div></div>
+        <div class="language-selection">
+          <div class="popular-languages"><h3>Popular Languages</h3><div class="language-grid" id="popularLanguages"></div></div>
+          <div class="all-languages"><h3>All Languages</h3>
+            <div class="search-box"><input type="text" id="languageSearch" placeholder="Search languages..."></div>
+            <div class="language-list" id="allLanguages"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Step 4 -->
+      <section class="section" data-section="4">
+        <div class="ready-section">
+          <h2>🚀 Everything is Ready!</h2>
+          <div class="action-buttons"><button class="btn-primary" id="goToYouTube">Go to YouTube</button></div>
+          <div class="pin-guide">
+            <h3>📌 How Can I Pin the Extension?</h3>
+            <div class="pin-steps">
+              <div class="pin-step"><div class="step-image"><div class="browser-bar"><span class="extension-puzzle">🧩</span></div></div><p><strong>1. Click the puzzle icon</strong><br>Find it in the top right of your browser</p></div>
+              <div class="pin-step"><div class="step-image"><div class="extension-list"><div class="extension-item"><img src="../../icons/icon16.png" alt="YuLaF"><span>YuLaF</span><span class="pin-icon">📌</span></div></div></div><p><strong>2. Click the pin</strong><br>Find YuLaF in the list and pin it</p></div>
+              <div class="pin-step"><div class="step-image"><div class="browser-bar"><img src="../../icons/icon16.png" alt="YuLaF" class="pinned-icon"></div></div><p><strong>3. Now always visible!</strong><br>The YuLaF icon is now pinned</p></div>
+            </div>
+          </div>
+          <div class="quick-tips">
+            <h3>💡 Quick Tips</h3>
+            <div class="tips-grid">
+              <div class="tip"><span class="tip-icon">🔧</span><p>Change languages by clicking the extension icon</p></div>
+              <div class="tip"><span class="tip-icon">⏰</span><p>Filtering works in real-time, no need to refresh</p></div>
+              <div class="tip"><span class="tip-icon">🎯</span><p>Turn off filtering anytime with the ON/OFF button</p></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Navigation -->
+    <nav class="navigation">
+      <button class="nav-btn" id="prevBtn" disabled>← Previous</button>
+      <button class="nav-btn primary" id="nextBtn">Next →</button>
+    </nav>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>&copy; 2025 YuLaF - YouTube Language Filter. Made with ❤️ for better YouTube experience.</p>
+    </footer>
+  </div>
+
+  <!-- Feedback Modal -->
+  <div class="modal-overlay" id="feedbackModal">
+    <div class="modal-content">
+      <div class="modal-header"><h3>📝 Send Feedback</h3><button class="modal-close" id="modalClose">&times;</button></div>
+      <div class="modal-body">
+        <p class="modal-description">Your opinions are very valuable to us! Please share your experiences, suggestions or problems.</p>
+        <form class="feedback-form" id="feedbackForm">
+          <div class="form-group"><label for="feedbackType">Feedback Type:</label>
+            <select id="feedbackType" required>
+              <option value="">Select...</option>
+              <option value="bug">🐛 Bug Report</option>
+              <option value="feature">💡 Feature Request</option>
+              <option value="improvement">🚀 Improvement</option>
+              <option value="general">💬 General Opinion</option>
+              <option value="compliment">👍 Compliment</option>
+              <option value="other">🤔 Other</option>
+            </select>
+          </div>
+          <div class="form-group"><label for="feedbackSubject">Subject:</label><input type="text" id="feedbackSubject" placeholder="Subject..." required></div>
+          <div class="form-group"><label for="feedbackMessage">Your Message:</label><textarea id="feedbackMessage" rows="6" placeholder="Write your feedback..." required></textarea></div>
+          <div class="form-group"><label for="feedbackEmail">Email (Optional):</label><input type="email" id="feedbackEmail" placeholder="you@example.com"><small>Write your email if you want a response.</small></div>
+          <div class="form-actions"><button type="button" class="btn-cancel" id="cancelFeedback">Cancel</button><button type="submit" class="btn-submit">📤 Send</button></div>
+        </form>
+        <div class="feedback-success" id="feedbackSuccess" style="display:none">
+          <div class="success-icon">✅</div><h4>Thank you!</h4>
+          <p>Your feedback has been sent successfully.</p>
+          <button class="btn-primary" id="successClose">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/welcome.js" type="module"></script>
+</body>
+</html>

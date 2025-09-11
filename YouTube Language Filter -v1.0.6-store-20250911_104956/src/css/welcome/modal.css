@@ -1,0 +1,59 @@
+/* Feedback Modal */
+.modal-overlay {
+  position:fixed; inset:0; z-index:10000;
+  display:none; justify-content:center; align-items:center;
+  background:rgba(0,0,0,.8); backdrop-filter:blur(5px);
+}
+.modal-overlay.show { display:flex; }
+
+.modal-content {
+  width:90%; max-width:600px; max-height:90vh; overflow-y:auto;
+  background:linear-gradient(135deg,var(--bg-secondary),var(--bg-tertiary));
+  border:1px solid var(--border); border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-lg); animation:modalAppear .3s ease-out;
+}
+
+/* Header */
+.modal-header {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:25px 30px 20px; border-bottom:1px solid var(--border);
+}
+.modal-header h3 { margin:0; font:600 1.5rem var(--font,sans-serif); color:var(--text-primary); }
+.modal-close {
+  width:40px; height:40px; border:none; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:2rem; color:var(--text-secondary); background:none;
+  cursor:pointer; transition:.3s all ease;
+}
+.modal-close:hover { background:var(--border); color:var(--text-primary); }
+
+/* Body & Form */
+.modal-body { padding:30px; }
+.modal-description { margin-bottom:25px; font-size:1rem; line-height:1.6; color:var(--text-secondary); }
+
+.feedback-form { display:flex; flex-direction:column; gap:20px; }
+.form-group { display:flex; flex-direction:column; gap:8px; }
+.form-group label { font:500 .95rem inherit; color:var(--text-primary); }
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding:12px 15px; font:1rem inherit; resize:vertical;
+  background:var(--bg-tertiary); border:1px solid var(--border); border-radius:8px;
+  color:var(--text-primary); transition:.3s all ease;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline:none; border-color:var(--success);
+  box-shadow:0 0 0 3px rgba(76,175,80,.1);
+}
+.form-group small { margin-top:5px; font-size:.85rem; color:#999; }
+
+.form-actions { display:flex; justify-content:flex-end; gap:15px; margin-top:10px; }
+
+/* Success State */
+.feedback-success { text-align:center; padding:40px 20px; }
+.success-icon { font-size:4rem; margin-bottom:20px; animation:successBounce .6s ease-out; }
+.feedback-success h4 { font-size:1.5rem; margin-bottom:15px; color:var(--text-primary); }
+.feedback-success p { margin-bottom:25px; line-height:1.6; color:var(--text-secondary); }

@@ -1,0 +1,75 @@
+:root {
+  --primary: #ff0000;
+  --primary-hover: #e60000;
+  --secondary: #ff4444;
+  --bg-primary: #0f0f0f;
+  --bg-secondary: #1a1a1a;
+  --bg-tertiary: #2d2d2d;
+  --text-primary: #fff;
+  --text-secondary: #b3b3b3;
+  --border: #404040;
+  --border-hover: #606060;
+  --success: #10B981;
+  --success-hover: #34D399;
+  --warning: #F59E0B;
+  --warning-hover: #FBBF24;
+  --purple: #8B5CF6;
+  --purple-hover: #A78BFA;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --shadow-sm: 0 3px 12px rgba(255,0,0,.4);
+  --shadow-md: 0 5px 15px rgba(0,0,0,.3);
+  --transition: all .3s ease;
+}
+
+body {
+  width: 380px;
+  min-height: 500px;
+  max-height: 600px;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  overflow-y: auto;
+  box-sizing: border-box;
+  transition: height .3s ease, min-height .3s ease;
+}
+
+body.language-expanded { min-height: 580px; height: auto; }
+
+h1, h3 {
+  margin: 0;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+h1 { font-size: 16px; font-weight: 700; flex: 1; }
+h3 { font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; }
+
+.toggle-group span { font-size: 14px; font-weight: 500; color: var(--text-primary); }
+
+.selected-count { font-size: 13px; font-weight: 600; }
+.selected-count span { font-weight: 700; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-tertiary); border-radius: 3px; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border-hover); }
+
+/* Focus */
+:focus { outline: none; }
+input:focus, select:focus, textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(255,0,0,.2);
+}
+
+/* Utilities */
+.disabled { opacity: .4; pointer-events: none; }
+.text-center { text-align: center; }
+.flex { display: flex; }
+.flex-column { flex-direction: column; }
+.align-center { align-items: center; }
+.justify-center { justify-content: center; }
+.gap-sm { gap: 8px; }
+.gap-md { gap: 12px; }
+.gap-lg { gap: 20px; }
