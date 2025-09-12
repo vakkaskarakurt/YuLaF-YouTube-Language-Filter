@@ -1,5 +1,0 @@
-[data-language-filter-hidden]{display:none!important;}
-
-.language-filter-debug [data-language-filter-hidden]{
-  display:block!important;opacity:.3;border:2px dashed red;
-}
