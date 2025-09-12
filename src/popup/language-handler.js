@@ -91,6 +91,9 @@ export class LanguageHandler {
 
     this.uiManager.updateSelectedCount(this.currentState.selectedLanguages.length);
 
+    // ✨ Seçim yaptıktan sonra arama kutusunu temizle ve listeyi yenile
+    this.clearSearchAndRefresh();
+
     try {
       await this.storageManager.saveState(
         { selectedLanguages: this.currentState.selectedLanguages },
@@ -101,6 +104,17 @@ export class LanguageHandler {
       console.error('Error updating languages:', err);
       chrome.tabs.reload(this.tab.id);
     }
+  }
+
+  // 🆕 Arama kutusunu temizle ve listeyi yenile
+  clearSearchAndRefresh() {
+    const searchInput = document.getElementById('languageSearch');
+    if (searchInput) {
+      searchInput.value = ''; // Arama kutusunu temizle
+    }
+    
+    // Tüm dilleri tekrar göster (arama filtresi olmadan)
+    this.renderLanguages('');
   }
 
   async ensureLanguagesLoaded() {
