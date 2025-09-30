@@ -156,7 +156,7 @@ input[type="password"]:focus, select:focus, textarea:focus {
 }
 
 .language-lock-toggle {
-  align-items: flex-start;
+  align-items: center;
 }
 
 .lock-toggle-text {
@@ -164,6 +164,7 @@ input[type="password"]:focus, select:focus, textarea:focus {
   flex-direction: column;
   gap: 4px;
   color: var(--text-primary);
+  flex: 1;
 }
 
 .lock-toggle-title {

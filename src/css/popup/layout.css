@@ -38,14 +38,19 @@
   flex-direction: row !important;
   gap: 18px;
   min-height: 36px;
+  flex-wrap: wrap;
 }
 .toggle-group {
   display: flex;
   align-items: center;
   gap: 10px;
-  flex: 1;
-  min-width: 140px;
-  max-width: 50%;
+  flex: 1 1 140px;
+  min-width: 0;
+  max-width: 100%;
+}
+.main-controls .language-lock-toggle {
+  flex: 1 1 100%;
+  margin-top: 4px;
 }
 .toggle-group span {
   font: 500 13px inherit;
