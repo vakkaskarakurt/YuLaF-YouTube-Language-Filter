@@ -6,7 +6,9 @@ export class StorageManager {
       hideVideos: true,
       hideChannels: true,
       selectedLanguages: ['en'],
-      sortBy: 'popularity'
+      sortBy: 'popularity',
+      languageLockEnabled: false,
+      languageLockHash: null
     };
 
     this.defaultLanguages = {
@@ -84,7 +86,9 @@ export class StorageManager {
         hideVideos: stored.hideVideos !== false,
         hideChannels: stored.hideChannels !== false,
         selectedLanguages: stored.selectedLanguages || ['en'],
-        sortBy: stored.sortBy || 'popularity'
+        sortBy: stored.sortBy || 'popularity',
+        languageLockEnabled: stored.languageLockEnabled === true,
+        languageLockHash: stored.languageLockHash || null
       };
 
       // Content script üzerinden güncel state çek

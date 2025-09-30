@@ -6,6 +6,7 @@ export class LanguageHandler {
     this.languages = {};
     this.currentState = {};
     this.currentSortBy = 'popularity';
+    this.languageLockValidated = false;
   }
 
   setLanguages(languages) {
@@ -13,8 +14,14 @@ export class LanguageHandler {
   }
 
   setCurrentState(state) {
+    const previousLockEnabled = this.currentState?.languageLockEnabled;
+    const previousLockHash = this.currentState?.languageLockHash;
     this.currentState = state;
     this.currentSortBy = state.sortBy || 'popularity';
+
+    if (state.languageLockEnabled !== previousLockEnabled || state.languageLockHash !== previousLockHash) {
+      this.languageLockValidated = false;
+    }
   }
 
   createLanguageElement(code, lang) {
@@ -83,6 +90,16 @@ export class LanguageHandler {
 
   async handleLanguageChange(e) {
     const code = e.target.value;
+    const wasChecked = this.currentState.selectedLanguages.includes(code);
+
+    if (e.target.checked === wasChecked) return;
+
+    const canModify = await this.ensureLanguageLockAccess();
+    if (!canModify) {
+      e.target.checked = wasChecked;
+      return;
+    }
+
     const selected = [...this.currentState.selectedLanguages];
 
     this.currentState.selectedLanguages = e.target.checked
@@ -175,5 +192,40 @@ export class LanguageHandler {
   toggleSortDropdown() {
     document.getElementById('sortDropdown')?.classList.toggle('show');
     document.getElementById('sortButton')?.classList.toggle('active');
+  }
+
+  async ensureLanguageLockAccess() {
+    if (!this.currentState.languageLockEnabled) return true;
+
+    if (!this.currentState.languageLockHash) {
+      alert('Languages are locked, but no password is set. Please set a language lock password first.');
+      return false;
+    }
+
+    if (this.languageLockValidated) return true;
+
+    const provided = prompt('Enter language lock password to modify languages:');
+    if (provided === null) return false;
+
+    try {
+      const hashed = await this.hashPassword(provided);
+      if (hashed !== this.currentState.languageLockHash) {
+        alert('Incorrect password. Languages remain locked.');
+        return false;
+      }
+
+      this.languageLockValidated = true;
+      return true;
+    } catch (err) {
+      console.error('Language lock validation error:', err);
+      alert('Could not verify password. Please try again.');
+      return false;
+    }
+  }
+
+  async hashPassword(password) {
+    const encoded = new TextEncoder().encode(password);
+    const buffer = await crypto.subtle.digest('SHA-256', encoded);
+    return Array.from(new Uint8Array(buffer)).map((b) => b.toString(16).padStart(2, '0')).join('');
   }
 }
