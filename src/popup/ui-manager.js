@@ -32,6 +32,11 @@ export class UIManager {
     }
   }
 
+  updateLanguageLockUI(languageLockEnabled) {
+    const lockContainer = document.querySelector('.language-lock');
+    lockContainer?.classList.toggle('locked-active', languageLockEnabled);
+  }
+
   updateLanguageSelectorVisibility(enabled) {
     const languageSelector = document.querySelector('.language-selector');
     if (languageSelector) {
@@ -65,6 +70,15 @@ export class UIManager {
       button.classList.toggle('loading', loading);
       button.disabled = loading;
     }
+  }
+
+  setLockPasswordStatus(message, status = 'info') {
+    const statusEl = document.getElementById('lockPasswordStatus');
+    if (!statusEl) return;
+
+    statusEl.textContent = message;
+    statusEl.classList.remove('info', 'warning', 'success', 'error');
+    if (status) statusEl.classList.add(status);
   }
 
   showNonYouTubePage() {

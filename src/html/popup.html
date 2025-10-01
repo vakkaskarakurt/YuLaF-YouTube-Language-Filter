@@ -34,6 +34,25 @@
           </label>
           <span id="strictModeText">Strict Mode</span>
         </div>
+        <div class="toggle-group language-lock-toggle">
+          <label class="switch">
+            <input type="checkbox" id="languageLockToggle"><span class="slider"></span>
+          </label>
+          <div class="lock-toggle-text">
+            <span class="lock-toggle-title">Lock Languages</span>
+            <span id="lockPasswordStatus" class="lock-status">Password not set.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="language-lock">
+        <form id="lockPasswordForm" class="lock-password-form">
+          <input type="password" id="languageLockPassword" placeholder="Set or update password">
+          <div class="lock-password-actions">
+            <button type="submit" class="lock-password-save">Save Password</button>
+            <button type="button" id="clearLockPassword" class="lock-password-clear">Clear Password</button>
+          </div>
+        </form>
       </div>
 
       <div class="language-selector">
