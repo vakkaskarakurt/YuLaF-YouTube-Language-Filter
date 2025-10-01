@@ -16,6 +16,11 @@
 **Emrah Fidan** - Developer  
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/emrah-fidann)
 
+
+**Lars Hermges** - Developer  
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/lars-hermges)
+
+
 ## 💖 Support the Project
 
 If YuLaF helps with your language learning journey, consider supporting our work:
