@@ -6,7 +6,6 @@ export class LanguageHandler {
     this.languages = {};
     this.currentState = {};
     this.currentSortBy = 'popularity';
-    this.languageLockValidated = false;
   }
 
   setLanguages(languages) {
@@ -14,14 +13,8 @@ export class LanguageHandler {
   }
 
   setCurrentState(state) {
-    const previousLockEnabled = this.currentState?.languageLockEnabled;
-    const previousLockHash = this.currentState?.languageLockHash;
     this.currentState = state;
     this.currentSortBy = state.sortBy || 'popularity';
-
-    if (state.languageLockEnabled !== previousLockEnabled || state.languageLockHash !== previousLockHash) {
-      this.languageLockValidated = false;
-    }
   }
 
   createLanguageElement(code, lang) {
@@ -202,8 +195,6 @@ export class LanguageHandler {
       return false;
     }
 
-    if (this.languageLockValidated) return true;
-
     const provided = prompt('Enter language lock password to modify languages:');
     if (provided === null) return false;
 
@@ -214,7 +205,6 @@ export class LanguageHandler {
         return false;
       }
 
-      this.languageLockValidated = true;
       return true;
     } catch (err) {
       console.error('Language lock validation error:', err);

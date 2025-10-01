@@ -13,6 +13,15 @@ export class ToggleHandler {
   async handleEnableChange(e) {
     const newEnabled = e.target.checked;
 
+    if (!newEnabled && this.currentState.languageLockEnabled) {
+      const verification = await this.requestPassword('Enter language lock password to disable the filter:');
+      if (!verification.allowed) {
+        e.target.checked = true;
+        this.updateUI(this.currentState.enabled, this.currentState.strictMode, this.currentState.languageLockEnabled);
+        return;
+      }
+    }
+
     this.updateUI(newEnabled, this.currentState.strictMode, this.currentState.languageLockEnabled);
 
     try {
@@ -30,6 +39,15 @@ export class ToggleHandler {
 
   async handleStrictModeChange(e) {
     const newStrictMode = e.target.checked;
+
+    if (!newStrictMode && this.currentState.languageLockEnabled) {
+      const verification = await this.requestPassword('Enter language lock password to disable strict mode:');
+      if (!verification.allowed) {
+        e.target.checked = true;
+        this.uiManager.updateStrictModeUI(this.currentState.enabled, this.currentState.strictMode);
+        return;
+      }
+    }
 
     this.uiManager.updateStrictModeUI(this.currentState.enabled, newStrictMode);
 
@@ -179,6 +197,31 @@ export class ToggleHandler {
     this.uiManager.updateStrictModeUI(enabled, strictMode);
     this.uiManager.updateLanguageSelectorVisibility(enabled);
     this.uiManager.updateLanguageLockUI(languageLockEnabled);
+  }
+
+  async requestPassword(message) {
+    if (!this.currentState.languageLockHash) {
+      return { allowed: true };
+    }
+
+    const provided = prompt(message);
+    if (provided === null) {
+      return { allowed: false, cancelled: true };
+    }
+
+    try {
+      const hashed = await this.hashPassword(provided);
+      if (hashed === this.currentState.languageLockHash) {
+        return { allowed: true };
+      }
+
+      alert('Incorrect password.');
+      return { allowed: false };
+    } catch (err) {
+      console.error('Password verification error:', err);
+      alert('Could not verify password. Please try again.');
+      return { allowed: false };
+    }
   }
 
   revertEnableChange(e, fallbackEnabled) {
