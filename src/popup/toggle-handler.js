@@ -16,15 +16,47 @@ export class ToggleHandler {
     this.updateUI(newEnabled, this.currentState.strictMode);
 
     try {
+      // Save state and force badge update
       const success = await this.storageManager.saveState({ enabled: newEnabled }, this.tab, true);
+      
       if (success) {
         this.currentState.enabled = newEnabled;
+        
+        // Force badge update through runtime message
+        try {
+          await chrome.runtime.sendMessage({ 
+            action: 'updateBadge', 
+            enabled: newEnabled 
+          });
+        } catch (err) {
+          // If background script is not responding, update directly
+          await this.updateBadgeDirectly(newEnabled);
+        }
       } else {
         this.revertEnableChange(e, !newEnabled);
       }
     } catch (err) {
       console.error('Enable toggle error:', err);
       this.revertEnableChange(e, !newEnabled);
+    }
+  }
+
+  async updateBadgeDirectly(enabled) {
+    try {
+      const badgeText = enabled ? 'ON' : 'OFF';
+      const badgeColor = enabled ? '#CC0000' : '#666666';  // Darker red for white text contrast
+      
+      // Update badge for current tab
+      await chrome.action.setBadgeText({ text: badgeText });
+      await chrome.action.setBadgeBackgroundColor({ color: badgeColor });
+      
+      // Also update for current tab specifically
+      if (this.tab && this.tab.id) {
+        await chrome.action.setBadgeText({ text: badgeText, tabId: this.tab.id });
+        await chrome.action.setBadgeBackgroundColor({ color: badgeColor, tabId: this.tab.id });
+      }
+    } catch (error) {
+      console.error('Error updating badge directly:', error);
     }
   }
 
@@ -54,6 +86,9 @@ export class ToggleHandler {
     if (strictModeToggle) strictModeToggle.checked = state.strictMode;
 
     this.updateUI(state.enabled, state.strictMode);
+    
+    // Ensure badge is updated when popup opens
+    this.updateBadgeDirectly(state.enabled);
   }
 
   setupEventListeners() {
