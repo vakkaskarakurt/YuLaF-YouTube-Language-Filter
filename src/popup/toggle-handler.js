@@ -44,14 +44,29 @@ export class ToggleHandler {
   async updateBadgeDirectly(enabled) {
     try {
       const badgeText = enabled ? 'ON' : 'OFF';
-      const badgeColor = enabled ? '#CC0000' : '#666666';  // Darker red for white text contrast
-      
-      // Update badge for current tab
+      const badgeColor = enabled ? '#CC0000' : '#666666';  // Darker color for white text contrast
+      const white = '#FFFFFF';
+
+      // Ensure badge text color is white (global)
+      if (chrome.action.setBadgeTextColor) {
+        await chrome.action.setBadgeTextColor({ color: white });
+      }
+
+      // Update badge for current tab (global calls)
       await chrome.action.setBadgeText({ text: badgeText });
       await chrome.action.setBadgeBackgroundColor({ color: badgeColor });
-      
-      // Also update for current tab specifically
+
+      // Also update for current tab specifically (if tab context exists)
       if (this.tab && this.tab.id) {
+        // Ensure tab-specific badge text color is white (if API supports tabId)
+        if (chrome.action.setBadgeTextColor) {
+          try {
+            await chrome.action.setBadgeTextColor({ color: white, tabId: this.tab.id });
+          } catch (err) {
+            // Some environments may not accept tabId for setBadgeTextColor; ignore and continue
+          }
+        }
+
         await chrome.action.setBadgeText({ text: badgeText, tabId: this.tab.id });
         await chrome.action.setBadgeBackgroundColor({ color: badgeColor, tabId: this.tab.id });
       }

@@ -1,3 +1,41 @@
+// Add helper to always attempt white text and fallback to forcing a dark background
+async function setBadgeTextAndColor({ text, bgColor, tabId } = {}) {
+  try {
+    // prepare options
+    const textOpts = { text: String(text) };
+    const bgOpts = { color: String(bgColor) };
+    if (typeof tabId !== 'undefined') {
+      textOpts.tabId = tabId;
+      bgOpts.tabId = tabId;
+    }
+
+    // set text and background
+    await chrome.action.setBadgeText(textOpts);
+    await chrome.action.setBadgeBackgroundColor(bgOpts);
+
+    // try to explicitly set white text color; if unsupported, fall back below
+    try {
+      const colorOpts = { color: '#FFFFFF' };
+      if (typeof tabId !== 'undefined') colorOpts.tabId = tabId;
+      await chrome.action.setBadgeTextColor(colorOpts);
+    } catch (e) {
+      // API not available: enforce a very dark background so Chrome will choose white text automatically
+      const forcedDark = '#000000';
+      if ((bgColor || '').toLowerCase() !== forcedDark) {
+        const forcedBgOpts = { color: forcedDark };
+        if (typeof tabId !== 'undefined') forcedBgOpts.tabId = tabId;
+        try {
+          await chrome.action.setBadgeBackgroundColor(forcedBgOpts);
+        } catch (err) {
+          // ignore; we attempted best-effort to force dark background
+        }
+      }
+    }
+  } catch (error) {
+    console.error('setBadgeTextAndColor error:', error);
+  }
+}
+
 // Badge update function with better error handling
 async function updateBadge(enabled) {
   try {
@@ -5,17 +43,15 @@ async function updateBadge(enabled) {
     // Use darker red for better text contrast (Chrome auto-selects white text on dark backgrounds)
     const badgeColor = enabled ? '#CC0000' : '#666666';
     
-    // Set badge globally
-    await chrome.action.setBadgeText({ text: badgeText });
-    await chrome.action.setBadgeBackgroundColor({ color: badgeColor });
-    
+    // Set badge globally using centralized helper
+    await setBadgeTextAndColor({ text: badgeText, bgColor: badgeColor });
+
     // Also update for all existing YouTube tabs
     const tabs = await chrome.tabs.query({ url: "*://*.youtube.com/*" });
     for (const tab of tabs) {
       if (tab.id) {
         try {
-          await chrome.action.setBadgeText({ text: badgeText, tabId: tab.id });
-          await chrome.action.setBadgeBackgroundColor({ color: badgeColor, tabId: tab.id });
+          await setBadgeTextAndColor({ text: badgeText, bgColor: badgeColor, tabId: tab.id });
         } catch (e) {
           console.log('Badge update failed for tab:', tab.id);
         }
@@ -99,9 +135,10 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   if (changeInfo.status === 'complete' && tab.url && tab.url.includes('youtube.com')) {
     const result = await chrome.storage.sync.get(['enabled']);
     const enabled = result.enabled !== false;
+    const badgeText = enabled ? 'ON' : 'OFF';
+    const badgeColor = enabled ? '#ff0000' : '#666666';
     try {
-      await chrome.action.setBadgeText({ text: enabled ? 'ON' : 'OFF', tabId: tabId });
-      await chrome.action.setBadgeBackgroundColor({ color: enabled ? '#ff0000' : '#666666', tabId: tabId });
+      await setBadgeTextAndColor({ text: badgeText, bgColor: badgeColor, tabId });
     } catch (e) {
       console.log('Badge update failed for tab:', tabId);
     }
