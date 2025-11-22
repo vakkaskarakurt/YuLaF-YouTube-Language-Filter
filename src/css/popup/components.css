@@ -85,10 +85,10 @@ input:checked + .slider:before { transform: translateX(27px); }
 /* Expanding Action Buttons */
 .expand-btn {
   width: 50px;
-  height: 44px;
-  border-radius: 25px;
-  border: 1px solid var(--border);
-  background: var(--bg-secondary);
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -96,13 +96,45 @@ input:checked + .slider:before { transform: translateX(27px); }
   transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   overflow: hidden;
   position: relative;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Individual button colors */
+#guideBtn {
+  border-color: rgba(59, 130, 246, 0.3);
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+#rateUsBtn {
+  border-color: rgba(245, 158, 11, 0.3);
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+#coffeeBtn {
+  border-color: rgba(168, 85, 247, 0.3);
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .expand-btn:hover {
   width: 130px;
-  background: var(--bg-tertiary);
-  border-color: var(--primary);
-  box-shadow: 0 4px 15px rgba(255, 0, 0, 0.2);
+  border-radius: 25px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+}
+
+#guideBtn:hover {
+  border-color: rgba(59, 130, 246, 0.6);
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+#rateUsBtn:hover {
+  border-color: rgba(245, 158, 11, 0.6);
+  box-shadow: 0 0 30px rgba(245, 158, 11, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+#coffeeBtn:hover {
+  border-color: rgba(168, 85, 247, 0.6);
+  box-shadow: 0 0 30px rgba(168, 85, 247, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .expand-btn:active {
@@ -110,8 +142,8 @@ input:checked + .slider:before { transform: translateX(27px); }
 }
 
 .btn-icon {
-  width: 42px;
-  height: 42px;
+  width: 50px;
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -138,7 +170,7 @@ input:checked + .slider:before { transform: translateX(27px); }
 }
 
 .expand-btn:hover .btn-icon {
-  transform: scale(1.1);
+  transform: scale(1.15);
 }
 
 /* Form Elements */
