@@ -30,58 +30,6 @@ input:checked + .slider { background: var(--success); }
 input:checked + .slider:before { transform: translateX(27px); }
 #strictModeToggle:checked + .slider { background: var(--warning); }
 
-/* Sort Components */
-.sort-container { position: relative; }
-.sort-button {
-  display: flex; align-items: center; gap: 6px;
-  padding: 8px 12px;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  color: var(--text-primary);
-  font: 500 13px inherit;
-  cursor: pointer;
-  transition: var(--transition);
-}
-.sort-button:hover {
-  background: var(--bg-secondary);
-  border-color: var(--border-hover);
-  transform: translateY(-1px);
-}
-.sort-button.active {
-  background: var(--primary);
-  border-color: var(--primary);
-  color: #fff;
-  box-shadow: 0 3px 12px rgba(255,0,0,.3);
-}
-.sort-icon { font-size: 14px; opacity: .7; }
-.sort-dropdown {
-  position: absolute; top: 100%; right: 0;
-  margin-top: 4px;
-  min-width: 100px;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-md);
-  z-index: 10;
-  opacity: 0;
-  transform: translateY(-10px);
-  pointer-events: none;
-  transition: var(--transition);
-}
-.sort-dropdown.show { opacity: 1; transform: translateY(0); pointer-events: all; }
-.sort-option {
-  padding: 10px 14px;
-  font-size: 13px;
-  color: var(--text-primary);
-  cursor: pointer;
-  transition: var(--transition);
-}
-.sort-option:first-child { border-radius: var(--radius-sm) var(--radius-sm) 0 0; }
-.sort-option:last-child { border-radius: 0 0 var(--radius-sm) var(--radius-sm); }
-.sort-option:hover { background: var(--bg-tertiary); color: var(--primary); }
-.sort-option.active { background: var(--primary); color: #fff; }
-
 /* Expanding Action Buttons */
 .expand-btn {
   width: 50px;
@@ -116,6 +64,11 @@ input:checked + .slider:before { transform: translateX(27px); }
   box-shadow: 0 0 20px rgba(168, 85, 247, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
+#advancedBtn {
+  border-color: rgba(34, 197, 94, 0.3);
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
 .expand-btn:hover {
   width: 130px;
   border-radius: 25px;
@@ -136,6 +89,11 @@ input:checked + .slider:before { transform: translateX(27px); }
 #coffeeBtn:hover {
   border-color: rgba(168, 85, 247, 0.6);
   box-shadow: 0 0 30px rgba(168, 85, 247, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+#advancedBtn:hover {
+  border-color: rgba(34, 197, 94, 0.6);
+  box-shadow: 0 0 30px rgba(34, 197, 94, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .expand-btn:active {

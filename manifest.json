@@ -61,8 +61,12 @@
     {
       "resources": [
         "src/html/welcome.html",
+        "src/html/advanced.html",
         "src/css/welcome.css",
+        "src/css/advanced.css",
         "src/js/welcome.js",
+        "src/js/advanced.js",
+        "src/utils/config.js",
         "src/assets/team/vakkas.jpeg",
         "src/assets/team/emrah.jpeg",
         "icons/icon16.png",

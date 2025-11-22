@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YuLaF - Advanced Settings</title>
+  <link rel="stylesheet" href="../css/advanced.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="header-content">
+        <img src="../../icons/icon128.png" alt="YuLaF" class="logo">
+        <div>
+          <h1>Advanced Settings</h1>
+          <p class="subtitle">Configure all languages and strict mode</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <!-- Strict Mode Toggle -->
+      <section class="settings-section">
+        <div class="setting-item">
+          <div class="setting-info">
+            <h3>Strict Mode</h3>
+            <p>Only show content when language detection confidence is high</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="strictModeToggle">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </section>
+
+      <!-- Language Selection -->
+      <section class="language-section">
+        <div class="language-header">
+          <h2>All Languages (64)</h2>
+          <div class="search-container">
+            <input type="text" id="languageSearch" placeholder="Search languages...">
+          </div>
+        </div>
+
+        <div class="selected-count">
+          <span id="selectedCount">0</span> languages selected
+        </div>
+
+        <div class="language-grid" id="languageOptions">
+          <!-- Populated by JavaScript -->
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <button class="btn-back" id="backBtn">← Back to Popup</button>
+      <div class="footer-info">
+        Changes are saved automatically
+      </div>
+    </footer>
+  </div>
+
+  <script src="../js/advanced.js" type="module"></script>
+</body>
+</html>

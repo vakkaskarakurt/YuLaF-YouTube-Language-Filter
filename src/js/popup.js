@@ -96,16 +96,12 @@ class PopupController {
     const openTab = (url, cb) =>
       chrome.tabs.create({ url }, cb).then(() => window.close());
 
-    document.getElementById('guideBtn')?.addEventListener('click', () =>
-      openTab(chrome.runtime.getURL('src/html/welcome.html'))
-    );
-
-    document.getElementById('rateUsBtn')?.addEventListener('click', () =>
-      openTab('https://chromewebstore.google.com/detail/yulaf-youtube-language-fi/ejfoldoabjeidjdddhomeaojicaemdpm')
-    );
-
     document.getElementById('coffeeBtn')?.addEventListener('click', () =>
       openTab('https://buymeacoffee.com/yulafdev')
+    );
+
+    document.getElementById('advancedBtn')?.addEventListener('click', () =>
+      openTab(chrome.runtime.getURL('src/html/advanced.html'))
     );
   }
 

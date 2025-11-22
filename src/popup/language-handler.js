@@ -44,37 +44,36 @@ export class LanguageHandler {
 
     if (Object.keys(this.languages).length > 0) container.classList.add('expanded');
 
-    const term = searchTerm.toLowerCase();
-    const filtered = Object.entries(this.languages).filter(([code, lang]) =>
-      !term ||
-      lang.name.toLowerCase().includes(term) ||
-      lang.nativeName.toLowerCase().includes(term) ||
-      code.toLowerCase().includes(term)
-    );
-
-    const popularityOrder = [
-      'en', 'es', 'zh', 'hi', 'ar', 'pt', 'bn', 'ru', 'ja', 'fr',
-      'de', 'ko', 'it', 'tr', 'vi', 'th', 'pl', 'nl', 'sv', 'da',
-      'no', 'fi', 'cs', 'hu', 'ro', 'bg', 'hr', 'sk', 'sl', 'et',
-      'lv', 'lt', 'el', 'id', 'ms', 'tl', 'he', 'fa', 'ur', 'ta',
-      'te', 'ml', 'kn', 'gu', 'pa', 'sw', 'af', 'am', 'ca', 'eu',
-      'gl', 'cy', 'ga', 'mt', 'is', 'mk', 'sq', 'sr', 'bs', 'uk', 'be'
+    // Top 14 most popular languages: English, Turkish, then 12 others
+    const top14Languages = [
+      'en', 'tr', 'es', 'zh', 'hi', 'ar', 'pt', 'ru', 'ja', 'fr',
+      'de', 'ko', 'it', 'id'
     ];
 
+    const term = searchTerm.toLowerCase();
+
+    // Filter languages to show only top 14
+    const filtered = Object.entries(this.languages)
+      .filter(([code, lang]) => {
+        // Only show top 14 languages
+        if (!top14Languages.includes(code)) return false;
+
+        // Apply search filter if exists
+        return !term ||
+          lang.name.toLowerCase().includes(term) ||
+          lang.nativeName.toLowerCase().includes(term) ||
+          code.toLowerCase().includes(term);
+      });
+
+    // Sort by popularity order (selected items first, then by top14Languages order)
     filtered.sort(([aCode, aLang], [bCode, bLang]) => {
       const aSel = this.currentState.selectedLanguages.includes(aCode);
       const bSel = this.currentState.selectedLanguages.includes(bCode);
       if (aSel !== bSel) return aSel ? -1 : 1;
 
-      if (this.currentSortBy === 'name') return aLang.name.localeCompare(bLang.name);
-
-      const aIdx = popularityOrder.indexOf(aCode);
-      const bIdx = popularityOrder.indexOf(bCode);
-      if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx;
-      if (aIdx !== -1) return -1;
-      if (bIdx !== -1) return 1;
-
-      return aLang.name.localeCompare(bLang.name);
+      const aIdx = top14Languages.indexOf(aCode);
+      const bIdx = top14Languages.indexOf(bCode);
+      return aIdx - bIdx;
     });
 
     filtered.forEach(([code, lang]) => container.appendChild(this.createLanguageElement(code, lang)));
@@ -143,23 +142,6 @@ export class LanguageHandler {
     if (container.children.length === 0) this.renderLanguages();
   }
 
-  async handleSortOptionClick(e) {
-    const target = e.target.closest('.sort-option');
-    if (!target) return;
-
-    const newSortBy = target.dataset.sort;
-    if (newSortBy && newSortBy !== this.currentSortBy) {
-      this.currentSortBy = newSortBy;
-      await chrome.storage.sync.set({ sortBy: this.currentSortBy });
-      this.uiManager.updateSortUI(this.currentSortBy);
-      const search = document.getElementById('languageSearch')?.value || '';
-      this.renderLanguages(search);
-    }
-
-    document.getElementById('sortDropdown')?.classList.remove('show');
-    document.getElementById('sortButton')?.classList.remove('active');
-  }
-
   setupEventListeners() {
     const search = document.getElementById('languageSearch');
     if (search) {
@@ -167,13 +149,5 @@ export class LanguageHandler {
       search.addEventListener('click', () => this.handleSearchFocus());
       search.addEventListener('focus', () => this.handleSearchFocus());
     }
-
-    document.getElementById('sortButton')?.addEventListener('click', () => this.toggleSortDropdown());
-    document.getElementById('sortDropdown')?.addEventListener('click', (e) => this.handleSortOptionClick(e));
-  }
-
-  toggleSortDropdown() {
-    document.getElementById('sortDropdown')?.classList.toggle('show');
-    document.getElementById('sortButton')?.classList.toggle('active');
   }
 }
