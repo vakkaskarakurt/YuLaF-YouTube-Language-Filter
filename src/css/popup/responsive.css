@@ -14,13 +14,10 @@
   .language-selector { padding: 12px; margin-bottom: 8px; }
   .language-options.expanded, .language-options.force-open { max-height: 80px; }
 
-  .footer-actions {
-    grid-template-columns: 1fr;
-    grid-template-rows: repeat(3,1fr);
-    gap: 6px; padding: 8px; min-height: 140px;
-  }
-  .guide-btn, .rate-us-btn, .coffee-btn {
-    width: 100%; padding: 10px 12px; font-size: 12px; min-height: 38px;
+  .action-icon {
+    font-size: 18px;
+    width: 28px;
+    height: 28px;
   }
 
   .switch { width: 50px; height: 26px; }
@@ -43,9 +40,10 @@
   input:checked + .slider:before { transform: translateX(22px); }
 
   .language-options.expanded, .language-options.force-open { max-height: 70px; }
-  .footer-actions { gap: 4px; padding: 6px; min-height: 130px; }
-  .guide-btn, .rate-us-btn, .coffee-btn {
-    padding: 8px 10px; font-size: 11px; min-height: 36px;
+  .action-icon {
+    font-size: 16px;
+    width: 26px;
+    height: 26px;
   }
 }
 
@@ -58,9 +56,10 @@
   .toggle-group span { font-size: 15px; }
   .main-controls { gap: 25px; margin-bottom: 20px; }
   .language-selector { padding: 18px; }
-  .footer-actions { gap: 10px; min-height: 80px; padding-top: 15px; }
-  .guide-btn, .rate-us-btn, .coffee-btn {
-    padding: 14px 16px; font-size: 14px; min-height: 45px;
+  .action-icon {
+    font-size: 22px;
+    width: 34px;
+    height: 34px;
   }
   .switch { width: 60px; height: 30px; }
   .slider:before { width: 24px; height: 24px; left: 3px; bottom: 3px; }
@@ -82,17 +81,18 @@
 @supports selector(:focus-visible) {
   .sort-button:focus:not(:focus-visible),
   .language-option:focus:not(:focus-visible),
-  .guide-btn:focus:not(:focus-visible),
-  .rate-us-btn:focus:not(:focus-visible),
-  .coffee-btn:focus:not(:focus-visible) { outline: none; }
+  .action-icon:focus:not(:focus-visible) { outline: none; }
 }
 
 /* Landscape Mobile */
 @media (max-width:667px) and (orientation:landscape) {
   body { min-height: 400px; }
   .language-options.expanded, .language-options.force-open { max-height: 60px; }
-  .footer-actions { min-height: 50px; }
-  .guide-btn, .rate-us-btn, .coffee-btn { min-height: 32px; font-size: 11px; }
+  .action-icon {
+    font-size: 16px;
+    width: 26px;
+    height: 26px;
+  }
 }
 
 /* Light Mode Overrides */
@@ -105,15 +105,7 @@
 }
 
 /* Keyboard Navigation */
-.guide-btn:focus-visible,
-.rate-us-btn:focus-visible, .coffee-btn:focus-visible {
-  outline: 2px solid currentColor; outline-offset: 2px;
+.action-icon:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
 }
-
-/* Loading Animation */
-@keyframes buttonPulse {
-  0% { box-shadow: 0 0 0 0 rgba(255,0,0,.4); }
-  70% { box-shadow: 0 0 0 6px rgba(255,0,0,0); }
-  100% { box-shadow: 0 0 0 0 rgba(255,0,0,0); }
-}
-.guide-btn.loading { animation: buttonPulse 2s infinite; }
