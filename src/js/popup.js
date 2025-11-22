@@ -96,24 +96,12 @@ class PopupController {
     const openTab = (url) =>
       chrome.tabs.create({ url }).then(() => window.close());
 
-    const openPopupWindow = (url) => {
-      chrome.windows.create({
-        url: url,
-        type: 'popup',
-        width: 900,
-        height: 700,
-        left: 100,
-        top: 100
-      });
-      window.close();
-    };
-
     document.getElementById('coffeeBtn')?.addEventListener('click', () =>
       openTab('https://buymeacoffee.com/yulafdev')
     );
 
     document.getElementById('advancedBtn')?.addEventListener('click', () =>
-      openPopupWindow(chrome.runtime.getURL('src/html/advanced.html'))
+      openTab(chrome.runtime.getURL('src/html/advanced.html'))
     );
   }
 
