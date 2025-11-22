@@ -36,7 +36,7 @@
 .main-controls {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   margin-bottom: 12px;
   padding-bottom: 12px;
   border-bottom: 1px solid var(--border);
@@ -47,6 +47,13 @@
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
 }
 .toggle-group span {
   font: 500 13px inherit;
@@ -95,14 +102,4 @@
 }
 .selected-count span { color: var(--primary); font-weight: 600; }
 
-/* Footer Actions */
-.footer-actions {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  margin-top: auto;
-  padding: 12px 8px;
-  border-top: 1px solid var(--border);
-  background: var(--bg-primary);
-}
+/* Footer - removed */

@@ -93,127 +93,28 @@ class PopupController {
   }
 
   setupFooterButtons() {
-    const openTab = (url, cb) =>
-      chrome.tabs.create({ url }, cb).then(() => window.close());
+    const openTab = (url) =>
+      chrome.tabs.create({ url }).then(() => window.close());
+
+    const openPopupWindow = (url) => {
+      chrome.windows.create({
+        url: url,
+        type: 'popup',
+        width: 900,
+        height: 700,
+        left: 100,
+        top: 100
+      });
+      window.close();
+    };
 
     document.getElementById('coffeeBtn')?.addEventListener('click', () =>
       openTab('https://buymeacoffee.com/yulafdev')
     );
 
     document.getElementById('advancedBtn')?.addEventListener('click', () =>
-      this.openAdvancedModal()
+      openPopupWindow(chrome.runtime.getURL('src/html/advanced.html'))
     );
-  }
-
-  async openAdvancedModal() {
-    const modal = document.getElementById('modalOverlay');
-    if (!modal) return;
-
-    // Load current state
-    const result = await chrome.storage.sync.get(['strictMode', 'selectedLanguages']);
-    const strictMode = result.strictMode !== undefined ? result.strictMode : true;
-    const selectedLanguages = result.selectedLanguages || [];
-
-    // Update strict mode toggle
-    const strictToggle = document.getElementById('strictModeToggle');
-    if (strictToggle) {
-      strictToggle.checked = strictMode;
-      strictToggle.onchange = async (e) => {
-        await chrome.storage.sync.set({ strictMode: e.target.checked });
-        const tabs = await chrome.tabs.query({ url: '*://*.youtube.com/*' });
-        tabs.forEach(tab => chrome.tabs.reload(tab.id));
-      };
-    }
-
-    // Render all languages
-    this.renderAdvancedLanguages(selectedLanguages);
-
-    // Setup search
-    const searchInput = document.getElementById('advancedLanguageSearch');
-    if (searchInput) {
-      searchInput.value = '';
-      searchInput.oninput = (e) => this.renderAdvancedLanguages(selectedLanguages, e.target.value);
-    }
-
-    // Setup modal close
-    const closeModal = () => modal.classList.remove('show');
-    document.getElementById('modalClose')?.addEventListener('click', closeModal);
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) closeModal();
-    });
-
-    // Show modal
-    modal.classList.add('show');
-  }
-
-  renderAdvancedLanguages(selectedLanguages, searchTerm = '') {
-    const container = document.getElementById('advancedLanguageOptions');
-    if (!container) return;
-
-    container.innerHTML = '';
-
-    const languages = window.YT_FILTER_CONFIG?.languages || {};
-    const term = searchTerm.toLowerCase();
-
-    const filtered = Object.entries(languages).filter(([code, lang]) =>
-      !term ||
-      lang.name.toLowerCase().includes(term) ||
-      lang.nativeName.toLowerCase().includes(term) ||
-      code.toLowerCase().includes(term)
-    );
-
-    // Sort: selected first, then alphabetically
-    filtered.sort(([aCode, aLang], [bCode, bLang]) => {
-      const aSel = selectedLanguages.includes(aCode);
-      const bSel = selectedLanguages.includes(bCode);
-      if (aSel !== bSel) return aSel ? -1 : 1;
-      return aLang.name.localeCompare(bLang.name);
-    });
-
-    filtered.forEach(([code, lang]) => {
-      const isChecked = selectedLanguages.includes(code);
-      const option = document.createElement('label');
-      option.className = 'language-option';
-      option.innerHTML = `
-        <input type="checkbox" name="language" value="${code}" ${isChecked ? 'checked' : ''}>
-        <span class="language-label">
-          <span class="flag">${lang.icon}</span>
-          <span class="language-text">
-            <span class="language-name">${lang.name}</span>
-            <span class="language-native">${lang.nativeName}</span>
-          </span>
-        </span>
-      `;
-
-      option.querySelector('input')?.addEventListener('change', async (e) => {
-        const code = e.target.value;
-        const result = await chrome.storage.sync.get(['selectedLanguages']);
-        let selected = result.selectedLanguages || [];
-
-        if (e.target.checked) {
-          if (!selected.includes(code)) selected.push(code);
-        } else {
-          selected = selected.filter(lang => lang !== code);
-        }
-
-        await chrome.storage.sync.set({ selectedLanguages: selected });
-        this.updateSelectedCountModal(selected.length);
-        this.uiManager.updateSelectedCount(selected.length);
-
-        // Reload YouTube tabs
-        const tabs = await chrome.tabs.query({ url: '*://*.youtube.com/*' });
-        tabs.forEach(tab => chrome.tabs.reload(tab.id));
-      });
-
-      container.appendChild(option);
-    });
-
-    this.updateSelectedCountModal(selectedLanguages.length);
-  }
-
-  updateSelectedCountModal(count) {
-    const countEl = document.getElementById('selectedCountModal');
-    if (countEl) countEl.textContent = count;
   }
 
   handleStorageChanges(changes) {
