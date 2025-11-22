@@ -91,7 +91,7 @@ input:checked + .slider:before { transform: translateX(27px); }
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   overflow: hidden;
@@ -119,6 +119,7 @@ input:checked + .slider:before { transform: translateX(27px); }
 .expand-btn:hover {
   width: 130px;
   border-radius: 25px;
+  justify-content: flex-start;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
 }
 
@@ -142,8 +143,6 @@ input:checked + .slider:before { transform: translateX(27px); }
 }
 
 .btn-icon {
-  width: 50px;
-  height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
