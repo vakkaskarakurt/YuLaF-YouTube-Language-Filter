@@ -28,12 +28,6 @@
           </label>
           <span id="statusText">Filter Enabled</span>
         </div>
-        <div class="toggle-group">
-          <label class="switch">
-            <input type="checkbox" id="strictModeToggle"><span class="slider"></span>
-          </label>
-          <span id="strictModeText">Strict Mode</span>
-        </div>
       </div>
 
       <div class="language-selector">
@@ -49,16 +43,65 @@
     </div>
 
     <div class="footer-actions">
-      <button class="expand-btn" id="coffeeBtn">
+      <button class="action-btn" id="coffeeBtn">
         <span class="btn-icon">☕</span>
         <span class="btn-text">Donate</span>
       </button>
-      <button class="expand-btn" id="advancedBtn">
-        <span class="btn-icon">⚙️</span>
-        <span class="btn-text">Settings</span>
+      <button class="action-btn" id="advancedBtn">
+        <span class="btn-icon">♿</span>
+        <span class="btn-text">Advanced</span>
       </button>
     </div>
   </div>
+
+  <!-- Advanced Settings Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-container">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span class="modal-icon">♿</span>
+          <div>
+            <h2>Advanced Settings</h2>
+            <p class="modal-subtitle">Configure all languages and strict mode</p>
+          </div>
+        </div>
+        <button class="modal-close" id="modalClose">×</button>
+      </div>
+
+      <div class="modal-content">
+        <!-- Strict Mode Toggle -->
+        <div class="settings-section">
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3>Strict Mode</h3>
+              <p>Only show content when language detection confidence is high</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="strictModeToggle">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Language Selection -->
+        <div class="language-section">
+          <div class="language-header">
+            <h3>All Languages (64)</h3>
+            <input type="text" id="advancedLanguageSearch" placeholder="Search...">
+          </div>
+
+          <div class="selected-count-modal">
+            <span id="selectedCountModal">0</span> languages selected
+          </div>
+
+          <div class="language-grid" id="advancedLanguageOptions">
+            <!-- Populated by JavaScript -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="../js/popup.js" type="module"></script>
 </body>
 </html>

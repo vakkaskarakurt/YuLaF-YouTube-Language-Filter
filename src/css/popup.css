@@ -3,6 +3,7 @@
 @import url('popup/layout.css');
 @import url('popup/components.css');
 @import url('popup/language-selector.css');
+@import url('popup/modal.css');
 @import url('popup/responsive.css');
 
 /* Critical FOUC Prevention */

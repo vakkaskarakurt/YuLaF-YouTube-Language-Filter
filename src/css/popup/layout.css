@@ -36,25 +36,17 @@
 .main-controls {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: center;
   margin-bottom: 12px;
   padding-bottom: 12px;
   border-bottom: 1px solid var(--border);
-}
-
-/* Controls */
-.main-controls {
-  flex-direction: row !important;
-  gap: 18px;
   min-height: 36px;
 }
+
 .toggle-group {
   display: flex;
   align-items: center;
   gap: 10px;
-  flex: 1;
-  min-width: 140px;
-  max-width: 50%;
 }
 .toggle-group span {
   font: 500 13px inherit;
