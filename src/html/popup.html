@@ -16,15 +16,8 @@
 <body>
   <div class="container">
     <div class="header">
-      <div class="header-left">
-        <img src="../../icons/icon128.png" alt="YuLaF" class="header-icon">
-        <h1>YuLaF - YouTube Language Filter</h1>
-      </div>
-      <div class="header-actions">
-        <button class="action-icon" id="guideBtn" title="Guide">📘</button>
-        <button class="action-icon" id="rateUsBtn" title="Rate Us">⭐</button>
-        <button class="action-icon" id="coffeeBtn" title="Donate Us">☕</button>
-      </div>
+      <img src="../../icons/icon128.png" alt="YuLaF" class="header-icon">
+      <h1>YuLaF - YouTube Language Filter</h1>
     </div>
 
     <div class="main-content">
@@ -62,6 +55,21 @@
         <div class="language-options" id="languageOptions"><!-- Populated dynamically --></div>
         <div class="selected-count"><span id="selectedCount">0</span> languages selected</div>
       </div>
+    </div>
+
+    <div class="footer-actions">
+      <button class="expand-btn" id="guideBtn">
+        <span class="btn-icon">📘</span>
+        <span class="btn-text">Guide</span>
+      </button>
+      <button class="expand-btn" id="rateUsBtn">
+        <span class="btn-icon">⭐</span>
+        <span class="btn-text">Rate Us</span>
+      </button>
+      <button class="expand-btn" id="coffeeBtn">
+        <span class="btn-icon">☕</span>
+        <span class="btn-text">Donate</span>
+      </button>
     </div>
   </div>
   <script src="../js/popup.js" type="module"></script>
