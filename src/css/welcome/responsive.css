@@ -24,12 +24,7 @@
   }
   .nav-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 5px 15px rgba(0,0,0,.3);}
   .nav-btn.primary:hover{box-shadow:0 5px 15px rgba(255,0,0,.3);}
-  .feedback-header-btn,.rate-us-header-btn{font-size:.8rem;padding:8px 12px;}
-  .modal-content{width:95%;margin:10px;}
-  .modal-header{padding:20px 20px 15px;}
-  .modal-body{padding:20px;}
-  .form-actions{flex-direction:column;gap:10px;}
-  .btn-cancel,.btn-submit{width:100%;justify-content:center;}
+  .rate-us-header-btn{font-size:.8rem;padding:8px 12px;}
   .coffee-btn{padding:8px 12px;font-size:.8rem;}
   .coffee-avatar{width:28px;height:28px;}
 }

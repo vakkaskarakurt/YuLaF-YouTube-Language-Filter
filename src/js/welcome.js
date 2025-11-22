@@ -2,14 +2,12 @@
 import { StateManager } from '../ui/state-manager.js';
 import { ProgressManager } from '../ui/progress-manager.js';
 import { LanguageManager } from '../ui/language-manager.js';
-import { ModalManager } from '../ui/modal-manager.js';
 
 class WelcomeController {
   constructor() {
     this.stateManager = new StateManager();
     this.progressManager = new ProgressManager(this.stateManager);
     this.languageManager = new LanguageManager(this.stateManager);
-    this.modalManager = new ModalManager();
     this.init();
   }
 
@@ -47,10 +45,6 @@ class WelcomeController {
   }
 
   handleKeyboard(e) {
-    if (e.key === 'Escape' && document.getElementById('feedbackModal')?.classList.contains('show')) {
-      this.modalManager.closeModal();
-      return;
-    }
     if (e.key === 'ArrowRight' || e.key === 'Enter') {
       if (this.stateManager.currentStep < this.stateManager.totalSteps) this.nextStep();
     }
@@ -133,32 +127,3 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 30);
   }
 });
-
-// Listen for messages (open feedback)
-if (chrome?.runtime) {
-  chrome.runtime.onMessage.addListener((req, _, sendResponse) => {
-    if (req.action === 'openFeedback') {
-      let attempts = 0;
-      const tryOpen = () => {
-        attempts++;
-        if (window.welcomeController?.modalManager) {
-          window.welcomeController.modalManager.openModal();
-          return sendResponse({ success: true });
-        }
-        if (attempts < 5) return setTimeout(tryOpen, 500);
-
-        // fallback
-        setTimeout(() => {
-          const modal = document.getElementById('feedbackModal');
-          if (modal) {
-            modal.classList.add('show');
-            document.body.style.overflow = 'hidden';
-          }
-        }, 1000);
-        sendResponse({ success: true, fallback: true });
-      };
-      tryOpen();
-    }
-    return true;
-  });
-}

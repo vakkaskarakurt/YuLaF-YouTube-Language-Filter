@@ -100,12 +100,6 @@ class PopupController {
       openTab(chrome.runtime.getURL('src/html/welcome.html'))
     );
 
-    document.getElementById('feedbackBtn')?.addEventListener('click', () =>
-      chrome.tabs.create({ url: chrome.runtime.getURL('src/html/welcome.html') }, (tab) => {
-        setTimeout(() => chrome.tabs.sendMessage(tab.id, { action: 'openFeedback' }).catch(() => {}), 1500);
-      }).then(() => window.close())
-    );
-
     document.getElementById('rateUsBtn')?.addEventListener('click', () =>
       openTab('https://chromewebstore.google.com/detail/yulaf-youtube-language-fi/ejfoldoabjeidjdddhomeaojicaemdpm')
     );

@@ -83,7 +83,7 @@ input:checked + .slider:before { transform: translateX(27px); }
 .sort-option.active { background: var(--primary); color: #fff; }
 
 /* Action Buttons */
-.guide-btn, .feedback-btn, .rate-us-btn, .coffee-btn {
+.guide-btn, .rate-us-btn, .coffee-btn {
   border: none;
   flex: 1;
   display: flex; align-items: center; justify-content: center; gap: 6px;
@@ -99,19 +99,17 @@ input:checked + .slider:before { transform: translateX(27px); }
   overflow: hidden;
 }
 .guide-btn { background: var(--primary); }
-.feedback-btn { background: var(--success); }
 .rate-us-btn { background: var(--warning); }
 .coffee-btn { background: linear-gradient(45deg,var(--purple),#FF6B6B); }
 .guide-btn:hover { background: var(--primary-hover); box-shadow: 0 6px 20px rgba(255,0,0,.4); transform: translateY(-2px); }
-.feedback-btn:hover { background: var(--success-hover); box-shadow: 0 6px 20px rgba(16,185,129,.4); transform: translateY(-2px); }
 .rate-us-btn:hover { background: var(--warning-hover); box-shadow: 0 6px 20px rgba(245,158,11,.4); transform: translateY(-2px); }
 .coffee-btn:hover { background: linear-gradient(45deg,var(--purple-hover),#FF7B7B); box-shadow: 0 6px 20px rgba(139,92,246,.4); transform: translateY(-2px); }
 
 /* Button loading state */
-.guide-btn.loading, .feedback-btn.loading, .rate-us-btn.loading, .coffee-btn.loading {
+.guide-btn.loading, .rate-us-btn.loading, .coffee-btn.loading {
   opacity: .7; pointer-events: none;
 }
-.guide-btn.loading::after, .feedback-btn.loading::after,
+.guide-btn.loading::after,
 .rate-us-btn.loading::after, .coffee-btn.loading::after {
   content: "..."; position: absolute; right: 10px; animation: loading 1s infinite;
 }

@@ -34,7 +34,6 @@
            class="coffee-btn"
            style="text-decoration: none !important;"
            title="Buy me a coffee">☕ Buy me a coffee</a>
-        <button class="feedback-header-btn" id="feedbackHeaderBtn" title="Send Feedback">📝 Feedback</button>
         <button class="rate-us-header-btn" id="rateUsHeaderBtn" title="Rate Us">⭐ Rate Us</button>
       </div>
     </header>
@@ -145,38 +144,6 @@
     <footer class="footer">
       <p>&copy; 2025 YuLaF - YouTube Language Filter. Made with ❤️ for better YouTube experience.</p>
     </footer>
-  </div>
-
-  <!-- Feedback Modal -->
-  <div class="modal-overlay" id="feedbackModal">
-    <div class="modal-content">
-      <div class="modal-header"><h3>📝 Send Feedback</h3><button class="modal-close" id="modalClose">&times;</button></div>
-      <div class="modal-body">
-        <p class="modal-description">Your opinions are very valuable to us! Please share your experiences, suggestions or problems.</p>
-        <form class="feedback-form" id="feedbackForm">
-          <div class="form-group"><label for="feedbackType">Feedback Type:</label>
-            <select id="feedbackType" required>
-              <option value="">Select...</option>
-              <option value="bug">🐛 Bug Report</option>
-              <option value="feature">💡 Feature Request</option>
-              <option value="improvement">🚀 Improvement</option>
-              <option value="general">💬 General Opinion</option>
-              <option value="compliment">👍 Compliment</option>
-              <option value="other">🤔 Other</option>
-            </select>
-          </div>
-          <div class="form-group"><label for="feedbackSubject">Subject:</label><input type="text" id="feedbackSubject" placeholder="Subject..." required></div>
-          <div class="form-group"><label for="feedbackMessage">Your Message:</label><textarea id="feedbackMessage" rows="6" placeholder="Write your feedback..." required></textarea></div>
-          <div class="form-group"><label for="feedbackEmail">Email (Optional):</label><input type="email" id="feedbackEmail" placeholder="you@example.com"><small>Write your email if you want a response.</small></div>
-          <div class="form-actions"><button type="button" class="btn-cancel" id="cancelFeedback">Cancel</button><button type="submit" class="btn-submit">📤 Send</button></div>
-        </form>
-        <div class="feedback-success" id="feedbackSuccess" style="display:none">
-          <div class="success-icon">✅</div><h4>Thank you!</h4>
-          <p>Your feedback has been sent successfully.</p>
-          <button class="btn-primary" id="successClose">OK</button>
-        </div>
-      </div>
-    </div>
   </div>
 
   <script src="../js/welcome.js" type="module"></script>

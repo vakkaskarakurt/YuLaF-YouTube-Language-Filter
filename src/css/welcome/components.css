@@ -1,5 +1,5 @@
 /* Buttons Base */
-.btn-primary, .btn-secondary, .btn-feedback, .btn-cancel, .btn-submit {
+.btn-primary, .btn-secondary {
   display:inline-block; text-align:center; text-decoration:none; border:none;
   padding:15px 30px; border-radius:var(--radius-md);
   font:600 1rem inherit; cursor:pointer; transition:.3s all ease;
@@ -9,32 +9,21 @@
 .btn-primary { background:var(--primary); color:#fff; }
 .btn-primary:hover { background:var(--primary-hover); box-shadow:0 8px 25px rgba(255,0,0,.3); transform:translateY(-2px); }
 
-.btn-secondary, .btn-cancel {
+.btn-secondary {
   background:transparent; border:1px solid var(--border); color:var(--text-secondary);
 }
-.btn-secondary:hover, .btn-cancel:hover { background:var(--border); border-color:var(--border-hover); color:var(--text-primary); }
-
-.btn-feedback, .btn-submit {
-  background:linear-gradient(45deg,var(--success),var(--success-hover)); color:#fff;
-}
-.btn-feedback:hover { background:linear-gradient(45deg,var(--success-hover),#76CB7A); box-shadow:0 8px 25px rgba(76,175,80,.3); transform:translateY(-2px); }
-.btn-submit { padding:12px 25px; border-radius:8px; font-size:.95rem; font-weight:600; }
-.btn-submit:hover { background:linear-gradient(45deg,var(--success-hover),#76CB7A); box-shadow:0 5px 15px rgba(76,175,80,.3); transform:translateY(-1px); }
-
-.btn-cancel { padding:12px 25px; border-radius:8px; font-size:.95rem; font-weight:500; }
+.btn-secondary:hover { background:var(--border); border-color:var(--border-hover); color:var(--text-primary); }
 
 /* Header Buttons */
-.feedback-header-btn, .rate-us-header-btn, .coffee-btn {
+.rate-us-header-btn, .coffee-btn {
   display:flex; align-items:center; gap:8px; padding:10px 16px;
   border-radius:var(--radius-md); font:600 .9rem inherit;
   color:#fff; cursor:pointer; border:none; transition:.3s all ease;
   position:relative; overflow:hidden; white-space:nowrap;
 }
-.feedback-header-btn { background:linear-gradient(45deg,var(--success),var(--success-hover)); box-shadow:0 2px 8px rgba(76,175,80,.2); }
 .rate-us-header-btn { background:linear-gradient(45deg,var(--warning),var(--warning-hover)); box-shadow:0 2px 8px rgba(255,193,7,.2); }
 .coffee-btn { background:linear-gradient(45deg,#9C27B0,#FF6B6B); box-shadow:0 2px 8px rgba(156,39,176,.2); }
 
-.feedback-header-btn:hover { background:linear-gradient(45deg,var(--success-hover),#76CB7A); box-shadow:0 8px 25px rgba(76,175,80,.4); transform:translateY(-2px); }
 .rate-us-header-btn:hover { background:linear-gradient(45deg,var(--warning-hover),#FFD54F); box-shadow:0 8px 25px rgba(255,193,7,.4); transform:translateY(-2px); }
 .coffee-btn:hover { background:linear-gradient(45deg,#BA68C8,#FF7B7B); box-shadow:0 8px 25px rgba(156,39,176,.4); transform:translateY(-2px); }
 

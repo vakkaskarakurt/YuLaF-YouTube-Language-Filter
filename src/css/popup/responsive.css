@@ -16,10 +16,10 @@
 
   .footer-actions {
     grid-template-columns: 1fr;
-    grid-template-rows: repeat(4,1fr);
-    gap: 6px; padding: 8px; min-height: 180px;
+    grid-template-rows: repeat(3,1fr);
+    gap: 6px; padding: 8px; min-height: 140px;
   }
-  .guide-btn, .feedback-btn, .rate-us-btn, .coffee-btn {
+  .guide-btn, .rate-us-btn, .coffee-btn {
     width: 100%; padding: 10px 12px; font-size: 12px; min-height: 38px;
   }
 
@@ -43,8 +43,8 @@
   input:checked + .slider:before { transform: translateX(22px); }
 
   .language-options.expanded, .language-options.force-open { max-height: 70px; }
-  .footer-actions { gap: 4px; padding: 6px; min-height: 170px; }
-  .guide-btn, .feedback-btn, .rate-us-btn, .coffee-btn {
+  .footer-actions { gap: 4px; padding: 6px; min-height: 130px; }
+  .guide-btn, .rate-us-btn, .coffee-btn {
     padding: 8px 10px; font-size: 11px; min-height: 36px;
   }
 }
@@ -58,8 +58,8 @@
   .toggle-group span { font-size: 15px; }
   .main-controls { gap: 25px; margin-bottom: 20px; }
   .language-selector { padding: 18px; }
-  .footer-actions { gap: 10px; min-height: 100px; padding-top: 15px; }
-  .guide-btn, .feedback-btn, .rate-us-btn, .coffee-btn {
+  .footer-actions { gap: 10px; min-height: 80px; padding-top: 15px; }
+  .guide-btn, .rate-us-btn, .coffee-btn {
     padding: 14px 16px; font-size: 14px; min-height: 45px;
   }
   .switch { width: 60px; height: 30px; }
@@ -83,7 +83,6 @@
   .sort-button:focus:not(:focus-visible),
   .language-option:focus:not(:focus-visible),
   .guide-btn:focus:not(:focus-visible),
-  .feedback-btn:focus:not(:focus-visible),
   .rate-us-btn:focus:not(:focus-visible),
   .coffee-btn:focus:not(:focus-visible) { outline: none; }
 }
@@ -92,8 +91,8 @@
 @media (max-width:667px) and (orientation:landscape) {
   body { min-height: 400px; }
   .language-options.expanded, .language-options.force-open { max-height: 60px; }
-  .footer-actions { min-height: 60px; }
-  .guide-btn, .feedback-btn, .rate-us-btn, .coffee-btn { min-height: 32px; font-size: 11px; }
+  .footer-actions { min-height: 50px; }
+  .guide-btn, .rate-us-btn, .coffee-btn { min-height: 32px; font-size: 11px; }
 }
 
 /* Light Mode Overrides */
@@ -106,7 +105,7 @@
 }
 
 /* Keyboard Navigation */
-.guide-btn:focus-visible, .feedback-btn:focus-visible,
+.guide-btn:focus-visible,
 .rate-us-btn:focus-visible, .coffee-btn:focus-visible {
   outline: 2px solid currentColor; outline-offset: 2px;
 }
